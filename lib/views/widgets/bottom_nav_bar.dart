@@ -12,11 +12,9 @@ class BottomNavBar extends StatelessWidget {
     final bnavController = Provider.of<BottomNavBarController>(context);
 
     List screens = [
-      HomeScreen(),
       SplashScreen(),
       HomeScreen(),
-      SplashScreen(),
-      HomeScreen()
+     
     ];
 
     return Scaffold(
