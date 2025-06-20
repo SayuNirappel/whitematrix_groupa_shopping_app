@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
+import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
 
 ///
@@ -357,11 +358,8 @@ class ContinuingRow extends StatelessWidget {
         );
       },
       onTap: (index) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ParameterTest(
-                    dbList: DummyDb.featuredBrandsList, passedIndex: index)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
       },
     );
   }
