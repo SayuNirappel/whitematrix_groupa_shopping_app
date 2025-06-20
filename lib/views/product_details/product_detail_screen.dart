@@ -33,7 +33,7 @@ void initState() {
       }
     });
   
-   scrollController.addListener(() { //for sticky button
+   scrollController.addListener(() { //for sticky button on bottom bar
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         final RenderBox? box =
@@ -62,8 +62,10 @@ void initState() {
           CustomScrollView(
           controller: scrollController,
           slivers: [
+            //header section
             buildHeader(context, product),
              SliverToBoxAdapter(
+               //image section
              child: buildImages(product),
               ), 
         SliverList(
@@ -71,6 +73,7 @@ void initState() {
          childCount: Dummydb.products.length,
         (context, index) {
           final product = Dummydb.products[index];
+          
           final formattedDate = DateFormat('EEE, d MMM').format(DateTime.now().add(Duration(days: 5)));
 
        return Padding(
@@ -98,6 +101,7 @@ void initState() {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //title, price, and size selection,delivery,services
                 buildTitleAndSize(product, formattedDate),
                 const SizedBox(height: 20),
                 buildProductDetails(),
@@ -548,11 +552,11 @@ Stack buildImages(ProductModel product) {
                   child: Text("5 ★", style: GoogleFonts.roboto(color: Colors.white,fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
               ),
-    const SizedBox(width: 8),
-      Text(
-      '2 months ago',
-      style: GoogleFonts.roboto(color: Colors.grey),
-    )
+             const SizedBox(width: 8),
+              Text(
+              '2 months ago',
+              style: GoogleFonts.roboto(color: Colors.grey),
+             )
             ],
           ),
           const SizedBox(height: 8),
@@ -884,6 +888,7 @@ Column buildTitleAndSize(ProductModel product, formattedDate) {
         ],
       ),
       const SizedBox(height: 16),
+      
       //screen button
       Container(
         key: screenButtonKey,
