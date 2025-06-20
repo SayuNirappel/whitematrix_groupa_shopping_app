@@ -89,7 +89,7 @@ void initState() {
                     shape: BoxShape.circle,
                     color: currentIndex == i
                         ? ColorConstants.grey
-                        : ColorConstants.secondaryColor,
+                        : ColorConstants.secondaryColor1,
                   ),
                 ),
               ),
@@ -103,14 +103,14 @@ void initState() {
                 buildProductDetails(),
                 Divider(
                   thickness: 1,
-                  color: ColorConstants.secondaryColor,
+                  color: ColorConstants.secondaryColor1,
                   indent: 6,
                   endIndent: 6,
                 ),
                 buildcustomerQuestions(),
                 Divider(
                   thickness: 1,
-                  color: ColorConstants.secondaryColor,
+                  color: ColorConstants.secondaryColor1,
                   indent: 6,
                   endIndent: 6,
                 ),
@@ -126,7 +126,7 @@ void initState() {
                 const SizedBox(height: 8),
                 Divider(
                   thickness: 1,
-                  color: ColorConstants.secondaryColor,
+                  color: ColorConstants.secondaryColor1,
                   indent: 6,
                   endIndent: 6,
                 ),
@@ -141,7 +141,7 @@ void initState() {
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: ColorConstants.secondaryColor.withAlpha(50),
+                              color: ColorConstants.secondaryColor1.withAlpha(50),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Image.network(
@@ -571,7 +571,7 @@ const SizedBox(height: 8),
     child: Container(
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
     decoration: BoxDecoration(
-      color: ColorConstants.secondaryColor.withAlpha(50),
+      color: ColorConstants.secondaryColor1.withAlpha(50),
       borderRadius: BorderRadius.circular(4),
     ),
     child: const Text.rich(
@@ -677,7 +677,7 @@ ExpansionTile buildcustomerQuestions() {
               ),
               foregroundColor: ColorConstants.textColor,
               backgroundColor: ColorConstants.backgroundColor,
-              side: BorderSide(color: ColorConstants.secondaryColor),
+              side: BorderSide(color: ColorConstants.secondaryColor1),
             ),
             child: Text(
               "Ask a question",
@@ -824,7 +824,7 @@ Column buildTitleAndSize(ProductModel product, formattedDate) {
                         decoration: BoxDecoration(
                           color: isSelected ? ColorConstants.textColor : ColorConstants.backgroundColor,
                           border: Border.all(
-                            color: isSelected ? ColorConstants.textColor : ColorConstants.secondaryColor,
+                            color: isSelected ? ColorConstants.textColor : ColorConstants.secondaryColor1,
                           ),
                           borderRadius: BorderRadius.circular(15),
                         ),

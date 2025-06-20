@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -8,11 +6,10 @@ import 'package:whitematrix_groupa_shopping_app/models/category_model.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:whitematrix_groupa_shopping_app/utils/widgets/horizontal_widget.dart';
 
 class ProductListingScreen extends StatefulWidget {
   final String title;
-  ProductListingScreen({super.key, required this.title});
+  const ProductListingScreen({super.key, required this.title});
 
   @override
   State<ProductListingScreen> createState() => _ProductListingScreenState();

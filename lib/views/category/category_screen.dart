@@ -22,7 +22,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
   List<Color> colorList = [
     ColorConstants.secondaryColor,
-    ColorConstants.BlueColor,
+    ColorConstants.blueColor,
   ];
 
 
