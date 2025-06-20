@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/bottom_nav_bar_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/views/home/home_screen.dart';
-import 'package:whitematrix_groupa_shopping_app/views/splash/splash_screen.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -14,15 +13,16 @@ class BottomNavBar extends StatelessWidget {
 
     List screens = [
       HomeScreen(),
-      SplashScreen(),
       HomeScreen(),
-      SplashScreen(),
-      HomeScreen()
+      HomeScreen(),
+      HomeScreen(),
+      HomeScreen(),
     ];
 
     return Scaffold(
       body: screens[bnavController.currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Color.fromARGB(255, 248, 221, 230),
           currentIndex: bnavController.currentIndex,
           selectedItemColor: bnavController.currentIndex == 3
               ? Colors.amber.shade500
@@ -49,7 +49,7 @@ class BottomNavBar extends StatelessWidget {
                       fontSize: 20),
                 )),
             _bNavBarItems(
-                passedlabel: "Under#999",
+                passedlabel: "Under₹999",
                 passedIcon: Text(
                   "  fwd  ",
                   style: TextStyle(
@@ -63,16 +63,16 @@ class BottomNavBar extends StatelessWidget {
                   "MNow",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFFE91E63),
+                      //color: Color(0xFFE91E63),
                       fontSize: 18),
                 )),
             _bNavBarItems(
                 passedlabel: "Luxuary",
                 passedIcon: Text(
-                  "  LUX  ",
+                  "  LUXE  ",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.amber.shade500,
+                      //color: Colors.amber.shade500,
                       fontSize: 20),
                 )),
             _bNavBarItems(
@@ -99,7 +99,7 @@ class BottomNavBar extends StatelessWidget {
                   : passedlabel == "Luxuary"
                       ? Colors.amber.shade500
                       : Color(0xFFE91E63),
-              Colors.white
+              Color.fromARGB(255, 255, 209, 226)
             ], stops: [
               0.1,
               0.3

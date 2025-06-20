@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/bottom_nav_bar_controller.dart';
-import 'package:whitematrix_groupa_shopping_app/views/widgets/bottom_nav_bar.dart';
+import 'package:whitematrix_groupa_shopping_app/views/splash/splash_screen.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: BottomNavBar(),
+      home: SplashScreen(),
     );
   }
 }
