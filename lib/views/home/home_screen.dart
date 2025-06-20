@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
+import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/home/home_screen_widgets.dart';
 import 'package:whitematrix_groupa_shopping_app/views/notifications/notification_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -104,7 +106,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: InkWell(
-                        onTap: () {}, child: Icon(Icons.window_outlined)),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CategoryScreen()));
+                        },
+                        child: Icon(Icons.window_outlined)),
                   ) //path to collections
                 ],
               ),
@@ -147,9 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ParameterTest(
-                                      dbList: DummyDb.categories,
-                                      passedIndex: index)));
+                                  builder: (context) => CategoryScreen()));
                         },
                         itemBuilder: (index) {
                           final item = DummyDb.categories[index];
@@ -419,9 +425,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               },
                               onTap: (index) {
-                                ///
-                                ///---------------Navigation to Product ListScreen
-                                ///
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            CategoryScreen()));
                               },
                             ),
                           ],
