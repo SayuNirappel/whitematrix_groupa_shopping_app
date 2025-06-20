@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart' show CategoryScreen;
+import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,6 +11,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp();
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home:CategoryScreen()
+    );
   }
 }
