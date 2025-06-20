@@ -31,14 +31,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  cross_fade_carousel: ^1.0.5
-  carousel_slider: ^5.1.1
-  smooth_page_indicator: ^1.2.1
+<<<<<<<<< Temporary merge branch 1
   provider: ^6.1.5
-  google_fonts: ^6.2.1
-  intl: ^0.20.2
-  flutter_svg: ^2.2.0
-
+=========
+  cross_fade_carousel: ^1.0.5
+  smooth_page_indicator: ^1.2.1
+>>>>>>>>> Temporary merge branch 2
 
 dev_dependencies:
   flutter_test:
