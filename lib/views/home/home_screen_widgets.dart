@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
+import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
 
@@ -61,6 +62,8 @@ class PhotoTypeRow extends StatelessWidget {
           children: [
             Text(
               bslist[index]["type"]!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
@@ -91,8 +94,12 @@ class PhotoTypeRow extends StatelessWidget {
                         alignment: Alignment.bottomCenter,
                         child: Text(
                           bslist[index]["offer"]!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ))
                 ],
@@ -108,11 +115,8 @@ class PhotoTypeRow extends StatelessWidget {
         );
       },
       onTap: (index) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    ParameterTest(dbList: bslist, passedIndex: index)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
       },
     );
   }
@@ -170,6 +174,8 @@ class RowWithBorderContainerType1 extends StatelessWidget {
                         children: [
                           Text(
                             dBList[index]["title"]!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
@@ -178,6 +184,8 @@ class RowWithBorderContainerType1 extends StatelessWidget {
                           ),
                           Text(
                             dBList[index]["subt"]!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 10,
                               color: Colors.white,
@@ -190,6 +198,8 @@ class RowWithBorderContainerType1 extends StatelessWidget {
             ),
             Text(
               dBList[index]["brand"]!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 30,
@@ -200,11 +210,8 @@ class RowWithBorderContainerType1 extends StatelessWidget {
         );
       },
       onTap: (index) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    ParameterTest(dbList: dBList, passedIndex: index)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
       },
     );
   }
@@ -231,9 +238,8 @@ class _CarouselSlidersState extends State<CarouselSliders> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        ///
-        ///------------------------------------------------------Navigation to Product List-------------
-        ///
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
       },
       child: Column(
         children: [
@@ -330,7 +336,8 @@ class ContinuingRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               height: 200,
-              width: 180,
+              // width: 180,
+              width: MediaQuery.of(context).size.width * 0.45,
               clipBehavior: Clip.antiAlias,
               child: Image(
                 image: NetworkImage(
@@ -341,6 +348,8 @@ class ContinuingRow extends StatelessWidget {
             ),
             Text(
               DummyDb.featuredBrandsList[index]["title"]!,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
@@ -349,6 +358,8 @@ class ContinuingRow extends StatelessWidget {
             ),
             Text(
               "TShirt",
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.grey,
@@ -519,6 +530,8 @@ class TitleRow extends StatelessWidget {
       children: [
         Expanded(
           child: Text(title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   color: color ?? Colors.black,
                   fontSize: fontSize,

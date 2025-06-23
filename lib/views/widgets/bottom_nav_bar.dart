@@ -94,7 +94,7 @@ class BottomNavBar extends StatelessWidget {
             padding: EdgeInsets.all(6),
             decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [
-              passedlabel == "Under#999"
+              passedlabel == "Under₹999"
                   ? Colors.green.shade900
                   : passedlabel == "Luxuary"
                       ? Colors.amber.shade500
