@@ -41,6 +41,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appbar section
       appBar: _build_AppbarSection(),
       backgroundColor: ColorConstants.backgroundColor,
       body: Row(
@@ -51,10 +52,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
             child: ListView.builder(
               itemCount: categories.length,
               itemBuilder: (context, index) {
+                // category tab section
                 return _buildSideTab(index);
               },
             ),
           ),
+          // body of the corresponding category
           _build_body_Categorysection(selectedIndex),
         ],
       ),
