@@ -467,6 +467,7 @@ Widget _buildCategorySection(String title) {
       imageList = [];
       nameList = [];
   }
+
   return SingleChildScrollView(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,11 +545,11 @@ Widget _buildCategorySection(String title) {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [          
-                                   _build_PromoColumn("FREE", "Shipping"),
-                                    _buildDivider(),
-                                    _build_PromoColumn("40% off", "upto ₹300"),
-                                    _buildDivider(),
-                                    _build_PromoColumn("EASY", "Returns"),
+                            _build_PromoColumn("FREE", "Shipping"),
+                            _buildDivider(),
+                            _build_PromoColumn("40% off", "upto ₹300"),
+                            _buildDivider(),
+                            _build_PromoColumn("EASY", "Returns"),
                   
                 
                 ],
