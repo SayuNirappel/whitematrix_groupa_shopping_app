@@ -1,14 +1,22 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/cartcontroller.dart';
 import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_model.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
 
 class ProductDetailsPage2 extends StatefulWidget {
-  const ProductDetailsPage2({super.key});
+  final Map<String, dynamic>? products;
+
+  const ProductDetailsPage2({super.key, this.products});
   
   @override
   State<ProductDetailsPage2> createState() => _ProductDetailsPage2State();
@@ -21,6 +29,9 @@ class _ProductDetailsPage2State extends State<ProductDetailsPage2> {
   bool showAppBarDetails = false;
   final GlobalKey screenButtonKey = GlobalKey();
   bool showStickyButton = false;
+  final imageUrl = 'https://corsproxy.io/?https://aartisto.com/wp-content/uploads/2020/11/myntra-930x620.png';
+
+
 
   @override
 void initState() {
@@ -54,6 +65,7 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
+      final products = widget.products ?? {};
      final product = Dummydb.products[0];
    return Scaffold(
       backgroundColor: Colors.white,
@@ -63,10 +75,10 @@ void initState() {
           controller: scrollController,
           slivers: [
             //header section
-            buildHeader(context, product),
+            buildHeader(context, product,products),
              SliverToBoxAdapter(
                //image section
-             child: buildImages(product),
+             child: buildImages(products,),
               ), 
         SliverList(
         delegate: SliverChildBuilderDelegate(
@@ -75,7 +87,7 @@ void initState() {
           final product = Dummydb.products[index];
           
           final formattedDate = DateFormat('EEE, d MMM').format(DateTime.now().add(Duration(days: 5)));
-
+          //dot indicator
        return Padding(
          padding: const EdgeInsets.all(15.0),
          child: Column(
@@ -102,7 +114,7 @@ void initState() {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 //title, price, and size selection,delivery,services
-                buildTitleAndSize(product, formattedDate),
+                buildTitleAndSize(products,product,formattedDate ),
                 const SizedBox(height: 20),
                 buildProductDetails(),
                 Divider(
@@ -118,7 +130,7 @@ void initState() {
                   indent: 6,
                   endIndent: 6,
                 ),
-                buildCustomerRatings(),
+                buildCustomerRatings(products),
                 Text(
                   "View all reviews >",
                   style: GoogleFonts.roboto(
@@ -196,9 +208,9 @@ void initState() {
           height: 300,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: Dummydb.products.length,
+            itemCount: products.length,
             itemBuilder: (context, i) {
-              final item = Dummydb.products[i];
+             // final item = Dummydb.products[i];
               return Container(
             width: 160,
             margin: const EdgeInsets.only(right: 12),
@@ -209,20 +221,27 @@ void initState() {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      item.imageUrls?.first ?? '',
+                 ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.network(products["image"] ?? "",
+                    //item.imageUrls?.first ?? '',
+                    width: double.infinity,
+                    height: 170,
+                    fit: BoxFit.fill,
+                    errorBuilder: (context, error, stackTrace) => Container(
                       width: double.infinity,
                       height: 170,
-                      fit: BoxFit.fill,
+                      color: Colors.grey.shade200,
+                      child: const Icon(Icons.broken_image, size: 40),
                     ),
                   ),
+                ),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: 
                     Text(
-                      item.title ?? '',
+                      products["title"] ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.roboto(
@@ -235,7 +254,7 @@ void initState() {
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: 
                     Text(
-                      item.subtitle ?? '',
+                      products["subtitle"] ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.roboto(
@@ -317,7 +336,7 @@ SliverToBoxAdapter(
                 top: false,
                 child: Container(
                   color: Colors.white,
-                  child: buildBottomButtons(),
+                  child: buildBottomButtons(products),
                 ),
               ),
             ),
@@ -326,7 +345,7 @@ SliverToBoxAdapter(
   );
   }
 
-  SliverAppBar buildHeader(BuildContext context, ProductModel product) {
+  SliverAppBar buildHeader(BuildContext context, ProductModel product,Map<String, dynamic> products) {
   return SliverAppBar(
     backgroundColor: ColorConstants.backgroundColor,
     surfaceTintColor: ColorConstants.backgroundColor,
@@ -336,17 +355,25 @@ SliverToBoxAdapter(
       icon: const Icon(Icons.arrow_back_sharp, size: 35),
       onPressed: () => Navigator.pop(context),
     ),
-    title: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 30,
-          width: 30,
-          child: Image.network(
-            'https://aartisto.com/wp-content/uploads/2020/11/myntra-930x620.png',
-            fit: BoxFit.contain,
-          ),
-        ),
+ title: Row(
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    FutureBuilder(
+      future: DefaultCacheManager().getSingleFile(
+        'https://api.allorigins.win/raw?url=https://aartisto.com/wp-content/uploads/2020/11/myntra-930x620.png',
+      ).then((file) => file.readAsBytes()),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+          return SizedBox(
+            height: 30,
+            width: 30,
+            child: Image.memory(snapshot.data as Uint8List, fit: BoxFit.contain),
+          );
+        }
+        return const SizedBox(height: 30, width: 30);
+      },
+    ),
+
         const SizedBox(width: 8),
         Expanded(
           child: showAppBarDetails
@@ -438,28 +465,34 @@ SliverToBoxAdapter(
     actions: [
       IconButton(icon: const Icon(Icons.share_outlined, size: 25), onPressed: () {}),
       IconButton(icon: const Icon(Icons.favorite_border_outlined, size: 25), onPressed: () {}),
-      IconButton(icon: const Icon(Icons.shopping_bag_outlined, size: 25), onPressed: () {}),
+      IconButton(icon: const Icon(Icons.shopping_bag_outlined, size: 25), onPressed: () {
+         Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) =>ShoppingBagScreen()),
+      );
+      }),
     ],
   );
 }
+Stack buildImages(Map<String, dynamic> products) {
+  final String imageUrl = products["image"] ?? "";
 
-Stack buildImages(ProductModel product) {
   return Stack(
     children: [
       CarouselSlider(
-        items: product.imageUrls?.map((url) {
+        items: List.generate(2, (index) {
           return ClipRRect(
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(30),
               bottomRight: Radius.circular(30),
             ),
-            child: Image.network(
-              url,
+            child: Image.asset(
+              imageUrl,
               fit: BoxFit.cover,
               width: double.infinity,
             ),
           );
-        }).toList(),
+        }),
         options: CarouselOptions(
           height: 500,
           viewportFraction: 1.0,
@@ -471,7 +504,7 @@ Stack buildImages(ProductModel product) {
           },
         ),
       ),
-      if (product.rating != null)
+      if (products["rating"] != null)
         Positioned(
           bottom: 15,
           right: 18,
@@ -484,7 +517,7 @@ Stack buildImages(ProductModel product) {
             child: Row(
               children: [
                 Text(
-                  product.rating!.toStringAsFixed(1),
+                  (products["rating"]).toStringAsFixed(1),
                   style: GoogleFonts.roboto(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -501,7 +534,7 @@ Stack buildImages(ProductModel product) {
 }
 
 
-  ExpansionTile buildCustomerRatings() {
+  ExpansionTile buildCustomerRatings(Map<String, dynamic> products) {
     return ExpansionTile(
         childrenPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
         tilePadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
@@ -521,7 +554,7 @@ Stack buildImages(ProductModel product) {
             decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.all(Radius.circular(10))),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Text("4.8 ★", 
+              child: Text("${products["rating"]}", 
                 style: GoogleFonts.roboto(
                   color: Colors.white,
                   fontSize: 15,
@@ -530,7 +563,7 @@ Stack buildImages(ProductModel product) {
             ),
           ),
           SizedBox(width: 8),
-          Text("9 ratings | 2 reviews"),
+          Text("9 ratings | ${products["review"]}"),
         ]),
         ],
       ),
@@ -725,21 +758,25 @@ ExpansionTile buildProductDetails() {
   );
 }
 
-Column buildTitleAndSize(ProductModel product, formattedDate) {
+Column buildTitleAndSize(Map<String, dynamic> products, ProductModel product, formattedDate) {
+  final title = products["title"] ?? "No Title";
+  final price = double.tryParse(products["price"].toString()) ?? 0;
+  final cutPrice = double.tryParse(products["cutprice"].toString()) ?? 0;
+  final discount = cutPrice - price;
+
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       RichText(
-        maxLines: 4,
+        maxLines: 2,
         overflow: TextOverflow.ellipsis,
         text: TextSpan(
           style: GoogleFonts.roboto(fontSize: 22, color: Colors.black),
           children: [
             TextSpan(
-              text: '${product.title ?? ''} ',
+              text: title,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            TextSpan(text: product.subtitle ?? ''),
           ],
         ),
       ),
@@ -756,7 +793,7 @@ Column buildTitleAndSize(ProductModel product, formattedDate) {
           ),
           const SizedBox(width: 4),
           Text(
-            '₹${product.originalPrice?.toStringAsFixed(0) ?? ''}',
+            "₹${cutPrice.toStringAsFixed(0)}",
             style: GoogleFonts.roboto(
               fontSize: 22,
               color: Colors.grey,
@@ -765,7 +802,7 @@ Column buildTitleAndSize(ProductModel product, formattedDate) {
           ),
           const SizedBox(width: 8),
           Text(
-            '₹${product.price?.toStringAsFixed(0) ?? ''}',
+            "₹${price.toStringAsFixed(0)}",
             style: GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 8),
@@ -778,8 +815,12 @@ Column buildTitleAndSize(ProductModel product, formattedDate) {
             ),
             child: Center(
               child: Text(
-                product.offer ?? '',
-                style: GoogleFonts.roboto(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                "₹${discount.toStringAsFixed(0)} OFF!",
+                style: GoogleFonts.roboto(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -857,7 +898,7 @@ Column buildTitleAndSize(ProductModel product, formattedDate) {
       Row(
         children: [
           Text(
-            '₹${product.originalPrice?.toStringAsFixed(0) ?? ''}',
+            '₹$cutPrice',
             style: GoogleFonts.roboto(
               fontSize: 16,
               color: Colors.grey,
@@ -866,7 +907,7 @@ Column buildTitleAndSize(ProductModel product, formattedDate) {
           ),
           const SizedBox(width: 8),
           Text(
-            '₹${product.price?.toStringAsFixed(0) ?? ''}',
+            '₹$price',
             style: GoogleFonts.roboto(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 8),
@@ -893,7 +934,7 @@ Column buildTitleAndSize(ProductModel product, formattedDate) {
       Container(
         key: screenButtonKey,
         color: Colors.white,
-        child: buildBottomButtons(),
+        child: buildBottomButtons(products),
       ),
       const SizedBox(height: 16),
       Text(
@@ -980,7 +1021,7 @@ Column buildTitleAndSize(ProductModel product, formattedDate) {
   );
 }
 
-  SafeArea buildBottomButtons() {
+  SafeArea buildBottomButtons(Map<String, dynamic> products) {
     return SafeArea(
     child: Container(
       height: 45,
@@ -1022,7 +1063,12 @@ Column buildTitleAndSize(ProductModel product, formattedDate) {
                 backgroundColor: ColorConstants.primaryColor,
                 foregroundColor: ColorConstants.backgroundColor,
               ),
-              onPressed: () {},
+              onPressed: () {
+                              Provider.of<CartProvider>(context, listen: false).addItem(products);
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text("Added to cart")),
+  );
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

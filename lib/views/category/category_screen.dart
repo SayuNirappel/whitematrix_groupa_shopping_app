@@ -1,7 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/get_all_products_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
@@ -38,10 +44,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
     "Jewellery",
   ];
 
+ @override
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    context.read<GetAllProductsController>().fetchAllProducts();
+  });
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appbar section
       appBar: _build_AppbarSection(),
       backgroundColor: ColorConstants.backgroundColor,
       body: Row(
@@ -52,12 +65,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
             child: ListView.builder(
               itemCount: categories.length,
               itemBuilder: (context, index) {
-                // category tab section
                 return _buildSideTab(index);
               },
             ),
           ),
-          // body of the corresponding category
           _build_body_Categorysection(selectedIndex),
         ],
       ),
@@ -87,7 +98,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
         IconButton(
           icon: const Icon(Icons.shopping_bag_outlined,
               color: ColorConstants.textColor),
-          onPressed: () {},
+          onPressed: () {
+             Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) =>ShoppingBagScreen()),
+      );
+          },
         ),
       ],
     );
@@ -134,8 +150,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return Expanded(
       child: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 20),
+
+            
             if (index != 0)
               Container(
                 height: 60,
@@ -191,7 +212,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: List.generate(
-                  selectedList.length,
+                  1,
                   (sectionIndex) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -205,57 +226,88 @@ class _CategoryScreenState extends State<CategoryScreen> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          GridView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: itemsNameList.length,
-                            shrinkWrap: true,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 20,
-                              childAspectRatio: 1.0,
-                            ),
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ProductListingScreen(
-                                        title:
-                                            itemsNameList[index].toLowerCase(),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage: NetworkImage(
-                                          imageSectionList[selectedIndex]
-                                              [index]),
-                                    ),
-                                    Text(
-                                      itemsNameList[index],
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: ColorConstants.textColor,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
+                         Consumer<GetAllProductsController>(
+  builder: (context, controller, child) {
+    if (controller.isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    if (controller.isError) {
+      return Center(child: Text(controller.errorMessage ?? 'Error loading products'));
+    }
+    if (controller.isEmpty) {
+      return Center(child: Text('No products available'));
+    }
+  
+List<String> categories = controller.uniqueCategories;
+    return GridView.builder(
+  shrinkWrap: true,
+  physics: NeverScrollableScrollPhysics(), // Prevent nested scrolling
+  itemCount: categories.length,
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 3,
+    childAspectRatio: 0.75,
+    crossAxisSpacing: 10,
+    mainAxisSpacing: 10,
+  ),
+  itemBuilder: (context, index) {
+    final product = controller.productsList[index];
+    final category = controller.uniqueCategories[index];
+   final selectedCategory
+ = categories[index];
+final allProducts = context.watch<GetAllProductsController>().productsList;
+final image = context.watch<Dummydb>().products[index];
+    
+    // Filter products based on the selected category
+final filteredProducts = allProducts
+    .where((product) => product.category.toLowerCase() == selectedCategory.toLowerCase())
+    .toList();
+    
+     
+
+    return SizedBox(
+      height: 150,
+      width: 150,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+         
+              GestureDetector(
+                onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductListingScreen(
+                                   title: category,
+                                  ),
                                 ),
                               );
                             },
+                child: CircleAvatar(
+                            radius: 40,
+                            backgroundImage:AssetImage(image["image"]),
                           ),
+              ),
+          SizedBox(height: 8),
+          Text(
+            category ?? 'Unknown Category',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  },
+);
+
+  },
+),
+                         
                         ],
                       )),
             ),
+  
+
+            
           ],
         ),
       ),

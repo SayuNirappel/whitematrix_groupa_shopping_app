@@ -1,11 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:whitematrix_groupa_shopping_app/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/models/category_model.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
 class ProductListingScreen extends StatefulWidget {
   final String title;
@@ -467,7 +470,6 @@ Widget _buildCategorySection(String title) {
       imageList = [];
       nameList = [];
   }
-
   return SingleChildScrollView(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -545,11 +547,11 @@ Widget _buildCategorySection(String title) {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [          
-                            _build_PromoColumn("FREE", "Shipping"),
-                            _buildDivider(),
-                            _build_PromoColumn("40% off", "upto ₹300"),
-                            _buildDivider(),
-                            _build_PromoColumn("EASY", "Returns"),
+                                   _build_PromoColumn("FREE", "Shipping"),
+                                    _buildDivider(),
+                                    _build_PromoColumn("40% off", "upto ₹300"),
+                                    _buildDivider(),
+                                    _build_PromoColumn("EASY", "Returns"),
                   
                 
                 ],
@@ -597,158 +599,165 @@ Widget _buildCategorySection(String title) {
             },
           ),
         ),    
-        GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-          padding: const EdgeInsets.all(10),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.65,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemCount: DummyDb().dummySproducts.length,
-          itemBuilder: (context, index) {
-            final product = DummyDb().dummySproducts[index];
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(imageList[index % imageList.length]),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        Positioned(
-                          top: 10,
-                          right: 10,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(31, 0, 0, 0),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Text("AD", style: TextStyle(color: ColorConstants.backgroundColor, fontSize: 10, fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          left: 10,
-                          child: Container(
-                            height: 20,
-                            width: 90,
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-
-                              children: [
-                              
-                                Text(product.rating.toString(), style: TextStyle(color:  ColorConstants.textColor, fontWeight: FontWeight.bold,fontSize: 10)),
-                                  Icon(Icons.star, color: ColorConstants.secondaryColor, size: 10),
-                                  SizedBox(width: 8,),
-                                 Text("|", style: TextStyle(color: ColorConstants.greyColor, fontSize: 12)),
-                                  SizedBox(width: 8,),
-                                  Text(product.reviews.toString(), style: TextStyle(color: ColorConstants.textColor, fontSize: 10)),
-                              ],
-                            )
-                          ),
-                        ),
-                      ],
-                    ),
+        Consumer<Dummydb>(
+            builder: (context, productProvider, child) {
+          final productList = productProvider.products;
+          return GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+            padding: const EdgeInsets.all(10),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.65,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: DummyDb().dummySproducts.length,
+            itemBuilder: (context, index) {
+                final product = productList[index];
+             
+              return InkWell(
+              onTap: () {
+                 Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ProductDetailsPage2(products: product),
+    ),
+  );
+              },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
                   ),
-                  Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    product.brand,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(product["image"]),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            Positioned(
+                              top: 10,
+                              right: 10,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(31, 0, 0, 0),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Text("AD", style: TextStyle(color: ColorConstants.backgroundColor, fontSize: 10, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              left: 10,
+                              child: Container(
+                                height: 20,
+                                width: 90,
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.6),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                          
+                                  children: [
+                                  
+                                    Text("${product["rating"]}", style: TextStyle(color:  ColorConstants.textColor, fontWeight: FontWeight.bold,fontSize: 10)),
+                                      Icon(Icons.star, color: ColorConstants.secondaryColor, size: 10),
+                                      SizedBox(width: 8,),
+                                     Text("|", style: TextStyle(color: ColorConstants.greyColor, fontSize: 12)),
+                                      SizedBox(width: 8,),
+                                      Text("${product["review"]}", style: TextStyle(color: ColorConstants.textColor, fontSize: 10)),
+                                  ],
+                                )
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${product["brand"]}",
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Icon(Icons.favorite_border_outlined, color: ColorConstants.textColor, size: 16),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    "${product["review"]}",
+                    style: const TextStyle(fontSize: 11),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Icon(Icons.favorite_border_outlined, color: ColorConstants.textColor, size: 16),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                product.title,
-                style: const TextStyle(fontSize: 11),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              child: Row(
-                children: [
-                   Text(
-                    "₹${(product.originalPrice).toStringAsFixed(0)}",
-                    style: const TextStyle(
-                      decoration: TextDecoration.lineThrough,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    "₹${product.discountedPrice}",
-                    style: const TextStyle(fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                      color: ColorConstants.textColor,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                 
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.2),
-                     // borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Text(
-                      "₹${(product.originalPrice - product.discountedPrice).toStringAsFixed(0)} OFF!",
-                      style: const TextStyle(
-                        fontSize: 10,
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-           
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                product.isExpress ? "Express by ${product.deliveryDate}" : "Delivery by ${product.deliveryDate}",
-                style: TextStyle(
-                  fontSize: 10,
-                  color: product.isExpress ? Colors.green : Colors.black54,
                 ),
-              ),
-            ),
-                ]
-              )
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  child: Row(
+                    children: [
+                       Text(
+                        "₹${product["cutprice"]}",
+                        style: const TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        "₹${product["price"]}",
+                        style: const TextStyle(fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                          color: ColorConstants.textColor,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                     
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.2),
+                         // borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Text(
+                          "₹${(product["cutprice"] - product["price"]).toStringAsFixed(0)} OFF!",
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                             
+                            
+                    ]
+                  )
+                  ),
               );
-          },
+            },
+          );
+            }
         )
       ],
     ),
@@ -850,7 +859,10 @@ Widget _buildDivider() {
       IconButton(
         icon: const Icon(Icons.favorite_border_outlined, color: ColorConstants.textColor),
         onPressed: () {
-          
+           Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) =>ShoppingBagScreen()),
+      );
         },
       ),
       IconButton(
