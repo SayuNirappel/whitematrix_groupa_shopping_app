@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/get_all_products_controller.dart';
@@ -10,7 +11,10 @@ import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_s
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
 class CategoryScreen extends StatefulWidget {
-  const CategoryScreen({super.key});
+ final String? token;
+ final String? id;
+
+  CategoryScreen({super.key, this.token, this.id});
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -48,7 +52,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
 void initState() {
   super.initState();
   WidgetsBinding.instance.addPostFrameCallback((_) {
-    context.read<GetAllProductsController>().fetchAllProducts();
+    context.read<GetAllProductsController>().fetchAllProducts(
+      token: widget.token
+    );
   });
 }
 
@@ -57,7 +63,21 @@ void initState() {
     return Scaffold(
       appBar: _build_AppbarSection(),
       backgroundColor: ColorConstants.backgroundColor,
-      body: Row(
+      body: Consumer<GetAllProductsController>(builder: (context, value, child) {
+
+          if (value.isLoading) {
+      return const Center(child: CircularProgressIndicator(
+        color: ColorConstants.primaryColor,
+      ));
+    }
+
+    if (value.isError) {
+      return Center(
+        child: Text("Error: ${value.errorMessage ?? 'Something went wrong'}"),
+      );
+    }
+        return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 120,
@@ -71,7 +91,10 @@ void initState() {
           ),
           _build_body_Categorysection(selectedIndex),
         ],
-      ),
+      );
+        
+      },)
+      
     );
   }
 
@@ -93,16 +116,21 @@ void initState() {
         IconButton(
           icon: const Icon(Icons.favorite_border_outlined,
               color: ColorConstants.textColor),
-          onPressed: () {},
+          onPressed: () {
+             Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingBagScreen(
+           //token: widget.token
+          //id: widget.id
+        ) ));
+          },
         ),
         IconButton(
           icon: const Icon(Icons.shopping_bag_outlined,
               color: ColorConstants.textColor),
           onPressed: () {
-             Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) =>ShoppingBagScreen()),
-      );
+             Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingBagScreen(
+          //token: widget.token
+          //id: widget.id
+        ) ));
           },
         ),
       ],
@@ -152,7 +180,7 @@ void initState() {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+         
           children: [
             SizedBox(height: 20),
 
@@ -229,7 +257,9 @@ void initState() {
                          Consumer<GetAllProductsController>(
   builder: (context, controller, child) {
     if (controller.isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator(
+        color: ColorConstants.brownText,
+      ));
     }
     if (controller.isError) {
       return Center(child: Text(controller.errorMessage ?? 'Error loading products'));
@@ -238,7 +268,7 @@ void initState() {
       return Center(child: Text('No products available'));
     }
   
-List<String> categories = controller.uniqueCategories;
+ final categories = controller.uniqueCategories;
     return GridView.builder(
   shrinkWrap: true,
   physics: NeverScrollableScrollPhysics(), // Prevent nested scrolling
@@ -250,19 +280,10 @@ List<String> categories = controller.uniqueCategories;
     mainAxisSpacing: 10,
   ),
   itemBuilder: (context, index) {
-    final product = controller.productsList[index];
+    // final product = controller.productsList[index];
     final category = controller.uniqueCategories[index];
-   final selectedCategory
- = categories[index];
-final allProducts = context.watch<GetAllProductsController>().productsList;
-final image = context.watch<Dummydb>().products[index];
     
-    // Filter products based on the selected category
-final filteredProducts = allProducts
-    .where((product) => product.category.toLowerCase() == selectedCategory.toLowerCase())
-    .toList();
-    
-     
+ final image = context.watch<Dummydb>().products[index];  
 
     return SizedBox(
       height: 150,
@@ -277,24 +298,45 @@ final filteredProducts = allProducts
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ProductListingScreen(
-                                   title: category,
+                                   title: category.name,
                                   ),
                                 ),
                               );
                             },
-                child: CircleAvatar(
-                            radius: 40,
-                            backgroundImage:AssetImage(image["image"]),
-                          ),
+                child: ClipOval(
+  child: Image.network(
+    category.image,
+    width: 80,
+    height: 80,
+    fit: BoxFit.cover,
+    errorBuilder: (context, error, stackTrace) {
+      return Image.asset(
+        image["image"],
+        width: 80,
+        height: 80,
+        fit: BoxFit.cover,
+      );
+    },
+    loadingBuilder: (context, child, loadingProgress) {
+      if (loadingProgress == null) return child;
+      return const SizedBox(
+        width: 80,
+        height: 80,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    },
+  ),
+)
               ),
           SizedBox(height: 8),
           Text(
-            category ?? 'Unknown Category',
+            category.name,
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
       ),
+
     );
   },
 );
@@ -318,6 +360,8 @@ final filteredProducts = allProducts
     bool isSelectedTab = selectedIndex == index;
     bool isAboveSelected = index == selectedIndex - 1;
     bool isBelowSelected = index == selectedIndex + 1;
+
+    final image = context.watch<Dummydb>().products[index];  
 
     return Row(
       children: [
@@ -361,7 +405,9 @@ final filteredProducts = allProducts
                         width: 60,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage(DummyDb.sideTabSection[index]),
+                            image: kIsWeb
+      ? AssetImage(image["image"]) as ImageProvider
+      : NetworkImage(DummyDb.sideTabSection[index]),
                             fit: BoxFit.cover,
                           ),
                           borderRadius: BorderRadius.circular(10),
