@@ -33,6 +33,7 @@ Future<void> fetchAllProducts() async {
         "Content-Type": "application/json",
       },
     );
+    
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = json.decode(response.body);
@@ -41,13 +42,13 @@ Future<void> fetchAllProducts() async {
           jsonResponse.map((e) => GetAllProductModel.fromJson(e)).toList();
 
       isEmpty = productsList.isEmpty;
-        // 🔥 Extract unique categories from products
+    
   uniqueCategories = productsList
       .map((e) => e.category)
       .toSet()
       .toList();
 
-  // 🔁 Optional: sort alphabetically
+ 
   uniqueCategories.sort();
       
 
@@ -68,7 +69,7 @@ Future<void> fetchAllProducts() async {
   }
 }
 
-// filter unique category 
+
 
 
 }
