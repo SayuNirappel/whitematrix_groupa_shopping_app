@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/home/home_screen_widgets.dart';
 import 'package:whitematrix_groupa_shopping_app/views/notifications/notification_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
@@ -124,6 +125,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ///____________________________________________________Tab1 ___________________________________________________
             ///
             ///
+             NestedTabScreenWidget(),
+             NestedTabScreenWidget(),
+            NestedTabScreenWidget(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
 
@@ -1128,10 +1132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            //____________________________________________________Tab 2/3/4______________________________________________________
-            DummyTabData(),
-            DummyTabData(),
-            DummyTabData(),
+            /
           ])),
     );
   }
@@ -1149,34 +1150,465 @@ class DummyTabData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.all(10),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 20,
-              ),
+    return DefaultTabController(
+      length: tabBar3Titles.length,
+      child: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverToBoxAdapter(child: SizedBox(height: 5)),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 90,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: DummyDb.categories.length,
+                itemBuilder: (context, index) {
+                  final item = DummyDb.categories[index];
+                  final isSelected = selectedCategoryIndex == index;
 
-              TitleRow(
-                mainAxisAlignment: MainAxisAlignment.start,
-                title: "Season's Best Brands",
-                fontSize: 20,
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedCategoryIndex = index;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: isSelected
+                                    ? Colors.transparent
+                                    : Colors.amber.shade300,
+                              ),
+                            ),
+                            height: 50,
+                            width: 50,
+                            clipBehavior: Clip.antiAlias,
+                            child: Image.network(
+                              item["image"]!,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            item["title"]!,
+                            style: TextStyle(
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              color:
+                                  isSelected ? Color(0xFFE91E63) : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
-              TitleRow(
-                mainAxisAlignment: MainAxisAlignment.start,
-                title: "Iconic styles to steal the spot light",
-                color: Colors.grey,
-                fontSize: 15,
+            ),
+          ),
+
+          ///
+          ///-----------------------Ad-------------------------------------------
+          ///
+          SliverToBoxAdapter(
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CategoryScreen()));
+              },
+              child: TempAdBanner(
+                borderColor: Colors.deepOrange,
+                containerColor: Colors.orangeAccent,
+                textrColor: Colors.white,
+                height: 50,
+                fSize: 20,
               ),
-              SizedBox(
-                height: 10,
+            ),
+          ),
+
+          ///
+          ///
+          ///----------------------------Sliding images using CarouselSlider-------------------------------------------
+          ///
+          ///
+          SliverToBoxAdapter(
+              child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: CarouselSliders(imageUrls: DummyDb.carousel1ImgeUrl))),
+
+          ///
+          ///-----------------------Ad-------------------------------------------
+          ///
+          SliverToBoxAdapter(
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CategoryScreen()));
+              },
+              child: TempAdBanner(
+                borderColor: Colors.white,
+                containerColor: Colors.white,
+                textrColor: Colors.black,
+                height: 30,
+                fSize: 10,
               ),
-              RowWithBorderContainerType1(dBList: DummyDb.seasonsBrandsList),
-              SizedBox(
-                height: 10,
-              ),
+            ),
+          ),
+
+          ///
+          ///
+          ///------------------------------------Double Layer Row-------------------------------------------
+          ///
+          ///
+          ///
+          ///
+
+          ///
+          ///
+          ///
+          ///
+          ///
+
+          ///
+          ///
+          ///------------------------------------Continue Shopping------------------------------------------
+          ///
+          ///
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                TitleRow(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  title: "Continue Shopping",
+                  fontSize: 20,
+                ),
+                SizedBox(height: 10),
+                ContinuingRow(),
+                SizedBox(height: 10),
+              ],
+            ),
+          ),
+
+          ///
+          ///
+          ///-------------------------------------Price Store Row------------------------------------------
+          ///
+          ///
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color.fromARGB(255, 248, 240, 213),
+                          Color.fromARGB(255, 255, 239, 244)
+                        ]),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        "PRICE STORE",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      ScrollingRow(
+                        itemCount: 4,
+                        itemBuilder: (index) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Flat",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    "80%",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 25,
+                                      color: Colors.deepPurple,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Off",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_rounded,
+                                    size: 10,
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        onTap: (index) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CategoryScreen()));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          ///
+          ///
+          ///-------------------------------------Featured Brands Row------------------------------------------
+          ///
+          ///
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                TitleRow(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  title: "FEATURED BRANDS",
+                  fontSize: 20,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                RowWithBorderContainerType1(dBList: DummyDb.featuredBrandsList),
+              ],
+            ),
+          ),
+
+          ///
+          ///
+          ///-----------------------------------Featured Picks Row---------------------------------------------
+          ///
+          ///
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                TitleRow(
+                    title: "Featured Picks",
+                    fontSize: 20,
+                    mainAxisAlignment: MainAxisAlignment.start),
+                ScrollingRow(
+                  itemCount: DummyDb.featuredPicks.length,
+                  itemBuilder: (index) {
+                    return Column(mainAxisSize: MainAxisSize.min, children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        height: 200,
+                        width: 150,
+                        clipBehavior: Clip.antiAlias,
+                        child: Stack(
+                          children: [
+                            Image(
+                              image: NetworkImage(
+                                DummyDb.featuredPicks[index]["image"]!,
+                              ),
+                              fit: BoxFit.cover,
+                              height: double.infinity,
+                              width: double.infinity,
+                            ),
+                            Positioned(
+                                bottom: 10,
+                                left: 2,
+                                right: 2,
+                                child: Container(
+                                  width: double.infinity,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              DummyDb.featuredPicks[index]
+                                                  ["name"],
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          IconButton(
+                                              onPressed: () {
+                                                /// add to fav function
+                                              },
+                                              icon: Icon(
+                                                Icons.favorite_border,
+                                                color: Colors.grey,
+                                              ))
+                                        ],
+                                      ),
+                                      Text(
+                                        DummyDb.featuredPicks[index]
+                                            ["category"],
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      Row(
+                                        spacing: 5,
+                                        children: [
+                                          Text(
+                                            DummyDb.featuredPicks[index]["oP"],
+                                            style: TextStyle(
+                                              decoration:
+                                                  TextDecoration.lineThrough,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Text(
+                                            DummyDb.featuredPicks[index]["nP"],
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          Text(
+                                            DummyDb.featuredPicks[index]
+                                                ["reduction"],
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                          ],
+                        ),
+                      ),
+                    ]);
+                  },
+                  onTap: (index) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProductDetailsPage2()));
+                  },
+                ),
+              ],
+            ),
+          ),
+
+          ///
+          ///
+          ///----------------------Best Seller Category------------------
+          ///
+          ///
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "BESTSELLER CATEGORY",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                ),
+                PhotoTypeRow(bslist: DummyDb.bestSellerCategory),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
+
+          ///
+          ///
+          ///-------------------------------------Continue Browsing Style------------------
+          ///
+          ///
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                TitleRow(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  title: "Continue Browsing These Styles",
+                  fontSize: 20,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ContinuingRow(),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
+
+          ///
+          ///
+          ///------------------------------Seasons Best Brands---------------------------
+          ///
+          ///
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                TitleRow(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  title: "Season's Best Brands",
+                  fontSize: 20,
+                ),
+                TitleRow(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  title: "Iconic styles to steal the spot light",
+                  color: Colors.grey,
+                  fontSize: 15,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                RowWithBorderContainerType1(dBList: DummyDb.seasonsBrandsList),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
+            ),
+          ),
 
               ///
               ///

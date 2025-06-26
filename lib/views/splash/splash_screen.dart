@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whitematrix_groupa_shopping_app/views/auth/login_screen.dart';
 
 import 'dart:async'; // for Timer
 import 'package:whitematrix_groupa_shopping_app/views/widgets/bottom_nav_bar.dart';
@@ -18,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // Navigate after 2 seconds
     Timer(Duration(seconds: 2), () {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     });
   }
 
