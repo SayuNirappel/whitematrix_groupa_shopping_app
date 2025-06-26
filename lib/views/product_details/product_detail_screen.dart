@@ -6,7 +6,23 @@
 // import 'package:whitematrix_groupa_shopping_app/model/product_model.dart';
 // import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
 
+import 'package:flutter/material.dart';
 
+class ProductDetailsPage2 extends StatefulWidget {
+  const ProductDetailsPage2({super.key});
+
+  @override
+  State<ProductDetailsPage2> createState() => _ProductDetailsPage2State();
+}
+
+class _ProductDetailsPage2State extends State<ProductDetailsPage2> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+    );
+  }
+}
 // class ProductDetailsPage2 extends StatefulWidget {
 //   const ProductDetailsPage2({super.key});
   

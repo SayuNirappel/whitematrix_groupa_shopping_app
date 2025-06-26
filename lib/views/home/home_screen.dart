@@ -6,6 +6,7 @@ import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_s
 import 'package:whitematrix_groupa_shopping_app/views/home/home_screen_widgets.dart';
 import 'package:whitematrix_groupa_shopping_app/views/notifications/notification_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/profile/profile_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -80,7 +81,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               SizedBox(
                 width: 15,
               ),
-              Icon(Icons.account_circle_outlined),
+              InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()));
+                  },
+                  child: Icon(Icons.account_circle_outlined)),
               SizedBox(
                 width: 15,
               )
