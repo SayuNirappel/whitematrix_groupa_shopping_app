@@ -14,6 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: SplashScreen());
+    return MaterialApp(
+        // theme: ThemeData(
+        //   tooltipTheme: TooltipThemeData(
+        //     decoration: BoxDecoration(
+        //       color: Colors.black87,
+        //       borderRadius: BorderRadius.circular(4),
+        //     ),
+        //     textStyle: const TextStyle(color: Colors.white),
+        //     waitDuration: Duration(milliseconds: 500),
+        //     showDuration: Duration(seconds: 4),
+        //   ),
+        // ),
+        home: SplashScreen());
   }
 }

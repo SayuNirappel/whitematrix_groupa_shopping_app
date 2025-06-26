@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
+import 'package:whitematrix_groupa_shopping_app/services/api/home_api/product_service.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/home/home_screen_widgets.dart';
@@ -169,6 +171,7 @@ class NestedTabScreenWidget extends StatefulWidget {
 class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
     with TickerProviderStateMixin {
   int selectedCategoryIndex = 0;
+  List<ProductsResModel> allProducts = [];
 
   final List<String> tabBar3Titles = [
     "Trending",
@@ -185,8 +188,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
   @override
   void initState() {
     super.initState();
+
     tabBar3Controller =
         TabController(length: tabBar3Titles.length, vsync: this);
+    fetchAndStoreProducts();
   }
 
   @override
@@ -194,6 +199,18 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
     tabBar3Controller.dispose();
     super.dispose();
   }
+
+  ///
+  ///
+  ///
+//   Future<List<ProductsResModel>> fetchProductsBySelectedCategory() async {
+//   final selectedCategory =
+//       DummyDb.categories[selectedCategoryIndex]["title"]!;
+//   return await ProductService.fetchProductsByCategory(selectedCategory);
+// }
+  ///
+  ///
+  ///
 
   @override
   Widget build(BuildContext context) {
@@ -1027,6 +1044,98 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
 
           ///
           ///
+          ///
+          ///
+          ///
+
+          ///
+          ///
+//           SliverToBoxAdapter(
+//   child: FutureBuilder<List<ProductsResModel>>(
+//     future: fetchProductsBySelectedCategory(),
+//     builder: (context, snapshot) {
+//       if (snapshot.connectionState == ConnectionState.waiting) {
+//         return const Center(child: CircularProgressIndicator());
+//       } else if (snapshot.hasError) {
+//         return Center(child: Text("Error: ${snapshot.error}"));
+//       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+//         return const Center(child: Text("No products found."));
+//       }
+
+//       final products = snapshot.data!;
+
+//       return Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 10),
+//         child: GridView.builder(
+//           shrinkWrap: true,
+//           physics: const NeverScrollableScrollPhysics(),
+//           itemCount: products.length,
+//           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//             crossAxisCount: 2,
+//             mainAxisExtent: 240,
+//             crossAxisSpacing: 10,
+//             mainAxisSpacing: 10,
+//           ),
+//           itemBuilder: (context, index) {
+//             final p = products[index];
+//             return Container(
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.circular(8),
+//               ),
+//               child: Column(
+//                 children: [
+//                   Expanded(
+//                     child: ClipRRect(
+//                       borderRadius: const BorderRadius.vertical(
+//                           top: Radius.circular(8)),
+//                       child: Image.network(
+//                         p.image ?? '',
+//                         fit: BoxFit.cover,
+//                         width: double.infinity,
+//                         errorBuilder: (_, __, ___) =>
+//                             const Icon(Icons.broken_image, size: 50),
+//                       ),
+//                     ),
+//                   ),
+//                   Padding(
+//                     padding: const EdgeInsets.all(6.0),
+//                     child: Column(
+//                       children: [
+//                         Text(
+//                           p.title ?? 'No Title',
+//                           style: const TextStyle(fontWeight: FontWeight.bold),
+//                           overflow: TextOverflow.ellipsis,
+//                           maxLines: 1,
+//                         ),
+//                         Text(
+//                           "₹${p.price ?? 0}",
+//                           style: const TextStyle(color: Colors.pink),
+//                         ),
+//                       ],
+//                     ),
+//                   )
+//                 ],
+//               ),
+//             );
+//           },
+//         ),
+//       );
+//     },
+//   ),
+// ),
+
+          ///
+          ///
+
+          ///
+          ///
+          ///
+          ///
+          ///
+
+          ///
+          ///
           ///------------------------------------Tab Bar 3-------------------------------------------
           ///
           ///
@@ -1091,6 +1200,11 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
       ),
     );
   }
+
+  Future<void> fetchAndStoreProducts() async {
+    allProducts = await ProductService.fetchProducts();
+    setState(() {}); // Refresh UI after data is loaded
+  }
 }
 
 ///
@@ -1107,13 +1221,16 @@ class InfiniteScrollGridView extends StatefulWidget {
 
 class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
   final ScrollController _scrollController = ScrollController();
-  List<int> items = List.generate(20, (index) => index);
+  List<ProductsResModel> allProducts = [];
   bool isLoadingMore = false;
+  bool hasMore = true;
+// int page = 1;// for future pagination
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
+    loadMoreItems(); // Call fetch here initially
   }
 
   void _scrollListener() {
@@ -1125,15 +1242,23 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
   }
 
   void loadMoreItems() async {
+    if (!hasMore || isLoadingMore) return;
+
     setState(() {
       isLoadingMore = true;
     });
 
-    await Future.delayed(const Duration(seconds: 2)); // simulate load delay
-    final newItems = List.generate(20, (index) => items.length + index);
+    final fetched = await ProductService.fetchProducts(); // your API call
+
+    if (fetched.isEmpty) {
+      hasMore = false;
+    } else {
+      setState(() {
+        allProducts.addAll(fetched);
+      });
+    }
 
     setState(() {
-      items.addAll(newItems);
       isLoadingMore = false;
     });
   }
@@ -1149,7 +1274,7 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
     return GridView.builder(
       controller: _scrollController,
       padding: const EdgeInsets.all(8),
-      itemCount: DummyDb.featuredPicks.length + (isLoadingMore ? 1 : 0),
+      itemCount: allProducts.length + (isLoadingMore ? 1 : 0),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 8,
@@ -1157,11 +1282,11 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
         mainAxisExtent: 290,
       ),
       itemBuilder: (context, index) {
-        if (index >= DummyDb.featuredPicks.length) {
+        if (index >= allProducts.length) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final item = DummyDb.featuredPicks[index];
+        final product = allProducts[index];
 
         return InkWell(
           onTap: () {
@@ -1176,7 +1301,7 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                  height: 210,
+                  height: 160,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
@@ -1189,7 +1314,8 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: Image.network(
-                    item["image"],
+                    product.variants?.first.images?.first ??
+                        "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Image.network(
@@ -1204,50 +1330,39 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item["name"],
+                      product.title ?? "No Title",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
-                      item["category"],
+                      product.category ?? "Unknown",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(color: Colors.grey),
                     ),
                     const SizedBox(height: 4),
+                    Text(
+                      product.variants?.first.price.toString() ?? "0",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
                     Row(
                       children: [
                         Text(
-                          item["oP"],
+                          getFormattedDiscount(product),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            decoration: TextDecoration.lineThrough,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          item["nP"],
-                          style: const TextStyle(
+                            color: Colors.red,
                             fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.transparent),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              item["reduction"],
-                              style: const TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            fontSize: 12,
                           ),
                         ),
                       ],
@@ -1260,6 +1375,24 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
         );
       },
     );
+  }
+
+  String getFormattedDiscount(ProductsResModel product) {
+    final discount = product.variants?.first.discount;
+
+    if (discount == null || discount.value == null || discount.type == null) {
+      return "NO OFFER";
+    }
+
+    final type = typeValues.reverse[discount.type];
+
+    if (type == "flat") {
+      return "₹${discount.value} OFF";
+    } else if (type == "percentage") {
+      return "${discount.value}% OFF";
+    }
+
+    return "NO OFFER";
   }
 }
 
