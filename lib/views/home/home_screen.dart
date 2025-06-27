@@ -30,13 +30,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     Future.microtask(() {
       Provider.of<ProductProvider>(context, listen: false).fetchInitialData();
     });
-  }
 
-  @override
-  void initState() {
-    super.initState();
-    //loadProductsOnce(); // fetch and cache
-    loadInitialData();
+    loadInitialData(); // load local or cached data
   }
 
   Future<void> loadInitialData() async {
@@ -782,7 +777,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProductDetailsPage2(),
+                            builder: (context) => ProductDetailsPage2(
+                                productId: provider.featuredPicks[index]
+                                        ["id"] ??
+                                    "685cf800728c88a1bc918219"),
                           ),
                         );
                       },
@@ -1009,7 +1007,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProductDetailsPage2(),
+                            builder: (context) => ProductDetailsPage2(
+                                productId: provider.featuredPicks[index]
+                                        ["id"] ??
+                                    "685cf800728c88a1bc918219"),
                           ),
                         );
                       },
@@ -1097,7 +1098,9 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ProductDetailsPage2(),
+                                  builder: (context) => ProductDetailsPage2(
+                                      productId: nearby[index]["id"] ??
+                                          "685cf800728c88a1bc918219"),
                                 ),
                               );
                             },
@@ -1532,7 +1535,9 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ProductDetailsPage2(),
+                builder: (context) => ProductDetailsPage2(
+                    productId:
+                        allProducts[index].id ?? "685cf800728c88a1bc918219"),
               ),
             );
           },
