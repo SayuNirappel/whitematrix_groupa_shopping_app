@@ -68,11 +68,11 @@ class NotificationScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.pop(context); // pop screen 2
                         Future.delayed(Duration(milliseconds: 50), () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProductDetailsPage2()),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => ProductDetailsPage2()),
+                          // );
                         });
                       },
                       child: Container(

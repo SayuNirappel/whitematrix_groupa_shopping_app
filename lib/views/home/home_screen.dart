@@ -618,10 +618,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                     ]);
                   },
                   onTap: (index) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProductDetailsPage2()));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => ProductDetailsPage2()));
                   },
                 ),
               ],
@@ -838,10 +838,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                     );
                   },
                   onTap: (index) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProductDetailsPage2()));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => ProductDetailsPage2()));
                   },
                 ),
                 SizedBox(
@@ -916,10 +916,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                           );
                         },
                         onTap: (index) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProductDetailsPage2()));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => ProductDetailsPage2()));
                         },
                       )
                     ],
@@ -1157,12 +1157,12 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
 
         return InkWell(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProductDetailsPage2(),
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => ProductDetailsPage2(),
+            //   ),
+            // );
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

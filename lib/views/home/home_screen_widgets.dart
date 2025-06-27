@@ -114,10 +114,10 @@ class PhotoTypeRow extends StatelessWidget {
           ],
         );
       },
-      onTap: (index) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
-      },
+      // onTap: (index) {
+      //   Navigator.push(context,
+      //       MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
+      // },
     );
   }
 }
@@ -209,10 +209,10 @@ class RowWithBorderContainerType1 extends StatelessWidget {
           ],
         );
       },
-      onTap: (index) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
-      },
+      // onTap: (index) {
+      //   Navigator.push(context,
+      //       MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
+      // },
     );
   }
 }
@@ -237,10 +237,10 @@ class _CarouselSlidersState extends State<CarouselSliders> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
-      },
+      // onTap: () {
+      //   Navigator.push(context,
+      //       MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
+      // },
       child: Column(
         children: [
           SizedBox(height: 10),
@@ -368,10 +368,10 @@ class ContinuingRow extends StatelessWidget {
           ],
         );
       },
-      onTap: (index) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
-      },
+      // onTap: (index) {
+      //   Navigator.push(context,
+      //       MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
+      // },
     );
   }
 }

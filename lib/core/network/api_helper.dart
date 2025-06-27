@@ -11,8 +11,9 @@ class ApiHelper {
   {
      final url=Uri.parse(AppConfig.baseUrl+endpoint!);
     try{
-     final response = await http.get(url);
+     final response = await http.get(url, headers: {"Authorization" : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODViNmQ3NTgzNGU1YWE4Y2RhZjE4YjEiLCJpYXQiOjE3NTA4MzUzODUsImV4cCI6MTc1MTQ0MDE4NX0.FSFcXs_RgTC7v17oPWtMseUBfkPxMYsEgK4kLgCSg4E"});
      if(response.statusCode == 200){
+       log('data fetched successfully');
        return response.body;
      }
      else{
