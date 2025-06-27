@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/get_all_products_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
+import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
 
 class NotificationScreen extends StatelessWidget {
@@ -66,12 +69,17 @@ class NotificationScreen extends StatelessWidget {
                   Center(
                     child: InkWell(
                       onTap: () {
+                     final productid =   context.read<GetAllProductsController>().filteredProducts[index].id;
                         Navigator.pop(context); // pop screen 2
                         Future.delayed(Duration(milliseconds: 50), () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ProductDetailsPage2()),
+                                builder: (context) => 
+                                ProductDetailsPage2(
+                                  productId:productid
+                                )
+                                ),
                           );
                         });
                       },

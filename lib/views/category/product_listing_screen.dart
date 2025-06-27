@@ -711,13 +711,18 @@ Widget _buildCategorySection(String title) {
               final productItems = apifilteredList[index];
              final variant = productItems.variants.isNotEmpty ? productItems.variants.first : null;
            final  productid = productItems.id;
+           final productRating = productItems.reviews.isNotEmpty
+    ? productItems.reviews.first.rating
+    : 3;
 final productPrice = variant?.price;
 final discountvalue = variant?.discount?.value;
 final discounttype = variant?.discount?.type;
+              log("reviews ${productRating}");
               log("filteredList ${apifilteredList}");
               log("price ${productPrice.toString()}");
               log("type ${discounttype.toString()}");
               log("value ${discountvalue.toString()}");
+              final image = variant!.images.first;
 
               final cutPrice = (discountvalue != null && discounttype != null && productPrice != null)
     ? getCutPrice(productPrice, discountvalue, discounttype.toString())
@@ -735,7 +740,7 @@ final discountText = (cutPrice != null)
   context,
   MaterialPageRoute(
     builder: (context) => ProductDetailsPage2(
-      products: product,
+     productId: productid,     
        //token: widget.token,
           //id: widget.id,
           //productid: productid
@@ -757,7 +762,7 @@ final discountText = (cutPrice != null)
                             Container(
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image:NetworkImage(variant!.images.first),
+                                  image:NetworkImage(image == null ? ImageConstants.MenSection : image),
                                   fit: BoxFit.cover,
                                 ),
                                 borderRadius: BorderRadius.circular(10),
@@ -790,8 +795,15 @@ final discountText = (cutPrice != null)
                                   mainAxisAlignment: MainAxisAlignment.center,
                           
                                   children: [
-                                  
-                                    Text("${product["rating"]}", style: TextStyle(color:  ColorConstants.textColor, fontWeight: FontWeight.bold,fontSize: 10)),
+                                  Text(
+  // productRating == null ? "3" :
+   "$productRating",
+  style: TextStyle(
+    color: ColorConstants.textColor,
+    fontWeight: FontWeight.bold,
+    fontSize: 10,
+  ),
+)  ,
                                       Icon(Icons.star, color: ColorConstants.secondaryColor, size: 10),
                                       SizedBox(width: 8,),
                                      Text("|", style: TextStyle(color: ColorConstants.greyColor, fontSize: 12)),
