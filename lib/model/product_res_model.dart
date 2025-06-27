@@ -23,6 +23,7 @@ class ProductsResModel {
   List<Review>? reviews;
   DateTime? createdAt;
   int? v;
+  Gender? gender;
 
   ProductsResModel({
     this.brand,
@@ -36,6 +37,7 @@ class ProductsResModel {
     this.reviews,
     this.createdAt,
     this.v,
+    this.gender,
   });
 
   factory ProductsResModel.fromJson(Map<String, dynamic> json) =>
@@ -61,6 +63,7 @@ class ProductsResModel {
             ? null
             : DateTime.parse(json["createdAt"]),
         v: json["__v"],
+        gender: genderValues.map[json["gender"]]!,
       );
 
   Map<String, dynamic> toJson() => {
@@ -79,6 +82,7 @@ class ProductsResModel {
             : List<dynamic>.from(reviews!.map((x) => x.toJson())),
         "createdAt": createdAt?.toIso8601String(),
         "__v": v,
+        "gender": genderValues.reverse[gender],
       };
 }
 
@@ -141,6 +145,10 @@ enum Type { FLAT, PERCENTAGE }
 
 final typeValues =
     EnumValues({"flat": Type.FLAT, "percentage": Type.PERCENTAGE});
+
+enum Gender { MEN, UNISEX }
+
+final genderValues = EnumValues({"Men": Gender.MEN, "unisex": Gender.UNISEX});
 
 class Review {
   String? user;
