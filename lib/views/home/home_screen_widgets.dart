@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/product_provider.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
@@ -318,16 +320,21 @@ class _CarouselSlidersState extends State<CarouselSliders> {
 ///------------------------Row for continuing Category
 ///
 ///
+// your existing ScrollingRow widget
+
 class ContinuingRow extends StatelessWidget {
-  const ContinuingRow({
-    super.key,
-  });
+  const ContinuingRow({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final featured = context.watch<ProductProvider>().featuredBrandsList;
+
+    if (featured.isEmpty) return const SizedBox();
+
     return ScrollingRow(
       itemCount: 2,
       itemBuilder: (index) {
+        final item = featured[index];
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -336,31 +343,31 @@ class ContinuingRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               height: 200,
-              // width: 180,
               width: MediaQuery.of(context).size.width * 0.45,
               clipBehavior: Clip.antiAlias,
-              child: Image(
-                image: NetworkImage(
-                  DummyDb.featuredBrandsList[index]["image"]!,
-                ),
+              child: Image.network(
+                item["image"] ?? "",
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.image_not_supported);
+                },
               ),
             ),
             Text(
-              DummyDb.featuredBrandsList[index]["title"]!,
+              item["title"] ?? "",
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
                 color: Colors.black,
               ),
             ),
             Text(
-              "TShirt",
+              item["subt"] ?? "",
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 color: Colors.grey,
               ),
@@ -369,8 +376,10 @@ class ContinuingRow extends StatelessWidget {
         );
       },
       onTap: (index) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProductDetailsPage2()),
+        );
       },
     );
   }

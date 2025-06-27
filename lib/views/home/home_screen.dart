@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/product_provider.dart';
 import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
@@ -21,159 +22,135 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  bool isLoading = true;
-  //int selectedCategory = 0;
-  String? dropdownValue;
-  final List carouselImgeUrl = DummyDb.carousel1ImgeUrl;
-
-  int carousel1Index = 0;
   @override
   void initState() {
     super.initState();
-    loadProductsOnce(); // fetch and cache
-    loadInitialData();
-  }
 
-  Future<void> loadInitialData() async {
-    await loadProductsOnce(); // fetch and cache
-    await loadBanners(); // fetch banners and replace DummyDb.carousel1ImgeUrl
+    // Fetch products from provider when screen loads
+    Future.microtask(() {
+      Provider.of<ProductProvider>(context, listen: false).fetchInitialData();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    //appbar + tab at bottom
+    final productProvider = Provider.of<ProductProvider>(context);
+
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        backgroundColor: Color.fromARGB(255, 255, 239, 244),
+        backgroundColor: const Color.fromARGB(255, 255, 239, 244),
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 255, 239, 244),
-          title: Padding(
-            padding: EdgeInsets.all(5),
-            child: Container(
-              height: 40,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.black)),
-              child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      spacing: 10,
-                      children: [
-                        Text(
-                          " M",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFE91E63)),
-                        ),
-                        Text(
-                          "Search",
-                          style: TextStyle(fontSize: 15),
-                        ),
-                      ],
-                    ),
-                    Icon(Icons.search)
-                  ],
-                ),
-              ),
-            ),
-          ),
-          actions: [
-            InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NotificationScreen()));
-                },
-                child: Icon(Icons.notification_important_outlined)),
-            SizedBox(
-              width: 15,
-            ),
-            Icon(Icons.favorite_outline),
-            SizedBox(
-              width: 15,
-            ),
-            InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ProfileScreen()));
-                },
-                child: Icon(Icons.account_circle_outlined)),
-            SizedBox(
-              width: 15,
-            )
-          ],
-          //tabs
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(48),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TabBar(
-                      isScrollable: false,
-                      labelColor: Color(0xFFE91E63),
-                      unselectedLabelColor: Colors.black,
-                      indicatorColor: Color(0xFFE91E63),
-                      tabs: const [
-                        Tab(text: "All"),
-                        Tab(text: "Men"),
-                        Tab(text: "Women"),
-                        Tab(text: "Kids"),
-                      ]),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CategoryScreen()));
-                      },
-                      child: Icon(Icons.window_outlined)),
-                ) //path to collections
-              ],
-            ),
-          ),
+          backgroundColor: const Color.fromARGB(255, 255, 239, 244),
+          title: _buildSearchBar(),
+          actions: _buildAppBarActions(context),
+          bottom: _buildTabBar(),
         ),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator()) // Show loading
+        body: productProvider.isLoading
+            ? const Center(child: CircularProgressIndicator())
             : TabBarView(
                 children: [
                   NestedTabScreenWidget(),
-                  FilteredTabScreenWidget(
-                      gender: "men", allProducts: DummyDb.allProducts),
                   NestedTabScreenWidget(),
                   NestedTabScreenWidget(),
+                  NestedTabScreenWidget(),
+                  // const FilteredTabScreenWidget(gender: "men"),
+                  // const FilteredTabScreenWidget(gender: "women"),
+                  // const FilteredTabScreenWidget(gender: "unisex"),
                 ],
               ),
       ),
     );
   }
 
-  Future<void> loadBanners() async {
-    final fetchedImages = await BannerService.fetchActiveBannerImages();
-    if (fetchedImages.isNotEmpty) {
-      DummyDb.carousel1ImgeUrl = fetchedImages;
-      setState(() {}); // Trigger UI update
-    }
+  PreferredSize _buildTabBar() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(48),
+      child: Row(
+        children: [
+          Expanded(
+            child: TabBar(
+              isScrollable: false,
+              labelColor: const Color(0xFFE91E63),
+              unselectedLabelColor: Colors.black,
+              indicatorColor: const Color(0xFFE91E63),
+              tabs: const [
+                Tab(text: "All"),
+                Tab(text: "Men"),
+                Tab(text: "Women"),
+                Tab(text: "Kids"),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => CategoryScreen()));
+              },
+              child: const Icon(Icons.window_outlined),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
-  Future<void> loadProductsOnce() async {
-    final fetched = await ProductService.fetchProducts();
-    if (fetched.isNotEmpty) {
-      setState(() {
-        DummyDb.allProducts = fetched;
-        isLoading = false; //  Loading done
-      });
-    } else {
-      setState(() => isLoading = false); // Even if empty, end loader
-    }
+  Padding _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: Container(
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.all(5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text(" M",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFE91E63))),
+                  SizedBox(width: 8),
+                  Text("Search", style: TextStyle(fontSize: 15)),
+                ],
+              ),
+              Icon(Icons.search),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildAppBarActions(BuildContext context) {
+    return [
+      InkWell(
+        onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => NotificationScreen()));
+        },
+        child: const Icon(Icons.notification_important_outlined),
+      ),
+      const SizedBox(width: 15),
+      const Icon(Icons.favorite_outline),
+      const SizedBox(width: 15),
+      InkWell(
+        onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => ProfileScreen()));
+        },
+        child: const Icon(Icons.account_circle_outlined),
+      ),
+      const SizedBox(width: 15),
+    ];
   }
 }
 
@@ -194,34 +171,67 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 ///
 ///
 ///
-class FilteredTabScreenWidget extends StatelessWidget {
-  final String gender;
-  final List<ProductsResModel> allProducts;
 
-  const FilteredTabScreenWidget({
-    super.key,
-    required this.gender,
-    required this.allProducts,
-  });
+class FilteredTabScreenWidget extends StatelessWidget {
+  List<ProductsResModel> _sortProductsForTab(
+      String title, List<ProductsResModel> products) {
+    switch (title) {
+      case "Trending":
+        return products.where((product) {
+          final hasProductDiscount = product.discount?.isActive == true;
+          final hasVariantDiscount = product.variants?.any(
+                (v) => v.discount?.isActive == true,
+              ) ??
+              false;
+          return hasProductDiscount || hasVariantDiscount;
+        }).toList();
+
+      case "New Arrivals":
+        return products.where((p) => p.createdAt != null).toList()
+          ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+      case "Top Rated":
+        return products.toList()
+          ..sort((a, b) =>
+              _totalStock(b.variants) -
+              _totalStock(a.variants)); // More stock = popular
+
+      case "On Sale":
+        return products.toList()
+          ..sort((a, b) =>
+              _totalStock(a.variants) -
+              _totalStock(b.variants)); // Low stock = selling fast
+
+      default:
+        return products;
+    }
+  }
+
+  final String gender;
+  const FilteredTabScreenWidget({super.key, required this.gender});
 
   @override
   Widget build(BuildContext context) {
-    // Filter the passed list
-    List<ProductsResModel> filteredProducts = allProducts
-        .where((p) =>
-            (p.gender?.toString().toLowerCase() == gender.toLowerCase() ||
-                p.gender?.toString().toLowerCase() == "unisex"))
-        .toList();
+    return Consumer<ProductProvider>(
+      builder: (context, productProvider, _) {
+        final genderedProducts = productProvider.genderProducts;
 
-    return Column(
-      children: [
-        // CategoryTabsWidget(),
-        // CarouselSliderWidget(),
-        Expanded(
-          child: InfiniteScrollGridView(sourceList: filteredProducts),
-        ),
-      ],
+        return Center(
+          child: Column(
+            children: [
+              Text("Gender: $gender"),
+              Text("Filtered List Count: ${genderedProducts.length}"),
+              Text("All Products Count: ${productProvider.allProducts.length}"),
+            ],
+          ),
+        );
+      },
     );
+  }
+
+  int _totalStock(List<Variant>? variants) {
+    if (variants == null || variants.isEmpty) return 0;
+    return variants.fold(0, (sum, v) => sum + (v.stock ?? 0));
   }
 }
 
@@ -295,6 +305,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = Provider.of<ProductProvider>(context);
+    final categories = productProvider.categories;
     return DefaultTabController(
       length: tabBar3Titles.length,
       child: NestedScrollView(
@@ -305,9 +317,9 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
               height: 90,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: DummyDb.categories.length,
+                itemCount: categories.length,
                 itemBuilder: (context, index) {
-                  final item = DummyDb.categories[index];
+                  final item = categories[index];
                   final isSelected = selectedCategoryIndex == index;
 
                   return GestureDetector(
@@ -360,21 +372,34 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           ///
           ///-----------------------Ad-------------------------------------------
           ///
-          SliverToBoxAdapter(
-            child: InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CategoryScreen()));
-              },
-              child: TempAdBanner(
-                borderColor: Colors.deepOrange,
-                containerColor: Colors.orangeAccent,
-                textrColor: Colors.white,
-                height: 50,
-                fSize: 20,
-              ),
-            ),
-          ),
+          // SliverToBoxAdapter(
+          //   child: InkWell(
+          //     onTap: () {
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(builder: (context) => CategoryScreen()),
+          //       );
+          //     },
+          //     child: Container(
+          //       height: 150,
+          //       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          //       decoration: BoxDecoration(
+          //         border: Border.all(color: Colors.deepOrange),
+          //         borderRadius: BorderRadius.circular(8),
+          //       ),
+          //       child: Center(
+          //         child: Image.network(
+          //           allProducts[1].brand?.image ??
+          //               "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg", // Access nested brand image
+          //           height: 40,
+          //           fit: BoxFit.contain,
+          //           errorBuilder: (context, error, stackTrace) =>
+          //               Icon(Icons.image_not_supported),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
           ///
           ///
@@ -382,9 +407,15 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           ///
           ///
           SliverToBoxAdapter(
-              child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: CarouselSliders(imageUrls: DummyDb.carousel1ImgeUrl))),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Consumer<ProductProvider>(
+                builder: (context, provider, _) {
+                  return CarouselSliders(imageUrls: provider.bannerImages);
+                },
+              ),
+            ),
+          ),
 
           ///
           ///-----------------------Ad-------------------------------------------
@@ -413,67 +444,73 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           ///
           ///
           SliverToBoxAdapter(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                ScrollingRow(
-                  itemCount: DummyDb.featuredBrandsList.length,
-                  itemBuilder: (index) {
-                    return Column(
-                      spacing: 10,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          height: 80,
-                          width: 80,
-                          clipBehavior: Clip.antiAlias,
-                          child: Stack(
-                            children: [
-                              Image(
-                                image: NetworkImage(
-                                  DummyDb.featuredBrandsList[index]["image"]!,
-                                ),
-                                fit: BoxFit.cover,
-                                height: double.infinity,
-                                width: double.infinity,
+            child: Consumer<ProductProvider>(
+              builder: (context, provider, _) {
+                final featured = provider.featuredBrandsList;
+
+                return Column(
+                  children: [
+                    SizedBox(height: 20),
+                    ScrollingRow(
+                      itemCount: featured.length,
+                      itemBuilder: (index) {
+                        final item = featured[index];
+
+                        return Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              Positioned(
-                                  child: Row(
-                                spacing: 5,
+                              height: 80,
+                              width: 80,
+                              clipBehavior: Clip.antiAlias,
+                              child: Stack(
                                 children: [
-                                  Text(
-                                    DummyDb.featuredBrandsList[index]["brand"]!,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                        color: Colors.white,
-                                        backgroundColor: Colors.black),
+                                  Image.network(
+                                    item["image"]!,
+                                    fit: BoxFit.cover,
+                                    height: double.infinity,
+                                    width: double.infinity,
                                   ),
-                                  Icon(
-                                    Icons.arrow_forward_ios_outlined,
-                                    color: Colors.grey,
-                                    size: 10,
+                                  Positioned(
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          item["brand"]!,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                            backgroundColor: Colors.black,
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios_outlined,
+                                          color: Colors.grey,
+                                          size: 10,
+                                        )
+                                      ],
+                                    ),
                                   )
                                 ],
-                              ))
-                            ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      onTap: (index) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoryScreen(),
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                  onTap: (index) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CategoryScreen()));
-                  },
-                ),
-              ],
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
           ),
 
@@ -600,18 +637,20 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           SliverToBoxAdapter(
             child: Column(
               children: [
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "FEATURED BRANDS",
                   fontSize: 20,
                 ),
-                SizedBox(
-                  height: 10,
+                SizedBox(height: 10),
+                Consumer<ProductProvider>(
+                  builder: (context, provider, _) {
+                    return RowWithBorderContainerType1(
+                      dBList: provider.featuredBrandsList,
+                    );
+                  },
                 ),
-                RowWithBorderContainerType1(dBList: DummyDb.featuredBrandsList),
               ],
             ),
           ),
@@ -624,117 +663,118 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           SliverToBoxAdapter(
             child: Column(
               children: [
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 TitleRow(
-                    title: "Featured Picks",
-                    fontSize: 20,
-                    mainAxisAlignment: MainAxisAlignment.start),
-                ScrollingRow(
-                  itemCount: DummyDb.featuredPicks.length,
-                  itemBuilder: (index) {
-                    return Column(mainAxisSize: MainAxisSize.min, children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        height: 200,
-                        width: 150,
-                        clipBehavior: Clip.antiAlias,
-                        child: Stack(
+                  title: "Featured Picks",
+                  fontSize: 20,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                ),
+                Consumer<ProductProvider>(
+                  builder: (context, provider, _) {
+                    return ScrollingRow(
+                      itemCount: provider.featuredPicks.length,
+                      itemBuilder: (index) {
+                        final item = provider.featuredPicks[index];
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Image(
-                              image: NetworkImage(
-                                DummyDb.featuredPicks[index]["image"]!,
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              fit: BoxFit.cover,
-                              height: double.infinity,
-                              width: double.infinity,
-                            ),
-                            Positioned(
-                                bottom: 10,
-                                left: 2,
-                                right: 2,
-                                child: Container(
-                                  width: double.infinity,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                              height: 200,
+                              width: 150,
+                              clipBehavior: Clip.antiAlias,
+                              child: Stack(
+                                children: [
+                                  Image.network(
+                                    item["image"]!,
+                                    fit: BoxFit.cover,
+                                    height: double.infinity,
+                                    width: double.infinity,
+                                  ),
+                                  Positioned(
+                                    bottom: 10,
+                                    left: 2,
+                                    right: 2,
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Expanded(
-                                            child: Text(
-                                              DummyDb.featuredPicks[index]
-                                                      ["name"] ??
-                                                  "",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                          IconButton(
-                                              onPressed: () {
-                                                /// add to fav function
-                                              },
-                                              icon: Icon(
-                                                Icons.favorite_border,
-                                                color: Colors.grey,
-                                              ))
-                                        ],
-                                      ),
-                                      Text(
-                                        DummyDb.featuredPicks[index]
-                                                ["category"] ??
-                                            "",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      Row(
-                                        spacing: 5,
-                                        children: [
-                                          Text(
-                                            DummyDb.featuredPicks[index]
-                                                    ["oP"] ??
-                                                "",
-                                            style: TextStyle(
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              color: Colors.grey,
-                                            ),
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  item["name"] ?? "",
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  /// Add to fav function
+                                                },
+                                                icon: Icon(
+                                                  Icons.favorite_border,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                           Text(
-                                            DummyDb.featuredPicks[index]
-                                                    ["nP"] ??
-                                                "",
+                                            item["category"] ?? "",
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),
-                                          Text(
-                                            DummyDb.featuredPicks[index]
-                                                    ["reduction"] ??
-                                                "",
-                                            style: TextStyle(color: Colors.red),
+                                          Row(
+                                            spacing: 5,
+                                            children: [
+                                              Text(
+                                                item["oP"] ?? "",
+                                                style: TextStyle(
+                                                  decoration: TextDecoration
+                                                      .lineThrough,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              Text(
+                                                item["nP"] ?? "",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              Text(
+                                                item["reduction"] ?? "",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                ))
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
-                        ),
-                      ),
-                    ]);
-                  },
-                  onTap: (index) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProductDetailsPage2()));
+                        );
+                      },
+                      onTap: (index) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetailsPage2(),
+                          ),
+                        );
+                      },
+                    );
                   },
                 ),
               ],
@@ -749,19 +789,19 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           SliverToBoxAdapter(
             child: Column(
               children: [
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 Text(
                   "BESTSELLER CATEGORY",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                 ),
-                PhotoTypeRow(bslist: DummyDb.bestSellerCategory),
-                SizedBox(
-                  height: 10,
+                Consumer<ProductProvider>(
+                  builder: (context, provider, _) {
+                    return PhotoTypeRow(bslist: provider.bestSellerCategory);
+                  },
                 ),
+                SizedBox(height: 10),
               ],
             ),
           ),
@@ -801,9 +841,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           SliverToBoxAdapter(
             child: Column(
               children: [
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Season's Best Brands",
@@ -815,13 +853,14 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   color: Colors.grey,
                   fontSize: 15,
                 ),
-                SizedBox(
-                  height: 10,
+                SizedBox(height: 10),
+                Consumer<ProductProvider>(
+                  builder: (context, provider, _) {
+                    return RowWithBorderContainerType1(
+                        dBList: provider.seasonsBrandsList);
+                  },
                 ),
-                RowWithBorderContainerType1(dBList: DummyDb.seasonsBrandsList),
-                SizedBox(
-                  height: 10,
-                ),
+                SizedBox(height: 10),
               ],
             ),
           ),
@@ -834,20 +873,18 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           SliverToBoxAdapter(
             child: Column(
               children: [
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 Text(
                   "HIDDEN GEMS",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                 ),
-                SizedBox(
-                  height: 10,
+                SizedBox(height: 10),
+                Consumer<ProductProvider>(
+                  builder: (context, provider, _) {
+                    return PhotoTypeRow(bslist: provider.hiddenGems);
+                  },
                 ),
-                PhotoTypeRow(bslist: DummyDb.hiddenGems),
-                SizedBox(
-                  height: 10,
-                ),
+                SizedBox(height: 10),
               ],
             ),
           ),
@@ -893,69 +930,78 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 SizedBox(
                   height: 10,
                 ),
-                ScrollingRow(
-                  itemCount: DummyDb.featuredPicks.length,
-                  itemBuilder: (index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 210,
-                          width: 150,
-                          child: Image(
-                            image: NetworkImage(
-                                DummyDb.featuredPicks[index]["image"] ?? ""),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(2),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                DummyDb.featuredPicks[index]["name"] ?? "",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                Consumer<ProductProvider>(
+                  builder: (context, provider, _) {
+                    final picks = provider.featuredPicks;
+
+                    return ScrollingRow(
+                      itemCount: picks.length,
+                      itemBuilder: (index) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 210,
+                              width: 150,
+                              child: Image(
+                                image:
+                                    NetworkImage(picks[index]["image"] ?? ""),
+                                fit: BoxFit.cover,
                               ),
-                              Text(
-                                DummyDb.featuredPicks[index]["category"] ?? "",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Row(spacing: 5, children: [
-                                Text(
-                                  DummyDb.featuredPicks[index]["oP"] ?? "",
-                                  style: TextStyle(
-                                    decoration: TextDecoration.lineThrough,
-                                    color: Colors.grey,
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(2),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    picks[index]["name"] ?? "",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
-                                ),
-                                Text(
-                                  DummyDb.featuredPicks[index]["nP"] ?? "",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  DummyDb.featuredPicks[index]["reduction"] ??
-                                      "",
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ])
-                            ],
+                                  Text(
+                                    picks[index]["category"] ?? "",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                  Row(spacing: 5, children: [
+                                    Text(
+                                      picks[index]["oP"] ?? "",
+                                      style: TextStyle(
+                                        decoration: TextDecoration.lineThrough,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    Text(
+                                      picks[index]["nP"] ?? "",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      picks[index]["reduction"] ?? "",
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ])
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      onTap: (index) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetailsPage2(),
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     );
-                  },
-                  onTap: (index) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProductDetailsPage2()));
                   },
                 ),
                 SizedBox(
@@ -1000,42 +1046,52 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                       SizedBox(
                         height: 10,
                       ),
-                      ScrollingRowV2(
-                        itemCount: DummyDb.trendingNearby.length,
-                        itemBuilder: (index) {
-                          return Stack(
-                            children: [
-                              Container(
-                                color: Colors.transparent,
-                                padding: EdgeInsets.all(15),
-                                height: 210,
-                                width: 150,
-                                child: Image(
-                                  image: NetworkImage(
-                                      DummyDb.trendingNearby[index]["image"]!),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  child: Text(
-                                    "${index + 1}",
-                                    style: TextStyle(
+                      Consumer<ProductProvider>(
+                        builder: (context, provider, _) {
+                          final nearby = provider.trendingNearby;
+
+                          return ScrollingRowV2(
+                            itemCount: nearby.length,
+                            itemBuilder: (index) {
+                              return Stack(
+                                children: [
+                                  Container(
+                                    color: Colors.transparent,
+                                    padding: EdgeInsets.all(15),
+                                    height: 210,
+                                    width: 150,
+                                    child: Image(
+                                      image: NetworkImage(
+                                          nearby[index]["image"] ?? ""),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    child: Text(
+                                      "${index + 1}",
+                                      style: TextStyle(
                                         fontSize: 100,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ))
-                            ],
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                            onTap: (index) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetailsPage2(),
+                                ),
+                              );
+                            },
                           );
                         },
-                        onTap: (index) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProductDetailsPage2()));
-                        },
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -1051,9 +1107,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           SliverToBoxAdapter(
             child: Column(
               children: [
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20),
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Featured Picks",
@@ -1061,14 +1115,20 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 ),
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  title: "Iconic styles to steal the spot light",
+                  title: "Iconic styles to steal the spotlight",
                   color: Colors.grey,
                   fontSize: 15,
                 ),
-                SizedBox(
-                  height: 10,
+                SizedBox(height: 10),
+
+                /// 👇 Wrap with Consumer to access Provider
+                Consumer<ProductProvider>(
+                  builder: (context, provider, _) {
+                    final featured = provider.featuredBrandsList;
+
+                    return RowWithBorderContainerType1(dBList: featured);
+                  },
                 ),
-                RowWithBorderContainerType1(dBList: DummyDb.featuredBrandsList),
               ],
             ),
           ),
@@ -1081,22 +1141,27 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           SliverToBoxAdapter(
             child: Column(
               children: [
-                SizedBox(
-                  height: 20,
+                SizedBox(height: 20),
+                TitleRow(
+                  title: "Season's Best Brands",
+                  fontSize: 20,
+                  mainAxisAlignment: MainAxisAlignment.start,
                 ),
                 TitleRow(
-                    title: "Season's Best Brands",
-                    fontSize: 20,
-                    mainAxisAlignment: MainAxisAlignment.start),
-                TitleRow(
-                    title: "Iconic styles to seal teh spotlight",
-                    fontSize: 15,
-                    color: Colors.grey,
-                    mainAxisAlignment: MainAxisAlignment.start),
-                CarouselSliders(imageUrls: DummyDb.carousel1ImgeUrl),
-                SizedBox(
-                  height: 5,
+                  title: "Iconic styles to seal the spotlight",
+                  fontSize: 15,
+                  color: Colors.grey,
+                  mainAxisAlignment: MainAxisAlignment.start,
                 ),
+
+                ///  Use Provider for bannerImages
+                Consumer<ProductProvider>(
+                  builder: (context, provider, _) {
+                    return CarouselSliders(imageUrls: provider.bannerImages);
+                  },
+                ),
+
+                SizedBox(height: 5),
               ],
             ),
           ),
@@ -1120,13 +1185,18 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   color: Colors.grey,
                   fontSize: 15,
                 ),
-                SizedBox(
-                  height: 10,
+                SizedBox(height: 10),
+
+                /// 👇 Replace DummyDb with provider version
+                Consumer<ProductProvider>(
+                  builder: (context, provider, _) {
+                    return RowWithBorderContainerType1(
+                      dBList: provider.seasonsBrandsList,
+                    );
+                  },
                 ),
-                RowWithBorderContainerType1(dBList: DummyDb.seasonsBrandsList),
-                SizedBox(
-                  height: 20,
-                ),
+
+                SizedBox(height: 20),
               ],
             ),
           ),
@@ -1282,9 +1352,16 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
         ],
         body: TabBarView(
           controller: tabBar3Controller,
-          children: tabBar3Titles.map((_) {
-            return InfiniteScrollGridView(
-              sourceList: DummyDb.allProducts,
+          children: tabBar3Titles.map((title) {
+            return Consumer<ProductProvider>(
+              builder: (context, provider, _) {
+                final sortedProducts =
+                    _sortProductsForTab(title, provider.allProducts);
+
+                return InfiniteScrollGridView(
+                  sourceList: _sortProductsForTab(title, provider.allProducts),
+                );
+              },
             );
           }).toList(),
         ),
@@ -1292,9 +1369,49 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
     );
   }
 
+  //____________________________________for tab switch-----------------
   Future<void> fetchAndStoreProducts() async {
     allProducts = await ProductService.fetchProducts();
     setState(() {}); // Refresh UI after data is loaded
+  }
+
+  List<ProductsResModel> _sortProductsForTab(
+      String title, List<ProductsResModel> products) {
+    switch (title) {
+      case "Trending":
+        return products.where((product) {
+          final hasProductDiscount = product.discount?.isActive == true;
+          final hasVariantDiscount = product.variants?.any(
+                (v) => v.discount?.isActive == true,
+              ) ??
+              false;
+          return hasProductDiscount || hasVariantDiscount;
+        }).toList();
+
+      case "New Arrivals":
+        return products.where((p) => p.createdAt != null).toList()
+          ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+      case "Top Rated":
+        return products.toList()
+          ..sort((a, b) =>
+              _totalStock(b.variants) -
+              _totalStock(a.variants)); // More stock = more trusted
+
+      case "On Sale":
+        return products.toList()
+          ..sort((a, b) =>
+              _totalStock(a.variants) -
+              _totalStock(b.variants)); // Low stock = hot item
+
+      default:
+        return products;
+    }
+  }
+
+  int _totalStock(List<Variant>? variants) {
+    if (variants == null || variants.isEmpty) return 0;
+    return variants.fold(0, (sum, v) => sum + (v.stock ?? 0));
   }
 }
 
