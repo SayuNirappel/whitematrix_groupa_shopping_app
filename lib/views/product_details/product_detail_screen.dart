@@ -9,11 +9,12 @@ import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
 
+import 'package:flutter/material.dart';
 
 class ProductDetailsPage2 extends StatefulWidget {
-   final String productId;
+  final String productId;
 
-  const ProductDetailsPage2({super.key, required this.productId}); 
+  const ProductDetailsPage2({super.key, required this.productId});
   @override
   State<ProductDetailsPage2> createState() => _ProductDetailsPage2State();
 }
@@ -28,17 +29,19 @@ class _ProductDetailsPage2State extends State<ProductDetailsPage2> {
   bool showStickyButton = false;
 
   @override
-void initState() {
-  super.initState();
-  scrollController.addListener(() {  //for header
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      //for header
       if (scrollController.offset > 600 && !showAppBarDetails) {
         setState(() => showAppBarDetails = true);
       } else if (scrollController.offset <= 600 && showAppBarDetails) {
         setState(() => showAppBarDetails = false);
       }
     });
-  
-   scrollController.addListener(() { //for sticky button on bottom bar
+
+    scrollController.addListener(() {
+      //for sticky button on bottom bar
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         final RenderBox? box =
@@ -55,34 +58,33 @@ void initState() {
         }
       });
     });
-    
-   
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-    context.read<ProductProvider>().fetchProductById(widget.productId);
-  
-  });
-}
-@override
-Widget build(BuildContext context) {
-   String timeAgo(DateTime date) {
-  final diff = DateTime.now().difference(date);
-  if (diff.inDays >= 365) return '${(diff.inDays / 365).floor()} year ago';
-  if (diff.inDays >= 30) return '${(diff.inDays / 30).floor()} month ago';
-  if (diff.inDays >= 1) return '${diff.inDays} day ago';
-  if (diff.inHours >= 1) return '${diff.inHours} hour ago';
-  return '${diff.inMinutes} minute ago';
-}
-  
-  final provider = context.watch<ProductProvider>();
-  final product = provider.selectedProduct;
-  
-  if (provider.isLoading) {
-    return const Center(child: CircularProgressIndicator());
+      context.read<ProductProvider>().fetchProductById(widget.productId);
+    });
   }
 
-  if (product == null) {
-    return const Center(child: Text("Product not found"));
-  }
+  @override
+  Widget build(BuildContext context) {
+    String timeAgo(DateTime date) {
+      final diff = DateTime.now().difference(date);
+      if (diff.inDays >= 365) return '${(diff.inDays / 365).floor()} year ago';
+      if (diff.inDays >= 30) return '${(diff.inDays / 30).floor()} month ago';
+      if (diff.inDays >= 1) return '${diff.inDays} day ago';
+      if (diff.inHours >= 1) return '${diff.inHours} hour ago';
+      return '${diff.inMinutes} minute ago';
+    }
+
+    final provider = context.watch<ProductProvider>();
+    final product = provider.selectedProduct;
+
+    if (provider.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (product == null) {
+      return const Center(child: Text("Product not found"));
+    }
 
     final selectedVariant = product.variants![selectedVariantIndex];
     final selectedSku = selectedVariant.sku;
@@ -98,461 +100,470 @@ Widget build(BuildContext context) {
     final offerPrice = pricing['offerPrice'];
     final discountText = pricing['discountText'];
     final hasDiscount = pricing['hasDiscount'];
-     final formattedDate = DateFormat('EEE, d MMM').format(
+    final formattedDate = DateFormat('EEE, d MMM').format(
       DateTime.now().add(const Duration(days: 5)),
-     );
-
+    );
 
     final variantSizes = (product.variants ?? [])
         .map((v) => v.size)
         .where((s) => s?.isNotEmpty == true)
         .toSet()
         .toList();
-        
-       final avgRating = (reviews == null || reviews.isEmpty)
-              ? 0.0
-              : reviews
-                  .map((r) => r.rating as int)
-                  .fold<int>(0, (a, b) => a + b) /
-                reviews.length;  
-        
-      return Scaffold(
-        backgroundColor: Colors.white,
-        body: Stack(
-          children: [
-            CustomScrollView(
-              controller: scrollController,
-              slivers: [
-            // Header section
-            buildHeader(context, product, offerPrice, discountText, avgRating),
 
-            // Image carousel
-            SliverToBoxAdapter(child: buildImages(
-              product,
-              selectedVariantIndex,
-              selectedImageIndex,
-              widget.productId,
-              avgRating,
-              reviews
-            ),),           
-             // Product detail section 
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  children: [
-                    // Dots indicator
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: List.generate(
-                    //     product.image?.length ?? 0,
-                    //     (i) => Container(
-                    //       width: 8,
-                    //       height: 8,
-                    //       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
-                    //       decoration: BoxDecoration(
-                    //         shape: BoxShape.circle,
-                    //         color: currentIndex == i
-                    //             ? ColorConstants.grey
-                    //             : ColorConstants.secondaryColor,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                    const SizedBox(height: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                     
+    final avgRating = (reviews == null || reviews.isEmpty)
+        ? 0.0
+        : reviews.map((r) => r.rating as int).fold<int>(0, (a, b) => a + b) /
+            reviews.length;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              // Header section
+              buildHeader(
+                  context, product, offerPrice, discountText, avgRating),
+
+              // Image carousel
+              SliverToBoxAdapter(
+                child: buildImages(product, selectedVariantIndex,
+                    selectedImageIndex, widget.productId, avgRating, reviews),
+              ),
+              // Product detail section
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    children: [
+                      // Dots indicator
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: List.generate(
+                      //     product.image?.length ?? 0,
+                      //     (i) => Container(
+                      //       width: 8,
+                      //       height: 8,
+                      //       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
+                      //       decoration: BoxDecoration(
+                      //         shape: BoxShape.circle,
+                      //         color: currentIndex == i
+                      //             ? ColorConstants.grey
+                      //             : ColorConstants.secondaryColor,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      const SizedBox(height: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           buildTitleAndSize(
-                          context,
-                          product,
-                          formattedDate,
-                          offerPrice,
-                          discountText,
-                          price,
-                          hasDiscount,
-                          variantSizes,
-                          selectedVariantIndex,
-                          selectedImageIndex,
-                          mainImageUrl,
-                          productId,
-                          images ?? [],
-                          selectedSize,
-                          (int newIndex) => setState(() => selectedImageIndex = newIndex),
-                          (String newSize) => setState(() => selectedSize = newSize),
-                        ),
+                            context,
+                            product,
+                            formattedDate,
+                            offerPrice,
+                            discountText,
+                            price,
+                            hasDiscount,
+                            variantSizes,
+                            selectedVariantIndex,
+                            selectedImageIndex,
+                            mainImageUrl,
+                            productId,
+                            images ?? [],
+                            selectedSize,
+                            (int newIndex) =>
+                                setState(() => selectedImageIndex = newIndex),
+                            (String newSize) =>
+                                setState(() => selectedSize = newSize),
+                          ),
 
-                        const SizedBox(height: 20),
-                          buildSummary(selectedVariant, offerPrice, discountText ,formattedDate),
-                        // screen button
-                        Container(
-                         key: screenButtonKey,
-                         color: Colors.white,
-                         child: buildBottomButtons(),
+                          const SizedBox(height: 20),
+                          buildSummary(selectedVariant, offerPrice,
+                              discountText, formattedDate),
+                          // screen button
+                          Container(
+                            key: screenButtonKey,
+                            color: Colors.white,
+                            child: buildBottomButtons(),
+                          ),
+                          const SizedBox(height: 16),
+                          buildDeliveryandServices(formattedDate),
+                          buildProductDetails(product),
+                          Divider(
+                            thickness: 1,
+                            color: ColorConstants.secondaryColor,
+                            indent: 6,
+                            endIndent: 6,
+                          ),
+                          buildcustomerQuestions(),
+                          Divider(
+                            thickness: 1,
+                            color: ColorConstants.secondaryColor,
+                            indent: 6,
+                            endIndent: 6,
+                          ),
+                          buildCustomerRating(
+                              reviews ?? [], timeAgo, avgRating),
+                          buildService(),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Similar products
+              //  SliverToBoxAdapter(child: buildSimilarProducts(product,provider)),
+
+              // More info section
+              SliverToBoxAdapter(child: buildMoreInfoSection()),
+            ],
+          ),
+
+          // Sticky button
+          Positioned(
+            bottom: showStickyButton ? 0 : -120,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: Colors.white,
+              child: SafeArea(
+                top: false,
+                child: Container(
+                  color: Colors.white,
+                  child: buildBottomButtons(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Column buildDeliveryandServices(String formattedDate) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Delivery & Services",
+          style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+        const SizedBox(height: 10),
+
+        /// PIN Code Row
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade400),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              Text(
+                '456788',
+                style: GoogleFonts.roboto(fontSize: 16),
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  "Change",
+                  style: GoogleFonts.roboto(
+                    color: ColorConstants.primaryColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        /// Express Delivery
+        Row(
+          children: [
+            const Icon(Icons.local_shipping_outlined),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                "Express delivery by $formattedDate",
+                style: GoogleFonts.roboto(
+                    fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 20),
+
+        /// Pay on Delivery
+        Row(
+          children: [
+            const Icon(Icons.payments_outlined),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                "Pay on Delivery is available",
+                style: GoogleFonts.roboto(
+                    fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 20),
+
+        /// Return & Exchange
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.swap_horizontal_circle_outlined),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                "Hassle-free 7 days Return & Exchange",
+                style: GoogleFonts.roboto(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Column buildSummary(
+      Variant selectedVariant, offerPrice, discountText, formattedDate) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          "Tag past purchases & get right size recommendations",
+          style: GoogleFonts.roboto(
+            fontSize: 16,
+            color: Colors.grey.shade500,
+          ),
+        ),
+        const SizedBox(height: 16),
+
+// Pricing Row
+        Row(
+          children: [
+            if (selectedVariant.price != null &&
+                selectedVariant.discount != null &&
+                selectedVariant.discount?.isActive == true) ...[
+              Text(
+                '₹${selectedVariant.price != null ? selectedVariant.price!.toStringAsFixed(0) : ''}',
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  color: Colors.grey,
+                  decoration: TextDecoration.lineThrough,
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+            Text(
+              '₹${offerPrice.toStringAsFixed(0)}',
+              style: GoogleFonts.roboto(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            if (discountText != null) ...[
+              const SizedBox(width: 8),
+              Text(
+                '($discountText)',
+                style: GoogleFonts.roboto(
+                  color: Colors.orange.shade300,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ],
+        ),
+
+        const SizedBox(height: 8),
+
+// Seller Info
+        Row(
+          children: [
+            Text('Seller:'),
+            const SizedBox(width: 4),
+            Text(
+              "Flashstar Commerce",
+              style: GoogleFonts.roboto(
+                color: ColorConstants.primaryColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Column buildCustomerRating(List<dynamic> reviews,
+      String Function(DateTime date) timeAgo, avgRating) {
+    return Column(
+      children: [
+        if (reviews.isNotEmpty) ...[
+          Builder(
+            builder: (context) {
+              final totalRatings = reviews.length;
+
+              return ExpansionTile(
+                childrenPadding:
+                    const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                tilePadding:
+                    const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Ratings & Reviews",
+                        style: GoogleFonts.roboto(
+                            fontSize: 22, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            child: Text(
+                              '${avgRating.toStringAsFixed(1)} ★',
+                              style: GoogleFonts.roboto(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
                         ),
-                       const SizedBox(height: 16),
-                       buildDeliveryandServices(formattedDate),
-                       buildProductDetails(product),
-                        Divider(
-                          thickness: 1,
-                          color: ColorConstants.secondaryColor,
-                          indent: 6,
-                          endIndent: 6,
-                        ),
-                        buildcustomerQuestions(),
-                        Divider(
-                          thickness: 1,
-                          color: ColorConstants.secondaryColor,
-                          indent: 6,
-                          endIndent: 6,
-                        ),
-                      buildCustomerRating(reviews ?? [], timeAgo , avgRating),
-                      buildService(),
+                        const SizedBox(width: 8),
+                        Text('$totalRatings rating'),
                       ],
                     ),
                   ],
                 ),
-              ),
-            ),
+                children: reviews.map<Widget>((r) {
+                  final rating = r.rating;
+                  final comment = r.comment;
+                  final created = r.createdAt;
+                  final ago = timeAgo(created);
 
-            // Similar products
-          //  SliverToBoxAdapter(child: buildSimilarProducts(product,provider)),
-
-            // More info section
-            SliverToBoxAdapter(child: buildMoreInfoSection()),
-          ],
-        ),
-
-        // Sticky button
-        Positioned(
-          bottom: showStickyButton ? 0 : -120,
-          left: 0,
-          right: 0,
-          child: Container(
-            color: Colors.white,
-            child: SafeArea(
-              top: false,
-              child: Container(
-                color: Colors.white,
-                child: buildBottomButtons(),
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Column buildDeliveryandServices(String formattedDate) {
-  return Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Text(
-      "Delivery & Services",
-      style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 22),
-    ),
-    const SizedBox(height: 10),
-
-    /// PIN Code Row
-    Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade400),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Text(
-            '456788',
-            style: GoogleFonts.roboto(fontSize: 16),
-          ),
-          const Spacer(),
-          TextButton(
-            onPressed: () {
-            },
-            child: Text(
-              "Change",
-              style: GoogleFonts.roboto(
-                color: ColorConstants.primaryColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-
-    const SizedBox(height: 20),
-
-    /// Express Delivery
-      Row(
-        children: [
-          const Icon(Icons.local_shipping_outlined),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              "Express delivery by $formattedDate",
-              style: GoogleFonts.roboto(
-                  fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
-
-    const SizedBox(height: 20),
-
-    /// Pay on Delivery
-    Row(
-      children: [
-        const Icon(Icons.payments_outlined),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            "Pay on Delivery is available",
-            style:
-                GoogleFonts.roboto(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    ),
-
-    const SizedBox(height: 20),
-
-    /// Return & Exchange
-    Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Icon(Icons.swap_horizontal_circle_outlined),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            "Hassle-free 7 days Return & Exchange",
-            style: GoogleFonts.roboto(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    ),
-
-    const SizedBox(height: 20),
-  ],
-);
-}
-
-Column buildSummary(Variant selectedVariant, offerPrice, discountText,formattedDate) {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.start,
-children: [
-  Text(
-    "Tag past purchases & get right size recommendations",
-    style: GoogleFonts.roboto(
-      fontSize: 16,
-      color: Colors.grey.shade500,
-    ),
-  ),
-  const SizedBox(height: 16),
-
-// Pricing Row
-Row(
-children: [
-  if (selectedVariant.price != null &&
-      selectedVariant.discount != null &&
-      selectedVariant.discount?.isActive == true) ...[
-    Text(
-      '₹${selectedVariant.price != null ? selectedVariant.price!.toStringAsFixed(0) : ''}',
-      style: GoogleFonts.roboto(
-        fontSize: 16,
-        color: Colors.grey,
-        decoration: TextDecoration.lineThrough,
-      ),
-    ),
-    const SizedBox(width: 8),
-  ],
-  Text(
-    '₹${offerPrice.toStringAsFixed(0)}',
-    style: GoogleFonts.roboto(
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-  if (discountText != null) ...[
-    const SizedBox(width: 8),
-    Text(
-      '($discountText)',
-      style: GoogleFonts.roboto(
-        color: Colors.orange.shade300,
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  ],
-],
-),
-
-const SizedBox(height: 8),
-
-// Seller Info
-Row(
-children: [
-  Text('Seller:'),
-  const SizedBox(width: 4),
-  Text(
-    "Flashstar Commerce",
-    style: GoogleFonts.roboto(
-      color: ColorConstants.primaryColor,
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
-    ),
-  ),
-],
-),
-
-const SizedBox(height: 16),
-],
-);
-}
-
-
- Column buildCustomerRating(List<dynamic> reviews, String Function(DateTime date) timeAgo, avgRating) {
-   return Column(
-  children: [
-    if (reviews.isNotEmpty) ...[
-      Builder(
-        builder: (context) {
-          final totalRatings = reviews.length;
-        
-          return ExpansionTile(
-            childrenPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-            tilePadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Ratings & Reviews",
-                    style: GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                          color: Colors.green, borderRadius: BorderRadius.circular(10)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        child: Text(
-                          '${avgRating.toStringAsFixed(1)} ★',
-                          style: GoogleFonts.roboto(
-                              color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text('$totalRatings rating'),
-                  ],
-                ),
-              ],
-            ),
-            children: reviews.map<Widget>((r) {
-             final rating = r.rating;
-             final comment = r.comment;
-             final created = r.createdAt;
-              final ago = timeAgo(created);
-
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                            color: Colors.green, borderRadius: BorderRadius.circular(10)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                          child: Text("${rating.toStringAsFixed(1)} ★",
-                              style: GoogleFonts.roboto(
-                                  color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
-                        ),
+                      Row(
+                        children: [
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 3),
+                              child: Text("${rating.toStringAsFixed(1)} ★",
+                                  style: GoogleFonts.roboto(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(ago,
+                              style: GoogleFonts.roboto(color: Colors.grey)),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      Text(ago, style: GoogleFonts.roboto(color: Colors.grey)),
+                      const SizedBox(height: 8),
+                      Text(comment, style: GoogleFonts.roboto(fontSize: 16)),
+                      const SizedBox(height: 16),
                     ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(comment, style: GoogleFonts.roboto(fontSize: 16)),
-                  const SizedBox(height: 16),
-                ],
+                  );
+                }).toList(),
               );
-            }).toList(),
-          );
-        },
-      ),
-      Align(
-        alignment: Alignment.bottomLeft,
-        child: Text(
-          "View all reviews >",
-          style: GoogleFonts.roboto(
-            color: ColorConstants.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+            },
           ),
-        ),
-      ),
-      const SizedBox(height: 8),
-      Divider(
-        thickness: 1,
-        color: ColorConstants.secondaryColor,
-        indent: 6,
-        endIndent: 6,
-      ),
-    ],
-  ],
-);
- }
-
- Padding buildService() {
-   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: List.generate(2, (i) {
-        final itemIndex = i + 2;
-        return Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: ColorConstants.secondaryColor.withAlpha(50),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Image.network(
-                Dummydb.items[itemIndex]['icon']!,
-                width: 40,
-                height: 40,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              Dummydb.items[itemIndex]['text']!,
-              textAlign: TextAlign.center,
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Text(
+              "View all reviews >",
               style: GoogleFonts.roboto(
-                fontSize: 16,
                 color: ColorConstants.primaryColor,
                 fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
             ),
-          ],
-        );
-      }),
-    ),
-  );
- }
+          ),
+          const SizedBox(height: 8),
+          Divider(
+            thickness: 1,
+            color: ColorConstants.secondaryColor,
+            indent: 6,
+            endIndent: 6,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Padding buildService() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: List.generate(2, (i) {
+          final itemIndex = i + 2;
+          return Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: ColorConstants.secondaryColor.withAlpha(50),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Image.network(
+                  Dummydb.items[itemIndex]['icon']!,
+                  width: 40,
+                  height: 40,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                Dummydb.items[itemIndex]['text']!,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  color: ColorConstants.primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          );
+        }),
+      ),
+    );
+  }
 //similiar poducts
 
 // Padding buildSimilarProducts(product,provider) {
@@ -650,7 +661,7 @@ const SizedBox(height: 16),
 //                           foregroundColor: ColorConstants.primaryColor,
 //                         ),
 //                         onPressed: () {
-//                        
+//
 //                         },
 //                         child: Row(
 //                           mainAxisAlignment: MainAxisAlignment.center,
@@ -678,208 +689,212 @@ const SizedBox(height: 16),
 //   );
 // }
 
-
   Padding buildMoreInfoSection() {
     return Padding(
-  padding: const EdgeInsets.all(16.0),
-  child: Column(
-       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(height: 16),
-        Text(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 16),
+          Text(
             "More Information",
             style: GoogleFonts.roboto(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
             ),
           ),
-      const SizedBox(height: 6),
-      const Text("Product Code: 32467"),
-      const SizedBox(height: 4),
-      Text(
-        "View More",
-        style: TextStyle(color: ColorConstants.primaryColor, fontWeight: FontWeight.bold),
+          const SizedBox(height: 6),
+          const Text("Product Code: 32467"),
+          const SizedBox(height: 4),
+          Text(
+            "View More",
+            style: TextStyle(
+                color: ColorConstants.primaryColor,
+                fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+        ],
       ),
-      const SizedBox(height: 10),
-      ],
-    ),
-);
+    );
   }
 
   SliverAppBar buildHeader(
-  BuildContext context,
-  product,
-  double offerPrice,
-  String? discountText,
-  double avgRating,
-) {
-  final List<dynamic> reviews = product.reviews ?? [];
-  final int totalReviews = reviews.length;
+    BuildContext context,
+    product,
+    double offerPrice,
+    String? discountText,
+    double avgRating,
+  ) {
+    final List<dynamic> reviews = product.reviews ?? [];
+    final int totalReviews = reviews.length;
 
-  return SliverAppBar(
-    backgroundColor: ColorConstants.backgroundColor,
-    surfaceTintColor: ColorConstants.backgroundColor,
-    elevation: 0,
-    pinned: true,
-    leading: IconButton(
-      icon: const Icon(Icons.arrow_back_sharp, size: 35),
-      onPressed: () => Navigator.pop(context),
-    ),
-    title: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 30,
-          width: 30,
-          child: Image.network(
-            'https://aartisto.com/wp-content/uploads/2020/11/myntra-930x620.png',
-            fit: BoxFit.contain,
+    return SliverAppBar(
+      backgroundColor: ColorConstants.backgroundColor,
+      surfaceTintColor: ColorConstants.backgroundColor,
+      elevation: 0,
+      pinned: true,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_sharp, size: 35),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 30,
+            width: 30,
+            child: Image.network(
+              'https://aartisto.com/wp-content/uploads/2020/11/myntra-930x620.png',
+              fit: BoxFit.contain,
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: showAppBarDetails
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '${product.title}',
-                      style: GoogleFonts.roboto(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    const SizedBox(height: 2),
-                    Row(
-                      children: [
-                        if (totalReviews > 0) ...[
-                          Text(
-                            avgRating.toStringAsFixed(1),
-                            style: GoogleFonts.roboto(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: ColorConstants.textColor,
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          const Icon(Icons.star, size: 12, color: Colors.green),
-                          const SizedBox(width: 4),
-                          Text(
-                            '|',
-                            style: GoogleFonts.roboto(
-                              fontSize: 13,
-                              color: ColorConstants.textColor,
-                              fontWeight: FontWeight.w200,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                        ],
-                        Text(
-                          '₹ $offerPrice',
-                          style: GoogleFonts.roboto(
-                            fontSize: 12,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: showAppBarDetails
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${product.title}',
+                        style: GoogleFonts.roboto(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(width: 4),
-                        if (discountText != null)
-                          Flexible(
-                            child: Text(
-                              '($discountText)',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          if (totalReviews > 0) ...[
+                            Text(
+                              avgRating.toStringAsFixed(1),
                               style: GoogleFonts.roboto(
                                 fontSize: 12,
-                                color: ColorConstants.textColor,
                                 fontWeight: FontWeight.bold,
+                                color: ColorConstants.textColor,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
+                            ),
+                            const SizedBox(width: 2),
+                            const Icon(Icons.star,
+                                size: 12, color: Colors.green),
+                            const SizedBox(width: 4),
+                            Text(
+                              '|',
+                              style: GoogleFonts.roboto(
+                                fontSize: 13,
+                                color: ColorConstants.textColor,
+                                fontWeight: FontWeight.w200,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                          ],
+                          Text(
+                            '₹ $offerPrice',
+                            style: GoogleFonts.roboto(
+                              fontSize: 12,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                      ],
+                          const SizedBox(width: 4),
+                          if (discountText != null)
+                            Flexible(
+                              child: Text(
+                                '($discountText)',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 12,
+                                  color: ColorConstants.textColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  )
+                : Text(
+                    product.title ?? '',
+                    style: GoogleFonts.roboto(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                )
-              : Text(
-                  product.title ?? '',
-                  style: GoogleFonts.roboto(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-        ),
+          ),
+        ],
+      ),
+      actions: [
+        IconButton(
+            icon: const Icon(Icons.share_outlined, size: 25), onPressed: () {}),
+        IconButton(
+            icon: const Icon(Icons.favorite_border_outlined, size: 25),
+            onPressed: () {}),
+        IconButton(
+            icon: const Icon(Icons.shopping_bag_outlined, size: 25),
+            onPressed: () {}),
       ],
-    ),
-    actions: [
-      IconButton(icon: const Icon(Icons.share_outlined, size: 25), onPressed: () {}),
-      IconButton(icon: const Icon(Icons.favorite_border_outlined, size: 25), onPressed: () {}),
-      IconButton(icon: const Icon(Icons.shopping_bag_outlined, size: 25), onPressed: () {}),
-    ],
-  );
-}
+    );
+  }
 
+  Stack buildImages(product, int selectedVariantIndex, int selectedImageIndex,
+      String productId, avgRating, reviews) {
+    final images = product.variants![selectedVariantIndex].images ?? [];
+    final imageUrl = images.isNotEmpty
+        ? '${AppConfig.baseUrl}$productId${images[selectedImageIndex]}'
+        : '';
 
-Stack buildImages(product, int selectedVariantIndex, int selectedImageIndex, String productId, avgRating, reviews) {
-  final images = product.variants![selectedVariantIndex].images ?? [];
-  final imageUrl = images.isNotEmpty
-      ? '${AppConfig.baseUrl}$productId${images[selectedImageIndex]}'
-      : '';
-
-  return Stack(
-    children: [
-      ClipRRect(
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
-        child: CachedNetworkImage(
-          imageUrl: imageUrl.isNotEmpty
-              ? imageUrl
-              : 'https://via.placeholder.com/500x500?text=No+Image',
-          height: 500,
-          width: double.infinity,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => const Center(
-            child: CircularProgressIndicator(),
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
           ),
-          errorWidget: (context, url, error) => const Center(
-            child: Icon(Icons.broken_image, size: 100),
+          child: CachedNetworkImage(
+            imageUrl: imageUrl.isNotEmpty
+                ? imageUrl
+                : 'https://via.placeholder.com/500x500?text=No+Image',
+            height: 500,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            errorWidget: (context, url, error) => const Center(
+              child: Icon(Icons.broken_image, size: 100),
+            ),
           ),
         ),
-      ),
-      
-      if (reviews.isNotEmpty)
-  
-      Positioned(
-        bottom: 15,
-        right: 18,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              Text(
-                avgRating.toStringAsFixed(1),
-                style: const TextStyle(fontWeight: FontWeight.bold),
+        if (reviews.isNotEmpty)
+          Positioned(
+            bottom: 15,
+            right: 18,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
               ),
-              const SizedBox(width: 4),
-              const Icon(Icons.star, color: Colors.green, size: 16),
-            ],
+              child: Row(
+                children: [
+                  Text(
+                    avgRating.toStringAsFixed(1),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.star, color: Colors.green, size: 16),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    ],
-  );
-}
-
+      ],
+    );
+  }
 }
 
 ExpansionTile buildcustomerQuestions() {
@@ -905,12 +920,14 @@ ExpansionTile buildcustomerQuestions() {
               children: [
                 Text(
                   "Be the first one to ask a question",
-                  style: GoogleFonts.roboto(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.roboto(
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   "Your questions will be\nanswered by people who\nbought this",
-                  style: GoogleFonts.roboto(fontSize: 14, color: Colors.black54),
+                  style:
+                      GoogleFonts.roboto(fontSize: 14, color: Colors.black54),
                 ),
                 const SizedBox(height: 16),
               ],
@@ -953,6 +970,7 @@ ExpansionTile buildcustomerQuestions() {
     ],
   );
 }
+
 ExpansionTile buildProductDetails(product) {
   return ExpansionTile(
     childrenPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
@@ -981,7 +999,6 @@ ExpansionTile buildProductDetails(product) {
   );
 }
 
-
 Column buildTitleAndSize(
   BuildContext context,
   ProductsResModel product,
@@ -1000,7 +1017,8 @@ Column buildTitleAndSize(
   Function(int) onImageSelected,
   Function(String) onSizeSelected,
 ) {
-  final provider = Provider.of<ProductProvider>(context);  return Column(
+  final provider = Provider.of<ProductProvider>(context);
+  return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       /// Title and subtitle
@@ -1145,7 +1163,8 @@ Column buildTitleAndSize(
                         width: 120,
                         height: 180,
                         color: Colors.grey[300],
-                        child: const Icon(Icons.broken_image, color: Colors.red),
+                        child:
+                            const Icon(Icons.broken_image, color: Colors.red),
                       ),
                     ),
                   ),
@@ -1182,7 +1201,7 @@ Column buildTitleAndSize(
                   ),
                 ),
                 const SizedBox(width: 8),
-                 Icon(
+                Icon(
                   Icons.arrow_forward_ios_outlined,
                   size: 15,
                   color: ColorConstants.primaryColor,
@@ -1200,7 +1219,8 @@ Column buildTitleAndSize(
                     child: GestureDetector(
                       onTap: () => onSizeSelected(size),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 20),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? ColorConstants.textColor
@@ -1232,8 +1252,8 @@ Column buildTitleAndSize(
   );
 }
 
-  SafeArea buildBottomButtons() {
-    return SafeArea(
+SafeArea buildBottomButtons() {
+  return SafeArea(
     child: Container(
       height: 45,
       padding: const EdgeInsets.only(right: 10),
@@ -1242,13 +1262,15 @@ Column buildTitleAndSize(
         children: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.favorite_outline_sharp, color: ColorConstants.primaryColor, size: 28),
+            icon: Icon(Icons.favorite_outline_sharp,
+                color: ColorConstants.primaryColor, size: 28),
           ),
           Expanded(
             child: ElevatedButton(
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
                 side: BorderSide(color: ColorConstants.primaryColor),
                 backgroundColor: ColorConstants.backgroundColor,
                 foregroundColor: ColorConstants.primaryColor,
@@ -1259,7 +1281,9 @@ Column buildTitleAndSize(
                 children: [
                   Icon(Icons.shopping_bag_outlined, size: 20),
                   const SizedBox(width: 6),
-                  Text("Buy Now", style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 17)),
+                  Text("Buy Now",
+                      style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.bold, fontSize: 17)),
                 ],
               ),
             ),
@@ -1269,23 +1293,27 @@ Column buildTitleAndSize(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
                 side: BorderSide(color: ColorConstants.primaryColor),
                 backgroundColor: ColorConstants.primaryColor,
                 foregroundColor: ColorConstants.backgroundColor,
               ),
               onPressed: () {
-  //                Provider.of<CartProvider>(context, listen: false).addItem(products);
-  // ScaffoldMessenger.of(context).showSnackBar(
-  //   SnackBar(content: Text("Added to cart")),
-  // );
+                //                Provider.of<CartProvider>(context, listen: false).addItem(products);
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   SnackBar(content: Text("Added to cart")),
+                // );
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.shopping_bag_outlined, size: 20, color: ColorConstants.backgroundColor),
+                  Icon(Icons.shopping_bag_outlined,
+                      size: 20, color: ColorConstants.backgroundColor),
                   SizedBox(width: 6),
-                  Text("Add To Bag", style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 17)),
+                  Text("Add To Bag",
+                      style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.bold, fontSize: 17)),
                 ],
               ),
             ),
@@ -1294,4 +1322,4 @@ Column buildTitleAndSize(
       ),
     ),
   );
-  }
+}
