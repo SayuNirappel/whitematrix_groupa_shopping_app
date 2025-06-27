@@ -152,14 +152,14 @@ ProductsResModel? selectedProduct;
     return price.toDouble();
   }
 
-  void updateSelectedImageIndex(int index) {
-    selectedImageIndex = index;
-    notifyListeners();
-  }
+  // void updateSelectedImageIndex(int index) {
+  //   selectedImageIndex = index;
+  //   notifyListeners();
+  // }
 
-  void updateSelectedSizeAndIndex(String size, List<Variant> variants) {
-    selectedSize = size;
-    selectedVariantIndex = variants.indexWhere((v) => v.size == size);
-    notifyListeners();
-  }
+  // void updateSelectedSizeAndIndex(String size, List<Variant> variants) {
+  //   selectedSize = size;
+  //   selectedVariantIndex = variants.indexWhere((v) => v.size == size);
+  //   notifyListeners();
+  // }
 }
