@@ -71,8 +71,9 @@ class NotificationScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ProductDetailsPage2(),
+                                    builder: (context) => ProductDetailsPage2(
+                                        productId: notifications[index]["id"] ??
+                                            "685cf800728c88a1bc918219"),
                                   ),
                                 );
                               });

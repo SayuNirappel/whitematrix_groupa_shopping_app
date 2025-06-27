@@ -378,7 +378,11 @@ class ContinuingRow extends StatelessWidget {
       onTap: (index) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const ProductDetailsPage2()),
+          MaterialPageRoute(
+              builder: (context) => ProductDetailsPage2(
+                    productId:
+                        featured[index]["id"] ?? "685cf800728c88a1bc918219",
+                  )),
         );
       },
     );
