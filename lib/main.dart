@@ -5,7 +5,7 @@ import 'package:whitematrix_groupa_shopping_app/views/splash/splash_screen.dart'
 
 void main() {
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => BottomNavBarController())
+    ChangeNotifierProvider(create: (_) => ProductProvider())
   ], child: const MyApp()));
 }
 

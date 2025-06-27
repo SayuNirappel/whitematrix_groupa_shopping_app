@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
-import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});

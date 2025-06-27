@@ -1,15 +1,23 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/get_all_products_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/models/category_model.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
 class ProductListingScreen extends StatefulWidget {
+  final String? id;
   final String title;
-  const ProductListingScreen({super.key, required this.title});
+  final String? token;
+  const ProductListingScreen({super.key, this.id, required this.title, this.token});
 
   @override
   State<ProductListingScreen> createState() => _ProductListingScreenState();
@@ -19,12 +27,21 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
   int _currentIndex = 0;
   final CarouselSliderController _controller = CarouselSliderController();
   int selectedIndex = 0; 
+  List<bool> isFavoriteList = [];
+
 
   isSelected(int index) {
     setState(() {
       selectedIndex = index;
     });
   }
+  @override
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    context.read<GetAllProductsController>().fetchAllProducts(category: widget.title,  token: widget.token);
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +49,22 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     return Scaffold(
       backgroundColor: ColorConstants.backgroundColor,
       appBar: _build_AppbarSection(),
-      body: Column(
+      body: Consumer<GetAllProductsController>(builder: (context, value, child) {
+
+     if (value.isLoading) {
+      return const Center(child: CircularProgressIndicator(
+        color: ColorConstants.primaryColor,
+      ));
+    }
+
+    if (value.isError) {
+      return Center(
+        child: Text("Error: ${value.errorMessage ?? 'Something went wrong'}"),
+      );
+    }
+        
+
+        return Column(
         children: [
           Container(
             height: 30,
@@ -72,7 +104,10 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
           child: selectedIndex == 0 ? _buildShoppingView() : _buildTrendsView(),
         ),
         ],
-      ),
+      );
+      },),
+      
+      
       bottomNavigationBar: _build_BottomSection(),
     );
   }
@@ -177,35 +212,49 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
   Widget _buildTrendsView() {
   final List<Category> categories = DummyDb().dummyCategories;
 
-  // Moved out of builder
   List<String> imageList = [];
   List<String> nameList = [];
 
   switch (widget.title.toLowerCase()) {
-    case "tshirt":
+    case "t-shirts":
       imageList = DummyDb.tshirtList;
       nameList = DummyDb.tshirtTypes;
       break;
-    case "shirt":
+    case "accessories":
       imageList = DummyDb.shirtList;
       nameList = DummyDb.shirtTypes;
       break;
-    case "trousers":
+    case "hoodies":
+      imageList = DummyDb.shirtList;
+      nameList = DummyDb.shirtTypes;
+      break;
+     case "winterwear":
+      imageList = DummyDb.shirtList;
+      nameList = DummyDb.shirtTypes;
+      break;
+    case "shoes":
       imageList = DummyDb.trousersList;
       nameList = DummyDb.trousersTypes;
       break;
-    case "shorts":
+    case "clothing":
       imageList = DummyDb.shortsList;
       nameList = DummyDb.shortsTypes;
       break;
-    case "pants":
+    case "footwear":
       imageList = DummyDb.pantsList;
       nameList = DummyDb.pantsTypes;
       break;
-    case "jeans":
+    case "bottomwear":
       imageList = DummyDb.jeansList;
       nameList = DummyDb.jeansTypes;
       break;
+    
+     default:
+      imageList = DummyDb.shirtList;
+      nameList = DummyDb.shirtTypes;
+    break;
+
+
   }
 
   List<Color> colorList = [
@@ -215,9 +264,11 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     const Color.fromARGB(255, 251, 196, 196),
     ColorConstants.greyColor,
   ];
+  log("catory - $categories");
+  final apiList = context.watch<GetAllProductsController>().filteredProducts;
 
    return ListView.builder(
-    itemCount: categories.length,
+    itemCount: apiList.length,
     padding: const EdgeInsets.all(12),
     itemBuilder: (context, index) {
       final category = categories[index];
@@ -345,12 +396,22 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
   }
 
   Container _build_BigSection(List<String> imageList, int index, List<String> nameList) {
+
+    final apiList = context.watch<GetAllProductsController>().filteredProducts;
+      final productItems = apiList[index];
+             final variant = productItems.variants.isNotEmpty ? productItems.variants.first : null;
+           final  productid = productItems.id;
+final productPrice = variant?.price;
+final discountvalue = variant?.discount?.value;
+final discounttype = variant?.discount?.type;
+
+
     return Container(
                   width: 140,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     image: DecorationImage(
-                      image: NetworkImage(imageList[index % imageList.length]),
+                      image: NetworkImage(variant!.images.first),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -363,7 +424,8 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                           children: [
                             CircleAvatar(
                               radius: 15,
-                              backgroundImage: NetworkImage(imageList[index % imageList.length]),
+                              backgroundImage:
+                               NetworkImage(imageList[index % imageList.length]),
                             ),
                             const SizedBox(width: 6),
                             Column(
@@ -438,34 +500,45 @@ Widget _buildCategorySection(String title) {
       List<String> imageList = [];
       List<String> nameList = [];
 
-  switch (widget.title.toLowerCase()) {
-    case "tshirt":
+   switch (widget.title.toLowerCase()) {
+    case "t-shirts":
       imageList = DummyDb.tshirtList;
       nameList = DummyDb.tshirtTypes;
       break;
-    case "shirt":
+    // case "accessories":
+    //   imageList = DummyDb.shirtList;
+    //   nameList = DummyDb.shirtTypes;
+    //   break;
+    // case "hoodies":
+    //   imageList = DummyDb.shirtList;
+    //   nameList = DummyDb.shirtTypes;
+    //   break;
+    //  case "winterwear":
+    //   imageList = DummyDb.shirtList;
+    //   nameList = DummyDb.shirtTypes;
+    //   break;
+    // case "shoes":
+    //   imageList = DummyDb.trousersList;
+    //   nameList = DummyDb.trousersTypes;
+    //   break;
+    // case "clothing":
+    //   imageList = DummyDb.shortsList;
+    //   nameList = DummyDb.shortsTypes;
+    //   break;
+    // case "footwear":
+    //   imageList = DummyDb.pantsList;
+    //   nameList = DummyDb.pantsTypes;
+    //   break;
+    // case "bottomwear":
+    //   imageList = DummyDb.jeansList;
+    //   nameList = DummyDb.jeansTypes;
+    //   break;
+    
+     default:
       imageList = DummyDb.shirtList;
       nameList = DummyDb.shirtTypes;
-      break;
-    case "trousers":
-      imageList = DummyDb.trousersList;
-      nameList = DummyDb.trousersTypes;
-      break;
-    case "shorts":
-      imageList = DummyDb.shortsList;
-      nameList = DummyDb.shortsTypes;
-      break;
-    case "pants":
-      imageList = DummyDb.pantsList;
-      nameList = DummyDb.pantsTypes;
-      break;
-    case "jeans":
-      imageList = DummyDb.jeansList;
-      nameList = DummyDb.jeansTypes;
-      break;
-    default:
-      imageList = [];
-      nameList = [];
+    break;
+
   }
 
   return SingleChildScrollView(
@@ -545,11 +618,11 @@ Widget _buildCategorySection(String title) {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [          
-                            _build_PromoColumn("FREE", "Shipping"),
-                            _buildDivider(),
-                            _build_PromoColumn("40% off", "upto ₹300"),
-                            _buildDivider(),
-                            _build_PromoColumn("EASY", "Returns"),
+                                   _build_PromoColumn("FREE", "Shipping"),
+                                    _buildDivider(),
+                                    _build_PromoColumn("40% off", "upto ₹300"),
+                                    _buildDivider(),
+                                    _build_PromoColumn("EASY", "Returns"),
                   
                 
                 ],
@@ -597,158 +670,232 @@ Widget _buildCategorySection(String title) {
             },
           ),
         ),    
-        GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-          padding: const EdgeInsets.all(10),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.65,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemCount: DummyDb().dummySproducts.length,
-          itemBuilder: (context, index) {
-            final product = DummyDb().dummySproducts[index];
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(imageList[index % imageList.length]),
-                              fit: BoxFit.cover,
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        Positioned(
-                          top: 10,
-                          right: 10,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(31, 0, 0, 0),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Text("AD", style: TextStyle(color: ColorConstants.backgroundColor, fontSize: 10, fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          left: 10,
-                          child: Container(
-                            height: 20,
-                            width: 90,
-                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+        Consumer2<Dummydb,GetAllProductsController>(
+            builder: (context, productProvider, allproduct, child) {
+          final productList = productProvider.products;
+          final apiproductlist = allproduct.productsList; 
+          final apifilteredList = allproduct.filteredProducts;
 
-                              children: [
-                              
-                                Text(product.rating.toString(), style: TextStyle(color:  ColorConstants.textColor, fontWeight: FontWeight.bold,fontSize: 10)),
-                                  Icon(Icons.star, color: ColorConstants.secondaryColor, size: 10),
-                                  SizedBox(width: 8,),
-                                 Text("|", style: TextStyle(color: ColorConstants.greyColor, fontSize: 12)),
-                                  SizedBox(width: 8,),
-                                  Text(product.reviews.toString(), style: TextStyle(color: ColorConstants.textColor, fontSize: 10)),
-                              ],
-                            )
-                          ),
-                        ),
-                      ],
-                    ),
+          if (isFavoriteList.length != apifilteredList.length) {
+  isFavoriteList = List<bool>.filled(apifilteredList.length, false);
+}
+
+
+          return GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+            padding: const EdgeInsets.all(10),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.65,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: apifilteredList.length,
+          itemBuilder: (context, index) {
+              // calculate cutprice
+              num? getCutPrice(int price, int discount, String type) {
+                if (price == null || discount == null) {
+                  return null;
+                }
+
+                if (type.toLowerCase() == 'type.percentage') {
+                  return price / (1 - (discount / 100));
+                } else if (type.toLowerCase() == 'type.flat') {
+                  return price + discount;
+                }
+                return null;
+              }
+
+              final product = productList[index];
+              final productItems = apifilteredList[index];
+             final variant = productItems.variants.isNotEmpty ? productItems.variants.first : null;
+           final  productid = productItems.id;
+final productPrice = variant?.price;
+final discountvalue = variant?.discount?.value;
+final discounttype = variant?.discount?.type;
+              log("filteredList ${apifilteredList}");
+              log("price ${productPrice.toString()}");
+              log("type ${discounttype.toString()}");
+              log("value ${discountvalue.toString()}");
+
+              final cutPrice = (discountvalue != null && discounttype != null && productPrice != null)
+    ? getCutPrice(productPrice, discountvalue, discounttype.toString())
+    : null;
+
+final discountText = (cutPrice != null)
+    ? "₹${(cutPrice - productPrice!).toStringAsFixed(0)} OFF!"
+    : null;
+
+            
+
+            return InkWell(
+            onTap: () {
+               Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context) => ProductDetailsPage2(
+      products: product,
+       //token: widget.token,
+          //id: widget.id,
+          //productid: productid
+      ),
+  ),
+);
+            },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
                   ),
-                  Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    product.brand,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image:NetworkImage(variant!.images.first),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            Positioned(
+                              top: 10,
+                              right: 10,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(31, 0, 0, 0),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Text("AD", style: TextStyle(color: ColorConstants.backgroundColor, fontSize: 10, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 10,
+                              left: 10,
+                              child: Container(
+                                height: 20,
+                                width: 90,
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.6),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                          
+                                  children: [
+                                  
+                                    Text("${product["rating"]}", style: TextStyle(color:  ColorConstants.textColor, fontWeight: FontWeight.bold,fontSize: 10)),
+                                      Icon(Icons.star, color: ColorConstants.secondaryColor, size: 10),
+                                      SizedBox(width: 8,),
+                                     Text("|", style: TextStyle(color: ColorConstants.greyColor, fontSize: 12)),
+                                      SizedBox(width: 8,),
+                                      Text("${product["review"]}", style: TextStyle(color: ColorConstants.textColor, fontSize: 10)),
+                                  ],
+                                )
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${productItems.title}",
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      InkWell(
+  onTap: () {
+    setState(() {
+      isFavoriteList[index] = !isFavoriteList[index];
+    });
+  },
+  child: Icon(
+    isFavoriteList[index] ? Icons.favorite : Icons.favorite_border_outlined,
+    color: isFavoriteList[index] ? Colors.red : ColorConstants.textColor,
+    size: 16,
+  ),
+),
+
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    "${productItems.description}",
+                    style: const TextStyle(fontSize: 11),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Icon(Icons.favorite_border_outlined, color: ColorConstants.textColor, size: 16),
-                ],
+                ),
+              Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+  child: discountvalue == null || discounttype == null
+      ? Text(
+          "₹${productPrice}",
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+            color: ColorConstants.textColor,
+          ),
+        )
+      : Row(
+          children: [
+            Text(
+             "₹${cutPrice?.toStringAsFixed(0)}",
+              style: const TextStyle(
+                decoration: TextDecoration.lineThrough,
+                fontSize: 12,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+            const SizedBox(width: 6),
+            Text(
+              "₹${productPrice}",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+                color: ColorConstants.textColor,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.2),
+              ),
               child: Text(
-                product.title,
-                style: const TextStyle(fontSize: 11),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              child: Row(
-                children: [
-                   Text(
-                    "₹${(product.originalPrice).toStringAsFixed(0)}",
-                    style: const TextStyle(
-                      decoration: TextDecoration.lineThrough,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    "₹${product.discountedPrice}",
-                    style: const TextStyle(fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                      color: ColorConstants.textColor,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                 
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.2),
-                     // borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Text(
-                      "₹${(product.originalPrice - product.discountedPrice).toStringAsFixed(0)} OFF!",
-                      style: const TextStyle(
-                        fontSize: 10,
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-           
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                product.isExpress ? "Express by ${product.deliveryDate}" : "Delivery by ${product.deliveryDate}",
-                style: TextStyle(
+                discountText!,
+                style: const TextStyle(
                   fontSize: 10,
-                  color: product.isExpress ? Colors.green : Colors.black54,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-                ]
-              )
+          ],
+        ),
+),
+    
+                            
+                    ]
+                  )
+                  ),
               );
-          },
+            },
+          );
+            }
         )
       ],
     ),
@@ -850,13 +997,24 @@ Widget _buildDivider() {
       IconButton(
         icon: const Icon(Icons.favorite_border_outlined, color: ColorConstants.textColor),
         onPressed: () {
-          
+           Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) =>ShoppingBagScreen(
+          //token: widget.token
+          //id: widget.id
+
+        )),
+      );
         },
       ),
       IconButton(
         icon: const Icon(Icons.shopping_bag_outlined, color: ColorConstants.textColor),
         onPressed: () {
-        
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingBagScreen(
+        //token: widget.token
+          //id: widget.id
+        ) ));
+
         },
       ),
     ],

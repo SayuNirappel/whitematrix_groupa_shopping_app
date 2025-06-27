@@ -9,70 +9,82 @@ List<ProductsResModel> productsResModelFromJson(String str) => List<ProductsResM
 String productsResModelToJson(List<ProductsResModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class ProductsResModel {
+    Brand? brand;
     String? id;
     String? title;
-    String? brand;
-    int? price;
     String? category;
-    List<String>? size;
-    String? image;
     String? description;
-    int? stock;
-    String? createdBy;
-    DateTime? createdAt;
-    int? v;
     List<Variant>? variants;
     Discount? discount;
+    String? createdBy;
+    List<Review>? reviews;
+    DateTime? createdAt;
+    int? v;
+    Gender? gender;
 
     ProductsResModel({
+        this.brand,
         this.id,
         this.title,
-        this.brand,
-        this.price,
         this.category,
-        this.size,
-        this.image,
         this.description,
-        this.stock,
-        this.createdBy,
-        this.createdAt,
-        this.v,
         this.variants,
         this.discount,
+        this.createdBy,
+        this.reviews,
+        this.createdAt,
+        this.v,
+        this.gender,
     });
 
     factory ProductsResModel.fromJson(Map<String, dynamic> json) => ProductsResModel(
+        brand: json["brand"] == null ? null : Brand.fromJson(json["brand"]),
         id: json["_id"],
         title: json["title"],
-        brand: json["brand"],
-        price: json["price"],
         category: json["category"],
-        size: json["size"] == null ? [] : List<String>.from(json["size"]!.map((x) => x)),
-        image: json["image"],
         description: json["description"],
-        stock: json["stock"],
-        createdBy: json["createdBy"],
-        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
-        v: json["__v"],
         variants: json["variants"] == null ? [] : List<Variant>.from(json["variants"]!.map((x) => Variant.fromJson(x))),
         discount: json["discount"] == null ? null : Discount.fromJson(json["discount"]),
+        createdBy: json["createdBy"],
+        reviews: json["reviews"] == null ? [] : List<Review>.from(json["reviews"]!.map((x) => Review.fromJson(x))),
+        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+        v: json["__v"],
+        gender: genderValues.map[json["gender"]]!,
     );
 
     Map<String, dynamic> toJson() => {
+        "brand": brand?.toJson(),
         "_id": id,
         "title": title,
-        "brand": brand,
-        "price": price,
         "category": category,
-        "size": size == null ? [] : List<dynamic>.from(size!.map((x) => x)),
-        "image": image,
         "description": description,
-        "stock": stock,
-        "createdBy": createdBy,
-        "createdAt": createdAt?.toIso8601String(),
-        "__v": v,
         "variants": variants == null ? [] : List<dynamic>.from(variants!.map((x) => x.toJson())),
         "discount": discount?.toJson(),
+        "createdBy": createdBy,
+        "reviews": reviews == null ? [] : List<dynamic>.from(reviews!.map((x) => x.toJson())),
+        "createdAt": createdAt?.toIso8601String(),
+        "__v": v,
+        "gender": genderValues.reverse[gender],
+    };
+}
+
+class Brand {
+    String? name;
+    String? image;
+
+    Brand({
+        this.name,
+        this.image,
+    });
+
+    factory Brand.fromJson(Map<String, dynamic> json) => Brand(
+        name: json["name"],
+        image: json["image"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "name": name,
+        "image": image,
     };
 }
 
@@ -117,6 +129,44 @@ final typeValues = EnumValues({
     "flat": Type.FLAT,
     "percentage": Type.PERCENTAGE
 });
+
+enum Gender {
+    MEN,
+    UNISEX
+}
+
+final genderValues = EnumValues({
+    "Men": Gender.MEN,
+    "unisex": Gender.UNISEX
+});
+
+class Review {
+    String? user;
+    int? rating;
+    String? comment;
+    DateTime? createdAt;
+
+    Review({
+        this.user,
+        this.rating,
+        this.comment,
+        this.createdAt,
+    });
+
+    factory Review.fromJson(Map<String, dynamic> json) => Review(
+        user: json["user"],
+        rating: json["rating"],
+        comment: json["comment"],
+        createdAt: json["createdAt"] == null ? null : DateTime.parse(json["createdAt"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "user": user,
+        "rating": rating,
+        "comment": comment,
+        "createdAt": createdAt?.toIso8601String(),
+    };
+}
 
 class Variant {
     String? sku;
