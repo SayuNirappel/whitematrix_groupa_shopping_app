@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:whitematrix_groupa_shopping_app/models/get_all_products_model.dart';
 import 'package:whitematrix_groupa_shopping_app/models/unique_category_model.dart';
+import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 
 class GetAllProductsController with ChangeNotifier {
   List<GetAllProductModel> productsList = [];
@@ -30,8 +31,7 @@ Future<void> fetchAllProducts({String? category, String? token}) async {
     final response = await http.get(
       Uri.parse(_baseUrl),
       headers: {
-        "Authorization": token ??
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODViNmQ3NTgzNGU1YWE4Y2RhZjE4YjEiLCJpYXQiOjE3NTA4MzUzODUsImV4cCI6MTc1MTQ0MDE4NX0.FSFcXs_RgTC7v17oPWtMseUBfkPxMYsEgK4kLgCSg4E",
+        "Authorization": (token ?? ApiConstants.token) ?? "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODViNmQ3NTgzNGU1YWE4Y2RhZjE4YjEiLCJpYXQiOjE3NTA4MzUzODUsImV4cCI6MTc1MTQ0MDE4NX0.FSFcXs_RgTC7v17oPWtMseUBfkPxMYsEgK4kLgCSg4E",
         "Content-Type": "application/json",
       },
     );
@@ -49,14 +49,15 @@ Future<void> fetchAllProducts({String? category, String? token}) async {
         final Map<String, String> categoryImageMap = {};
         for (var product in productsList) {
           if (product.category.isNotEmpty && product.brand != null) {
-            final brandMap = product.brand;
+            final pimage = product.variants.first.images;
             String? image;
 
-            if (brandMap is Map<String, dynamic>) {
-              image = brandMap["image"];
-            } else if (brandMap is BrandClass) {
-              image = brandMap.image;
+            if (pimage is String) {
+              image = pimage.toString();
+            } else if (pimage is List<String> && pimage.isNotEmpty) {
+              image = pimage.first;
             }
+            
 
             if (image != null && image.isNotEmpty) {
               categoryImageMap[product.category] = image;
@@ -106,7 +107,6 @@ Future<void> fetchAllProducts({String? category, String? token}) async {
    🔸 Reviews: ${product.reviews.length}
 ''');
 }
-
     } else {
       isError = true;
       errorMessage =
@@ -122,8 +122,4 @@ Future<void> fetchAllProducts({String? category, String? token}) async {
     notifyListeners();
   }
 }
-
-
-
-
 }
