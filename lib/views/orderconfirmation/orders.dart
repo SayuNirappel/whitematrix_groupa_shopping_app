@@ -56,7 +56,11 @@ class _OrdersState extends State<Orders> {
       body: orderProvider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : orderProvider.errorMessage != null
-              ? Center(child: Text(orderProvider.errorMessage!))
+              ? Center(child: Text("No orders found",style: TextStyle(
+                color: Colors.black54,
+                fontWeight: FontWeight.w600,
+                fontSize: 20
+              ),))
               : orderProvider.orders.isEmpty
                   ? const Center(child: Text('No orders found'))
                   : SingleChildScrollView(
