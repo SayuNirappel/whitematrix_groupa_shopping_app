@@ -375,19 +375,12 @@ class ContinuingRow extends StatelessWidget {
           ],
         );
       },
-<<<<<<< HEAD
-      // onTap: (index) {
-      //   Navigator.push(context,
-      //       MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
-      // },
-=======
       onTap: (index) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const ProductDetailsPage2()),
         );
       },
->>>>>>> auth_with_token
     );
   }
 }

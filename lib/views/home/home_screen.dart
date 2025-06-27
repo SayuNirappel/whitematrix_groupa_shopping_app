@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-<<<<<<< HEAD
-=======
 import 'package:whitematrix_groupa_shopping_app/controllers/product_provider.dart';
->>>>>>> auth_with_token
 import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
@@ -25,12 +22,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-<<<<<<< HEAD
-  bool isLoading = true;
-  //int selectedCategory = 0;
-  String? dropdownValue;
-  final List carouselImgeUrl = DummyDb.carousel1ImgeUrl;
-=======
   @override
   void initState() {
     super.initState();
@@ -40,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       Provider.of<ProductProvider>(context, listen: false).fetchInitialData();
     });
   }
->>>>>>> auth_with_token
 
   @override
   void initState() {
@@ -61,184 +51,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-<<<<<<< HEAD
-        backgroundColor: Color.fromARGB(255, 255, 239, 244),
-        appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 255, 239, 244),
-          title: Padding(
-            padding: EdgeInsets.all(5),
-            child: Container(
-              height: 40,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.black)),
-              child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      spacing: 10,
-                      children: [
-                        Text(
-                          " M",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFE91E63)),
-                        ),
-                        Text(
-                          "Search",
-                          style: TextStyle(fontSize: 15),
-                        ),
-                      ],
-                    ),
-                    Icon(Icons.search)
-                  ],
-                ),
-              ),
-            ),
-          ),
-          actions: [
-            InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NotificationScreen()));
-                },
-                child: Icon(Icons.notification_important_outlined)),
-            SizedBox(
-              width: 15,
-            ),
-            Icon(Icons.favorite_outline),
-            SizedBox(
-              width: 15,
-            ),
-            InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ProfileScreen()));
-                },
-                child: Icon(Icons.account_circle_outlined)),
-            SizedBox(
-              width: 15,
-            )
-          ],
-          //tabs
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(48),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TabBar(
-                      isScrollable: false,
-                      labelColor: Color(0xFFE91E63),
-                      unselectedLabelColor: Colors.black,
-                      indicatorColor: Color(0xFFE91E63),
-                      tabs: const [
-                        Tab(text: "All"),
-                        Tab(text: "Men"),
-                        Tab(text: "Women"),
-                        Tab(text: "Kids"),
-                      ]),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CategoryScreen()));
-                      },
-                      child: Icon(Icons.window_outlined)),
-                ) //path to collections
-              ],
-            ),
-          ),
-        ),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator()) // Show loading
-            : TabBarView(
-                children: [
-                  NestedTabScreenWidget(),
-                  //FilteredTabScreenWidget(
-                  // gender: "men", allProducts: DummyDb.allProducts),
-                  NestedTabScreenWidget(), NestedTabScreenWidget(),
-                  NestedTabScreenWidget(),
-                ],
-              ),
-      ),
-    );
-  }
-
-  // Future<void> loadBanners() async {
-  //   final fetchedImages = await BannerService.fetchActiveBannerImages();
-  //   if (fetchedImages.isNotEmpty) {
-  //     DummyDb.carousel1ImgeUrl = fetchedImages;
-  //     setState(() {}); // Trigger UI update
-  //   }
-  // }
-
-  // Future<void> loadProductsOnce() async {
-  //   final fetched = await ProductService.fetchProducts();
-  //   if (fetched.isNotEmpty) {
-  //     setState(() {
-  //       DummyDb.allProducts = fetched;
-  //       isLoading = false; //  Loading done
-  //     });
-  //   } else {
-  //     setState(() => isLoading = false); // Even if empty, end loader
-  //   }
-  // }
-}
-
-///
-///
-///
-///
-///
-
-///
-///
-///
-///
-///
-
-///
-///
-///
-///
-///
-class FilteredTabScreenWidget extends StatelessWidget {
-  final String gender;
-  final List<ProductsResModel> allProducts;
-
-  const FilteredTabScreenWidget({
-    super.key,
-    required this.gender,
-    required this.allProducts,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // Filter the passed list
-    List<ProductsResModel> filteredProducts = allProducts
-        .where((p) =>
-            (p.gender?.toString().toLowerCase() == gender.toLowerCase() ||
-                p.gender?.toString().toLowerCase() == "unisex"))
-        .toList();
-
-    return Column(
-      children: [
-        // CategoryTabsWidget(),
-        // CarouselSliderWidget(),
-        Expanded(
-          child: InfiniteScrollGridView(sourceList: filteredProducts),
-        ),
-      ],
-=======
         backgroundColor: const Color.fromARGB(255, 255, 239, 244),
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 255, 239, 244),
@@ -294,7 +106,6 @@ class FilteredTabScreenWidget extends StatelessWidget {
           )
         ],
       ),
->>>>>>> auth_with_token
     );
   }
 
@@ -372,8 +183,6 @@ class FilteredTabScreenWidget extends StatelessWidget {
 ///
 ///
 ///
-<<<<<<< HEAD
-=======
 
 class FilteredTabScreenWidget extends StatelessWidget {
   List<ProductsResModel> _sortProductsForTab(
@@ -455,7 +264,6 @@ class FilteredTabScreenWidget extends StatelessWidget {
 ///
 ///
 ///
->>>>>>> auth_with_token
 class NestedTabScreenWidget extends StatefulWidget {
   const NestedTabScreenWidget({super.key});
 
@@ -908,58 +716,6 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-<<<<<<< HEAD
-                                          Expanded(
-                                            child: Text(
-                                              DummyDb.featuredPicks[index]
-                                                      ["name"] ??
-                                                  "",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                          IconButton(
-                                              onPressed: () {
-                                                /// add to fav function
-                                              },
-                                              icon: Icon(
-                                                Icons.favorite_border,
-                                                color: Colors.grey,
-                                              ))
-                                        ],
-                                      ),
-                                      Text(
-                                        DummyDb.featuredPicks[index]
-                                                ["category"] ??
-                                            "",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      Row(
-                                        spacing: 5,
-                                        children: [
-                                          Text(
-                                            DummyDb.featuredPicks[index]
-                                                    ["oP"] ??
-                                                "",
-                                            style: TextStyle(
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                          Text(
-                                            DummyDb.featuredPicks[index]
-                                                    ["nP"] ??
-                                                "",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                          Text(
-                                            DummyDb.featuredPicks[index]
-                                                    ["reduction"] ??
-                                                "",
-                                            style: TextStyle(color: Colors.red),
-=======
                                           Row(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.end,
@@ -1011,7 +767,6 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                                     color: Colors.red),
                                               ),
                                             ],
->>>>>>> auth_with_token
                                           ),
                                         ],
                                       ),
@@ -1187,61 +942,6 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 SizedBox(
                   height: 10,
                 ),
-<<<<<<< HEAD
-                ScrollingRow(
-                  itemCount: DummyDb.featuredPicks.length,
-                  itemBuilder: (index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 210,
-                          width: 150,
-                          child: Image(
-                            image: NetworkImage(
-                                DummyDb.featuredPicks[index]["image"] ?? ""),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(2),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                DummyDb.featuredPicks[index]["name"] ?? "",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                DummyDb.featuredPicks[index]["category"] ?? "",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              Row(spacing: 5, children: [
-                                Text(
-                                  DummyDb.featuredPicks[index]["oP"] ?? "",
-                                  style: TextStyle(
-                                    decoration: TextDecoration.lineThrough,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                Text(
-                                  DummyDb.featuredPicks[index]["nP"] ?? "",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  DummyDb.featuredPicks[index]["reduction"] ??
-                                      "",
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ])
-                            ],
-=======
                 Consumer<ProductProvider>(
                   builder: (context, provider, _) {
                     final picks = provider.featuredPicks;
@@ -1310,7 +1010,6 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProductDetailsPage2(),
->>>>>>> auth_with_token
                           ),
                         );
                       },
@@ -1665,11 +1364,6 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
         ],
         body: TabBarView(
           controller: tabBar3Controller,
-<<<<<<< HEAD
-          children: tabBar3Titles.map((_) {
-            return InfiniteScrollGridView(
-              sourceList: DummyDb.allProducts,
-=======
           children: tabBar3Titles.map((title) {
             return Consumer<ProductProvider>(
               builder: (context, provider, _) {
@@ -1680,7 +1374,6 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   sourceList: _sortProductsForTab(title, provider.allProducts),
                 );
               },
->>>>>>> auth_with_token
             );
           }).toList(),
         ),
@@ -1688,12 +1381,6 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
     );
   }
 
-<<<<<<< HEAD
-  Future<void> fetchAndStoreProducts() async {
-    //allProducts = await ProductService.fetchProducts();
-    setState(() {}); // Refresh UI after data is loaded
-  }
-=======
   //____________________________________for tab switch-----------------
   Future<void> fetchAndStoreProducts() async {
     allProducts = await ProductService.fetchProducts();
@@ -1738,7 +1425,6 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
     if (variants == null || variants.isEmpty) return 0;
     return variants.fold(0, (sum, v) => sum + (v.stock ?? 0));
   }
->>>>>>> auth_with_token
 }
 
 ///
