@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/cartcontroller.dart';
 import 'package:whitematrix_groupa_shopping_app/views/orderconfirmation/orderconfirmationscreen.dart';
 
 
 
 class PaymentOptionCard extends StatefulWidget {
+    final String userId;
+  final String bearerToken;
+
+  final Map<String, dynamic> shippingAddress;
    final double totalMRP;
   final double discountMRP;
   final double totalAmount;
@@ -16,6 +22,10 @@ class PaymentOptionCard extends StatefulWidget {
 
   const PaymentOptionCard({
     super.key,
+     required this.userId,
+    required this.bearerToken,
+
+    required this.shippingAddress,
     required this.isSelected,
     required this.onSelectionChanged,
     required this.totalMRP,
@@ -31,6 +41,8 @@ class PaymentOptionCard extends StatefulWidget {
 }
 
 class _PaymentOptionCardState extends State<PaymentOptionCard> {
+
+   bool isLoading = false;
 
 
   @override
@@ -126,23 +138,72 @@ class _PaymentOptionCardState extends State<PaymentOptionCard> {
               SizedBox(
                 width: double.infinity,
                 height: 40,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // handle order
-                     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OrderConfirmationScreen(
-            totalMRP: widget.totalMRP,
-            discountMRP: widget.discountMRP,
-            totalAmount: widget.totalAmount, // Use calculated total with COD fee
-            itemCount: widget.itemCount,
-            selectedItemImages: widget.selectedItemImages,
-            selectedProducts: widget.selectedProducts,
-          ),
-        ),
-      );
-                  },
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    :  ElevatedButton(
+                  onPressed: () async {
+                        // Validate inputs
+                          if (widget.userId.isEmpty ||
+                              widget.bearerToken.isEmpty ||
+                              widget.selectedProducts.isEmpty ||
+                              widget.shippingAddress.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Missing required order details'),
+                                backgroundColor: Colors.red,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                            return;
+                          }
+
+                          // Log input parameters
+                          print('📋 Placing order with:');
+                          print('User ID: ${widget.userId}');
+                          print('Token: ${widget.bearerToken}');
+                          print('Items: ${widget.selectedProducts}');
+                          print('Shipping Address: ${widget.shippingAddress}');
+                          print('Total Amount: ${widget.totalAmount}');
+
+                          setState(() => isLoading = true);
+                          final cartProvider = Provider.of<CartProvider>(context, listen: false);
+                          final success = await cartProvider.placeOrder(
+                            userId: widget.userId,
+                            items: widget.selectedProducts,
+                            shippingAddress: widget.shippingAddress,
+                            cartTotal: widget.totalAmount,
+                            paymentMethod: 'COD',
+                            token: widget.bearerToken,
+                          );
+
+                          setState(() => isLoading = false);
+
+                          // Navigate to OrderConfirmationScreen only if successful
+                          if (success) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderConfirmationScreen(
+                                  // totalMRP: widget.totalMRP,
+                                  // discountMRP: widget.discountMRP,
+                                  // totalAmount: widget.totalAmount,
+                                  // itemCount: widget.itemCount,
+                                  // selectedItemImages: widget.selectedItemImages,
+                                  // selectedProducts: widget.selectedProducts,
+                                ),
+                              ),
+                            );
+                          } else {
+                            // Show error message if order placement fails
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(cartProvider.couponMessage ?? 'Failed to place order'),
+                                backgroundColor: Colors.red,
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFF3D57),
                     shape: RoundedRectangleBorder(

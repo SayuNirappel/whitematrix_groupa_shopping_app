@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/get_all_products_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/dummydb.dart';
+import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_screen.dart';
@@ -117,7 +118,10 @@ void initState() {
           icon: const Icon(Icons.favorite_border_outlined,
               color: ColorConstants.textColor),
           onPressed: () {
-             Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingBagScreen(
+             Navigator.push(context, MaterialPageRoute(builder: (context) => Shoppingbag2(
+              userIdddd: ApiConstants.userID.toString(),
+               BearerToken: ApiConstants.token.toString(),
+
            //token: widget.token
           //id: widget.id
         ) ));
@@ -127,7 +131,9 @@ void initState() {
           icon: const Icon(Icons.shopping_bag_outlined,
               color: ColorConstants.textColor),
           onPressed: () {
-             Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingBagScreen(
+             Navigator.push(context, MaterialPageRoute(builder: (context) => Shoppingbag2(
+               userIdddd: ApiConstants.userID.toString(),
+               BearerToken: ApiConstants.token.toString(),
           //token: widget.token
           //id: widget.id
         ) ));

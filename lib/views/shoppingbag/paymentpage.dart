@@ -6,24 +6,29 @@ import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/widgets/paymen
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/widgets/payment/onlinepaymentoption.dart';
 
 
-
 class Paymentpage extends StatefulWidget {
-  final double totalMRP;
-  final double discountMRP;
-  final double totalAmount;
+   final String userId;
+  final String bearerToken;
+  final List<Map<String, dynamic>> selectedItems;
+  final double cartTotal;
+  final Map<String, dynamic> shippingAddress;
   final int itemCount;
   final List<String> selectedItemImages;
-  final List<Map<String, dynamic>> selectedProducts; // New parameter
+  final double totalMRP;
+  final double discountMRP;// New parameter
 
   const Paymentpage({
-    Key? key,
-    required this.totalMRP,
-    required this.discountMRP,
-    required this.totalAmount,
+     super.key,
+    required this.userId,
+    required this.bearerToken,
+    required this.selectedItems,
+    required this.cartTotal,
+    required this.shippingAddress,
     required this.itemCount,
     required this.selectedItemImages,
-    required this.selectedProducts,
-  }) : super(key: key);
+    required this.totalMRP,
+    required this.discountMRP,
+  });
 
   @override
   State<Paymentpage> createState() => _PaymentpageState();
@@ -45,9 +50,13 @@ class _PaymentpageState extends State<Paymentpage> {
     super.dispose();
   }
 
-    double get calculatedTotalAmount {
-    return isCashOnDeliverySelected ? widget.totalAmount + 10 : widget.totalAmount;
+  double get calculatedTotalAmount {
+    return isCashOnDeliverySelected ? widget.cartTotal + 10 : widget.cartTotal;
   }
+
+  //   double get calculatedTotalAmount {
+  //   return isCashOnDeliverySelected ? widget.totalAmount + 10 : widget.totalAmount;
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -223,20 +232,21 @@ class _PaymentpageState extends State<Paymentpage> {
           ),
         ),
         // payment option cash on delivery
-        PaymentOptionCard(
-        totalMRP: widget.totalMRP,
-  discountMRP: widget.discountMRP,
-  totalAmount: widget.totalAmount,
-  itemCount: widget.itemCount,
-  selectedItemImages: widget.selectedItemImages,
-  selectedProducts: widget.selectedProducts,
+     PaymentOptionCard(
+              totalMRP: widget.totalMRP,
+              discountMRP: widget.discountMRP,
+              totalAmount: calculatedTotalAmount,
+              itemCount: widget.itemCount,
+              selectedItemImages: widget.selectedItemImages,
+              selectedProducts: widget.selectedItems,
               isSelected: isCashOnDeliverySelected,
               onSelectionChanged: (value) {
                 setState(() {
                   isCashOnDeliverySelected = value;
                 });
-              },
-        ),
+              }, userId: widget.userId,
+              bearerToken: widget.bearerToken, shippingAddress: widget.shippingAddress,
+            ),
         
         
          Container(
@@ -255,14 +265,17 @@ class _PaymentpageState extends State<Paymentpage> {
             ],
           ),
         ),
-       OnlinePaymentOption(
-  totalMRP: widget.totalMRP,
-  discountMRP: widget.discountMRP,
-  totalAmount: widget.totalAmount,
-  itemCount: widget.itemCount,
-  selectedItemImages: widget.selectedItemImages,
-  selectedProducts: widget.selectedProducts,
-),
+        
+        OnlinePaymentOption(
+              totalMRP: widget.totalMRP,
+              discountMRP: widget.discountMRP,
+              totalAmount: widget.cartTotal,
+              itemCount: widget.itemCount,
+              selectedItemImages: widget.selectedItemImages,
+              selectedProducts: widget.selectedItems,
+              userId: widget.userId,
+              bearerToken: widget.bearerToken, shippingAddress: widget.shippingAddress,
+            ),
         Container(
           padding: EdgeInsets.all(10),
           height: 39,
@@ -280,21 +293,22 @@ class _PaymentpageState extends State<Paymentpage> {
           ),
         ),
         
-         // payment option cash on delivery
-        PaymentOptionCard(
-          totalMRP: widget.totalMRP,
-  discountMRP: widget.discountMRP,
-  totalAmount: widget.totalAmount,
-  itemCount: widget.itemCount,
-  selectedItemImages: widget.selectedItemImages,
-  selectedProducts: widget.selectedProducts,
-            isSelected: isCashOnDeliverySelected,
+        //  payment option cash on delivery
+      PaymentOptionCard(
+              totalMRP: widget.totalMRP,
+              discountMRP: widget.discountMRP,
+              totalAmount: calculatedTotalAmount,
+              itemCount: widget.itemCount,
+              selectedItemImages: widget.selectedItemImages,
+              selectedProducts: widget.selectedItems,
+              isSelected: isCashOnDeliverySelected,
               onSelectionChanged: (value) {
                 setState(() {
                   isCashOnDeliverySelected = value;
                 });
-              },
-        ),
+              }, userId: widget.userId,
+              bearerToken: widget.bearerToken, shippingAddress: widget.shippingAddress,
+            ),
 
           Container(
           height: 16,
@@ -503,3 +517,27 @@ class _PaymentpageState extends State<Paymentpage> {
     );
   }
 }
+
+  //  PaymentOptionCard(
+  //             totalMRP: widget.totalMRP,
+  //             discountMRP: widget.discountMRP,
+  //             totalAmount: calculatedTotalAmount,
+  //             itemCount: widget.itemCount,
+  //             selectedItemImages: widget.selectedItemImages,
+  //             selectedProducts: widget.selectedItems,
+  //             isSelected: isCashOnDeliverySelected,
+  //             onSelectionChanged: (value) {
+  //               setState(() {
+  //                 isCashOnDeliverySelected = value;
+  //               });
+  //             },
+  //           ),
+            // OnlinePaymentOption(
+            //   totalMRP: widget.totalMRP,
+            //   discountMRP: widget.discountMRP,
+            //   totalAmount: widget.cartTotal,
+            //   itemCount: widget.itemCount,
+            //   selectedItemImages: widget.selectedItemImages,
+            //   selectedProducts: widget.selectedItems,
+            // ),
+           

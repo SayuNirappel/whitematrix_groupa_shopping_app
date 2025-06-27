@@ -1,52 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/ordercontrollers.dart';
+import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/orderconfirmation/deliverytracking.dart';
 
 
 
 class OrderConfirmationScreen extends StatefulWidget {
-    final double totalMRP;
-  final double discountMRP;
-  final double totalAmount;
-  final int itemCount;
-  final List<String> selectedItemImages;
-  final List<Map<String, dynamic>> selectedProducts;
-
-  const OrderConfirmationScreen({
-    Key? key,
-    required this.totalMRP,
-    required this.discountMRP,
-    required this.totalAmount,
-    required this.itemCount,
-    required this.selectedItemImages,
-    required this.selectedProducts,
-  }) : super(key: key);
+  const OrderConfirmationScreen({Key? key}) : super(key: key);
 
   @override
   State<OrderConfirmationScreen> createState() => _OrderConfirmationScreenState();
 }
 
 class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
-  
-    @override
+  @override
   void initState() {
     super.initState();
-    // Navigate to LiveTrackingScreen after 30 seconds
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) => DeliveryTrackingScreen(
-          totalMRP: widget.totalMRP,
-            discountMRP: widget.discountMRP,
-            totalAmount: widget.totalAmount,
-            itemCount: widget.itemCount,
-            selectedItemImages: widget.selectedItemImages,
-            selectedProducts: widget.selectedProducts,
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<OrderProvider>().fetchUserOrders(
+            userId: ApiConstants.userID.toString(),
+            token: null, // Pass the actual token if available
+          );
+    });
+    Future.delayed(const Duration(seconds: 4), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LiveTracking(),
         ),
-      ));
+      );
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -60,62 +47,89 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
             color: Colors.black,
           ),
         ),
-  
+        backgroundColor: Colors.white,
       ),
-    backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+      backgroundColor: Colors.white,
+      body: Consumer<OrderProvider>(
+        builder: (context, orderProvider, child) {
+          if (orderProvider.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            Lottie.asset(
-              'assets/order_confirmation.json',
-              width: 200,
-              height: 200,
-              fit: BoxFit.fill,
-            ),
-             SizedBox(height: 20),
-  
-             Text(
-              'Order Successful!',
-              style: GoogleFonts.roboto(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.green[700],
-              ),
-            ),
-             SizedBox(height: 10),
-             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: Text(
-                'Yay! Your order is received \n Your order will arrive in 30 minutes',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.roboto(
-                  fontSize: 16,
-                  color: Colors.grey[700],
+          if (orderProvider.errorMessage != null) {
+            return Center(child: Text(orderProvider.errorMessage!));
+          }
+
+          if (orderProvider.orders.isEmpty) {
+            return const Center(child: Text('No orders found'));
+          }
+
+          // Select the most recent order (assuming the last order is the latest)
+          final latestOrder = orderProvider.orders.last;
+          final shippingAddress = latestOrder['shippingAddress'] ?? {};
+
+          // Format the address string
+          final addressString = shippingAddress.isNotEmpty
+              ? "${shippingAddress['fullName']}, ${shippingAddress['address']}, ${shippingAddress['city']}, ${shippingAddress['state']} ${shippingAddress['pincode']}"
+              : "Address not available";
+
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Lottie.asset(
+                  'assets/order_confirmation.json',
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.fill,
                 ),
-              ),
+                const SizedBox(height: 20),
+                Text(
+                  'Order Successful!',
+                  style: GoogleFonts.roboto(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green[700],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Text(
+                    'Yay! Your order is received \n Your order will arrive in 30 minutes',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.roboto(
+                      fontSize: 16,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/images/location logo.png', height: 50),
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: Text(
+                        addressString,
+                        style: GoogleFonts.roboto(
+                          fontSize: 14,
+                          color: Colors.grey[700],
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ),
+                    const SizedBox(width: 30),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
-            SizedBox(height: 50),
-           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-             children: [
-               Image.asset('assets/images/location logo.png', height: 50),
-               Text("User, State Highway bengalu...560068",
-                 style: GoogleFonts.roboto(
-                   fontSize: 14,
-                   color: Colors.grey[700],
-                 ),
-               ),
-               SizedBox(width: 30),
-             ],
-           ),
-            SizedBox(height: 20),
-           
-          ],
-        ),
+          );
+        },
       ),
-      
     );
   }
 }
