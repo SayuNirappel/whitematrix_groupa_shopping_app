@@ -1,11 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:whitematrix_groupa_shopping_app/controllers/product_provider.dart';
-import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
-import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/home_product_controller.dart';
+
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
-import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
 
 ///
 ///
@@ -327,7 +325,7 @@ class ContinuingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final featured = context.watch<ProductProvider>().featuredBrandsList;
+    final featured = context.watch<HomeProductController>().featuredBrandsList;
 
     if (featured.isEmpty) return const SizedBox();
 
