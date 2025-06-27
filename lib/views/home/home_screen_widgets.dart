@@ -375,14 +375,23 @@ class ContinuingRow extends StatelessWidget {
           ],
         );
       },
+      // onTap: (index) {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => ProductDetailsPage2(
+      //               productId:
+      //                   featured[index]["id"] ?? "685cf800728c88a1bc918219",
+      //             )),
+      //   );
+      // },
       onTap: (index) {
+        final productId = featured[index]["id"] ?? "685cf800728c88a1bc918219";
+
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ProductDetailsPage2(
-                    productId:
-                        featured[index]["id"] ?? "685cf800728c88a1bc918219",
-                  )),
+              builder: (context) => ProductDetailsPage2(productId: productId)),
         );
       },
     );
