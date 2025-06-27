@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whitematrix_groupa_shopping_app/controllers/product_provider.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/home_product_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +8,8 @@ class NotificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final notifications = context.watch<ProductProvider>().notificationList;
+    final notifications =
+        context.watch<HomeProductController>().notificationList;
 
     return Scaffold(
       appBar: AppBar(title: const Text("Notifications")),
