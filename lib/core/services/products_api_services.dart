@@ -17,7 +17,6 @@ class ProductsApiServices {
     return null;
   }
 
-  // method for fetching a single product
   Future<ProductsResModel?> fetchProductById(String id) async {
     final resp = await ApiHelper.getData(endpoint: "/product/$id");
     if (resp != null) {
