@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/bottom_nav_bar_controller.dart';
-import 'package:whitematrix_groupa_shopping_app/controllers/product_details_controller.dart';
-import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
-
+import 'package:whitematrix_groupa_shopping_app/views/splash/splash_screen.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
@@ -16,6 +14,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: ProductDetailsPage2(productId:'6856dc54ef1fd537011cffa0'));
+    return MaterialApp(home: SplashScreen());
   }
 }

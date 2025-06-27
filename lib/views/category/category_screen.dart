@@ -1,10 +1,20 @@
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/get_all_products_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
 class CategoryScreen extends StatefulWidget {
-  const CategoryScreen({super.key});
+ final String? token;
+ final String? id;
+
+  CategoryScreen({super.key, this.token, this.id});
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -38,13 +48,36 @@ class _CategoryScreenState extends State<CategoryScreen> {
     "Jewellery",
   ];
 
+ @override
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    context.read<GetAllProductsController>().fetchAllProducts(
+      token: widget.token
+    );
+  });
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appbar section
       appBar: _build_AppbarSection(),
       backgroundColor: ColorConstants.backgroundColor,
-      body: Row(
+      body: Consumer<GetAllProductsController>(builder: (context, value, child) {
+
+          if (value.isLoading) {
+      return const Center(child: CircularProgressIndicator(
+        color: ColorConstants.primaryColor,
+      ));
+    }
+
+    if (value.isError) {
+      return Center(
+        child: Text("Error: ${value.errorMessage ?? 'Something went wrong'}"),
+      );
+    }
+        return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 120,
@@ -52,15 +85,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
             child: ListView.builder(
               itemCount: categories.length,
               itemBuilder: (context, index) {
-                // category tab section
                 return _buildSideTab(index);
               },
             ),
           ),
-          // body of the corresponding category
           _build_body_Categorysection(selectedIndex),
         ],
-      ),
+      );
+        
+      },)
+      
     );
   }
 
@@ -82,12 +116,22 @@ class _CategoryScreenState extends State<CategoryScreen> {
         IconButton(
           icon: const Icon(Icons.favorite_border_outlined,
               color: ColorConstants.textColor),
-          onPressed: () {},
+          onPressed: () {
+             Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingBagScreen(
+           //token: widget.token
+          //id: widget.id
+        ) ));
+          },
         ),
         IconButton(
           icon: const Icon(Icons.shopping_bag_outlined,
               color: ColorConstants.textColor),
-          onPressed: () {},
+          onPressed: () {
+             Navigator.push(context, MaterialPageRoute(builder: (context) => ShoppingBagScreen(
+          //token: widget.token
+          //id: widget.id
+        ) ));
+          },
         ),
       ],
     );
@@ -134,8 +178,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
     return Expanded(
       child: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+         
           children: [
             SizedBox(height: 20),
+
+            
             if (index != 0)
               Container(
                 height: 60,
@@ -191,7 +240,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: List.generate(
-                  selectedList.length,
+                  1,
                   (sectionIndex) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -205,57 +254,102 @@ class _CategoryScreenState extends State<CategoryScreen> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          GridView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: itemsNameList.length,
-                            shrinkWrap: true,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 20,
-                              childAspectRatio: 1.0,
-                            ),
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ProductListingScreen(
-                                        title:
-                                            itemsNameList[index].toLowerCase(),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage: NetworkImage(
-                                          imageSectionList[selectedIndex]
-                                              [index]),
-                                    ),
-                                    Text(
-                                      itemsNameList[index],
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: ColorConstants.textColor,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
+                         Consumer<GetAllProductsController>(
+  builder: (context, controller, child) {
+    if (controller.isLoading) {
+      return Center(child: CircularProgressIndicator(
+        color: ColorConstants.brownText,
+      ));
+    }
+    if (controller.isError) {
+      return Center(child: Text(controller.errorMessage ?? 'Error loading products'));
+    }
+    if (controller.isEmpty) {
+      return Center(child: Text('No products available'));
+    }
+  
+ final categories = controller.uniqueCategories;
+    return GridView.builder(
+  shrinkWrap: true,
+  physics: NeverScrollableScrollPhysics(), // Prevent nested scrolling
+  itemCount: categories.length,
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 3,
+    childAspectRatio: 0.75,
+    crossAxisSpacing: 10,
+    mainAxisSpacing: 10,
+  ),
+  itemBuilder: (context, index) {
+    // final product = controller.productsList[index];
+    final category = controller.uniqueCategories[index];
+    
+ final image = context.watch<Dummydb>().products[index];  
+
+    return SizedBox(
+      height: 150,
+      width: 150,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+         
+              GestureDetector(
+                onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductListingScreen(
+                                   title: category.name,
+                                  ),
                                 ),
                               );
                             },
-                          ),
+                child: ClipOval(
+  child: Image.network(
+    category.image,
+    width: 80,
+    height: 80,
+    fit: BoxFit.cover,
+    errorBuilder: (context, error, stackTrace) {
+      return Image.asset(
+        image["image"],
+        width: 80,
+        height: 80,
+        fit: BoxFit.cover,
+      );
+    },
+    loadingBuilder: (context, child, loadingProgress) {
+      if (loadingProgress == null) return child;
+      return const SizedBox(
+        width: 80,
+        height: 80,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    },
+  ),
+)
+              ),
+          SizedBox(height: 8),
+          Text(
+            category.name,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+
+    );
+  },
+);
+
+  },
+),
+                         
                         ],
                       )),
             ),
+  
+
+            
           ],
         ),
       ),
@@ -266,6 +360,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
     bool isSelectedTab = selectedIndex == index;
     bool isAboveSelected = index == selectedIndex - 1;
     bool isBelowSelected = index == selectedIndex + 1;
+
+    final image = context.watch<Dummydb>().products[index];  
 
     return Row(
       children: [
@@ -309,7 +405,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         width: 60,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage(DummyDb.sideTabSection[index]),
+                            image: kIsWeb
+      ? AssetImage(image["image"]) as ImageProvider
+      : NetworkImage(DummyDb.sideTabSection[index]),
                             fit: BoxFit.cover,
                           ),
                           borderRadius: BorderRadius.circular(10),

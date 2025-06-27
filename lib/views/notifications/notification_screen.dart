@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
-import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
@@ -68,11 +68,11 @@ class NotificationScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.pop(context); // pop screen 2
                         Future.delayed(Duration(milliseconds: 50), () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) => ProductDetailsPage2()),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProductDetailsPage2()),
+                          );
                         });
                       },
                       child: Container(

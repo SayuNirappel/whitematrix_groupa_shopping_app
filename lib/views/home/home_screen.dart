@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
+import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/home/home_screen_widgets.dart';
 import 'package:whitematrix_groupa_shopping_app/views/notifications/notification_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/profile/profile_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -80,7 +82,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               SizedBox(
                 width: 15,
               ),
-              Icon(Icons.account_circle_outlined),
+              InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()));
+                  },
+                  child: Icon(Icons.account_circle_outlined)),
               SizedBox(
                 width: 15,
               )
@@ -107,10 +116,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: InkWell(
                         onTap: () {
+                          final token = ApiConstants.token;
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CategoryScreen()));
+                                  builder: (context) => CategoryScreen(
+                                    token: token,  
+
+                                  )));
                         },
                         child: Icon(Icons.window_outlined)),
                   ) //path to collections
@@ -255,18 +268,27 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           ///-----------------------Ad-------------------------------------------
           ///
           SliverToBoxAdapter(
-            child: InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CategoryScreen()));
+            child: Builder(
+              builder: (context) {
+                final token = ApiConstants.token;
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CategoryScreen(
+                                  token: token,
+                                )));
+                  },
+                  child: TempAdBanner(
+                    borderColor: Colors.deepOrange,
+                    containerColor: Colors.orangeAccent,
+                    textrColor: Colors.white,
+                    height: 50,
+                    fSize: 20,
+                  ),
+                );
               },
-              child: TempAdBanner(
-                borderColor: Colors.deepOrange,
-                containerColor: Colors.orangeAccent,
-                textrColor: Colors.white,
-                height: 50,
-                fSize: 20,
-              ),
             ),
           ),
 
@@ -286,8 +308,11 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           SliverToBoxAdapter(
             child: InkWell(
               onTap: () {
+                 final token = ApiConstants.token;
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CategoryScreen()));
+                    MaterialPageRoute(builder: (context) => CategoryScreen(
+                      token: token,
+                    )));
               },
               child: TempAdBanner(
                 borderColor: Colors.white,
@@ -361,10 +386,13 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                     );
                   },
                   onTap: (index) {
+                     final token = ApiConstants.token;
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => CategoryScreen()));
+                            builder: (context) => CategoryScreen(
+                              token: token,
+                            )));
                   },
                 ),
               ],
@@ -473,10 +501,13 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                           );
                         },
                         onTap: (index) {
+                           final token = ApiConstants.token;
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CategoryScreen()));
+                                  builder: (context) => CategoryScreen(
+                                    token: token,
+                                  )));
                         },
                       ),
                     ],
