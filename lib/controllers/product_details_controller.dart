@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/core/services/products_api_services.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
@@ -6,10 +7,11 @@ class ProductProvider with ChangeNotifier {
 ProductsResModel? selectedProduct;
 
   bool isLoading = false;
+  bool isAddingToCart = false;
 
   Future<void> fetchProductById(String id) async {
     isLoading = true;
-  selectedProduct = null; // reset old data
+  selectedProduct = null; 
   notifyListeners();
 
   try {
@@ -27,6 +29,48 @@ ProductsResModel? selectedProduct;
   isLoading = false;
   notifyListeners();
   }
+  
+  ///add to cart
+  Future<void> addProductToCart(
+  String userId, 
+  String productId,
+  ProductsResModel product,
+  String selectedSku, 
+  int quantity,
+  BuildContext context,
+) async {
+  isAddingToCart = true;
+  notifyListeners();
+
+  try {
+    // Get variant by SKU
+    final variant = product.variants!.firstWhere(
+      (v) => v.sku == selectedSku,
+      orElse: () => throw Exception("SKU not found"),
+    );
+
+    final data = {
+      "productId": product.id,
+      "sku": variant.sku,
+      "quantity": quantity,
+    };
+
+   final response = await ProductsApiServices().addToCart(userId, data);
+
+  if (response == true) {
+    print("✅ Product added to cart");
+  } else {
+    print("❌ Cart API failed.");
+  }
+
+  } catch (e) {
+    log("❌ Error adding to cart: $e");
+  }
+
+  isAddingToCart = false;
+  notifyListeners();
+}
+
 
   double calculateOfferPrice({String? selectedSize}) {
     if (selectedProduct == null || selectedProduct!.variants == null || selectedProduct!.variants?.isEmpty == true) {
@@ -53,6 +97,7 @@ ProductsResModel? selectedProduct;
 
     return _calculateDiscountedPrice(price, discount);
   }
+
 
   String? discountText({String? selectedSize}) {
     if (selectedProduct == null || selectedProduct!.variants?.isEmpty != false) return null;
@@ -82,7 +127,6 @@ ProductsResModel? selectedProduct;
         return '${discount.value}% OFF';
       }
     }
-
     return null;
   }
 
@@ -152,14 +196,4 @@ ProductsResModel? selectedProduct;
     return price.toDouble();
   }
 
-  // void updateSelectedImageIndex(int index) {
-  //   selectedImageIndex = index;
-  //   notifyListeners();
-  // }
-
-  // void updateSelectedSizeAndIndex(String size, List<Variant> variants) {
-  //   selectedSize = size;
-  //   selectedVariantIndex = variants.indexWhere((v) => v.size == size);
-  //   notifyListeners();
-  // }
 }

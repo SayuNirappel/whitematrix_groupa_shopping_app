@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/bottom_nav_bar_controller.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/product_details_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/views/splash/splash_screen.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => BottomNavBarController()),
-    ChangeNotifierProvider(create: (_) => ProductProvider()..fetchInitialData())
+    ChangeNotifierProvider(create: (_) => ProductProvider())
   ], child: const MyApp()));
 }
 

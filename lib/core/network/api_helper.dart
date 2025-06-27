@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
@@ -25,4 +26,27 @@ class ApiHelper {
     }
     return null;
   }
+  
+  
+  static Future<http.Response?> postData({
+  required String endpoint,
+  Map<String, dynamic>? data,
+}) async {
+  final url = Uri.parse(AppConfig.baseUrl + endpoint);
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+         "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODViNmQ3NTgzNGU1YWE4Y2RhZjE4YjEiLCJpYXQiOjE3NTA4MzUzODUsImV4cCI6MTc1MTQ0MDE4NX0.FSFcXs_RgTC7v17oPWtMseUBfkPxMYsEgK4kLgCSg4E",
+         "Content-Type": "application/json"
+      },
+      body: jsonEncode(data),
+    );
+
+    return response; 
+  } catch (e) {
+    log('❌ Error sending POST request: $e');
+    return null;
+  }
+}
 }
