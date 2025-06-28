@@ -4,6 +4,7 @@ import 'package:whitematrix_groupa_shopping_app/controllers/home_product_control
 import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
+import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/banner_service.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/product_service.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
@@ -55,7 +56,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           bottom: _buildTabBar(),
         ),
         body: productProvider.isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(
+                color: Color(0xFFE91E63),
+              ))
             : TabBarView(
                 children: [
                   NestedTabScreenWidget(),
@@ -94,8 +98,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => CategoryScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => CategoryScreen(
+                              token: ApiConstants.token,
+                              id: ApiConstants.userID,
+                            )));
               },
               child: const Icon(Icons.window_outlined),
             ),
@@ -340,21 +349,30 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Column(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: isSelected
-                                    ? Colors.transparent
-                                    : Colors.amber.shade300,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 2,
+                                  color: isSelected
+                                      ? Colors.transparent
+                                      : Colors.amber.shade300,
+                                ),
                               ),
-                            ),
-                            height: 50,
-                            width: 50,
-                            clipBehavior: Clip.antiAlias,
-                            child: Image.network(
-                              item["image"]!,
-                              fit: BoxFit.cover,
+                              child: Image.network(
+                                item["image"] ??
+                                    "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.network(
+                                    "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              ),
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -450,20 +468,6 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                         ? filteredIds
                         : null, // Pass null if fallback to banner
                   );
-                },
-              ),
-            ),
-          ),
-
-          ///
-          ///-----------------------Ad-------------------------------------------
-          ///
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Consumer<HomeProductController>(
-                builder: (context, provider, _) {
-                  return CarouselSliders(imageUrls: provider.bannerImages);
                 },
               ),
             ),
@@ -571,6 +575,20 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 ContinuingRow(),
                 SizedBox(height: 10),
               ],
+            ),
+          ),
+
+          ///
+          ///-----------------------Ad-------------------------------------------
+          ///
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Consumer<HomeProductController>(
+                builder: (context, provider, _) {
+                  return CarouselSliders(imageUrls: provider.bannerImages);
+                },
+              ),
             ),
           ),
 
@@ -736,10 +754,21 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               child: Stack(
                                 children: [
                                   Image.network(
-                                    item["image"]!,
+                                    item["image"] ?? "",
                                     fit: BoxFit.cover,
                                     height: double.infinity,
                                     width: double.infinity,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: Colors.grey.shade300,
+                                        alignment: Alignment.center,
+                                        child: const Icon(
+                                          Icons.broken_image,
+                                          color: Colors.grey,
+                                          size: 40,
+                                        ),
+                                      );
+                                    },
                                   ),
 
                                   /// ↓↓↓ Semi-transparent background with content ↓↓↓
@@ -926,9 +955,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
             child: Column(
               children: [
                 SizedBox(height: 20),
-                Text(
-                  "HIDDEN GEMS",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                TitleRow(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  title: "Hidden Gems",
+                  fontSize: 20,
                 ),
                 SizedBox(height: 10),
                 Consumer<HomeProductController>(
@@ -954,7 +984,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 ),
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  title: "Mynthre Recommends",
+                  title: "Mynthra Recommends",
                   fontSize: 20,
                 ),
                 SizedBox(
@@ -996,8 +1026,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               height: 210,
                               width: 150,
                               child: Image(
-                                image:
-                                    NetworkImage(picks[index]["image"] ?? ""),
+                                image: NetworkImage(picks[index]["image"] ??
+                                    "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg"),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -1116,8 +1146,9 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     height: 210,
                                     width: 150,
                                     child: Image(
-                                      image: NetworkImage(
-                                          nearby[index]["image"] ?? ""),
+                                      image: NetworkImage(nearby[index]
+                                              ["image"] ??
+                                          "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg"),
                                       fit: BoxFit.cover,
                                     ),
                                   ),

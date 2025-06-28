@@ -62,10 +62,10 @@ class HomeProductController with ChangeNotifier {
 
     return [
       {
-        "type": allProducts[12].category,
-        "offer": allProducts[12].discount?.type.toString() ?? "None",
-        "image": getImage(12),
-        "id": allProducts[12].id,
+        "type": allProducts[11].category,
+        "offer": allProducts[11].discount?.type.toString() ?? "None",
+        "image": getImage(11),
+        "id": allProducts[11].id,
       },
       {
         "type": allProducts[0].category,
@@ -90,7 +90,7 @@ class HomeProductController with ChangeNotifier {
   }
 
   List<Map<String, String>> get featuredPicks {
-    final indices = [1, 3, 5, 7, 9];
+    final indices = [1, 3, 7, 9, 5];
     return indices
         .where((i) => i < allProducts.length)
         .map((i) => {

@@ -40,15 +40,7 @@ class _OrdersState extends State<Orders> {
         backgroundColor: Colors.white,
         leading: IconButton(
             onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Shoppingbag2(
-                      userIdddd: ApiConstants.userID.toString(),
-                      BearerToken: ApiConstants.token.toString()),
-                ),
-                (Route<dynamic> route) => false,
-              );
+        Navigator.pop(context);
             },
             icon: Icon(Icons.arrow_back)),
         title: Text(

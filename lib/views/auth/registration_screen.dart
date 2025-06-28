@@ -46,7 +46,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   Text(
                     "Welcome to Mynthra",
                     style: TextStyle(
-                        color: Colors.red,
+                        color: Color(0xFFE91E63),
                         fontSize: 40,
                         fontWeight: FontWeight.bold),
                   ),
@@ -184,8 +184,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     },
                   ),
                   ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFE91E63)),
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         try {
@@ -241,17 +241,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       Text("If already have an account"),
                       TextButton(
                           onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              Navigator.pushReplacement(
-                                  (context),
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
-                            }
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()),
+                            );
                           },
                           child: Text(
                             "Login",
                             style: TextStyle(
-                                color: Colors.red.shade900,
+                                color: Color.fromARGB(255, 118, 16, 50),
                                 fontWeight: FontWeight.bold),
                           ))
                     ],

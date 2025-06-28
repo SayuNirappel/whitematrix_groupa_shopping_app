@@ -44,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     "Welcome Back to Mynthra",
                     style: TextStyle(
-                        color: Colors.red,
+                        color: Color(0xFFE91E63),
                         fontSize: 40,
                         fontWeight: FontWeight.bold),
                   ),
@@ -103,8 +103,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFE91E63)),
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         final email = userNameController.text.trim();
@@ -159,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Text(
                             "Register",
                             style: TextStyle(
-                                color: Colors.red.shade900,
+                                color: Color.fromARGB(255, 118, 16, 50),
                                 fontWeight: FontWeight.bold),
                           ))
                     ],

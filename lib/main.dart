@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/bottom_nav_bar_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/cartcontroller.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/get_all_products_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/home_product_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/ordercontrollers.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/product_details_controller.dart';
@@ -17,6 +18,7 @@ void main() {
     ChangeNotifierProvider(create: (context) => CartProvider()),
     ChangeNotifierProvider(create: (context) => offersdb()),
     ChangeNotifierProvider(create: (context) => OrderProvider()),
+    ChangeNotifierProvider(create: (context) => GetAllProductsController()),
   ], child: const MyApp()));
 }
 
