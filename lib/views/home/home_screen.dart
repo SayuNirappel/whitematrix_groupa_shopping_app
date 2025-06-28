@@ -462,20 +462,6 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           ),
 
           ///
-          ///-----------------------Ad-------------------------------------------
-          ///
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Consumer<HomeProductController>(
-                builder: (context, provider, _) {
-                  return CarouselSliders(imageUrls: provider.bannerImages);
-                },
-              ),
-            ),
-          ),
-
-          ///
           ///
           ///------------------------------------Double Layer Row-------------------------------------------
           ///
@@ -577,6 +563,20 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 ContinuingRow(),
                 SizedBox(height: 10),
               ],
+            ),
+          ),
+
+          ///
+          ///-----------------------Ad-------------------------------------------
+          ///
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Consumer<HomeProductController>(
+                builder: (context, provider, _) {
+                  return CarouselSliders(imageUrls: provider.bannerImages);
+                },
+              ),
             ),
           ),
 
@@ -932,9 +932,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
             child: Column(
               children: [
                 SizedBox(height: 20),
-                Text(
-                  "HIDDEN GEMS",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                TitleRow(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  title: "Hidden Gems",
+                  fontSize: 20,
                 ),
                 SizedBox(height: 10),
                 Consumer<HomeProductController>(
