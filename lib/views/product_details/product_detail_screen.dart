@@ -8,6 +8,7 @@ import 'package:whitematrix_groupa_shopping_app/core/network/api_helper.dart';
 import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
 class ProductDetailsPage2 extends StatefulWidget {
   final String productId;
@@ -123,7 +124,7 @@ class _ProductDetailsPage2State extends State<ProductDetailsPage2> {
             slivers: [
               // Header section
               buildHeader(
-                  context, product, offerPrice, discountText, avgRating),
+                  context, product, offerPrice, discountText, avgRating, userId: userId),
 
               // Image carousel
               SliverToBoxAdapter(
@@ -738,8 +739,10 @@ class _ProductDetailsPage2State extends State<ProductDetailsPage2> {
     product,
     double offerPrice,
     String? discountText,
-    double avgRating,
-  ) {
+    double avgRating, {
+    String userId = '685d96d6530d52e9c7e6e686', // Default or pass 
+    String bearerToken = '', // Provide a default or pass 
+  }) {
     final List<dynamic> reviews = product.reviews ?? [];
     final int totalReviews = reviews.length;
 
@@ -758,10 +761,9 @@ class _ProductDetailsPage2State extends State<ProductDetailsPage2> {
           SizedBox(
             height: 30,
             width: 30,
-            // child: Image.network(
-            //   'https://aartisto.com/wp-content/uploads/2020/11/myntra-930x620.png',
-            //   fit: BoxFit.contain,
-            // ),
+            child: Image.asset('assets/images/myntra.svg',
+              fit: BoxFit.contain,
+            ),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -851,7 +853,18 @@ class _ProductDetailsPage2State extends State<ProductDetailsPage2> {
             onPressed: () {}),
         IconButton(
             icon: const Icon(Icons.shopping_bag_outlined, size: 25),
-            onPressed: () {}),
+            onPressed: () {
+            
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Shoppingbag2(
+                    userIdddd: userId,
+                     BearerToken: bearerToken, 
+                  ),
+                ),
+              );
+            }),
       ],
     );
   }
@@ -1329,17 +1342,24 @@ SafeArea buildBottomButtons({
                   );
                   return;
                 }
-                final product = provider.selectedProduct;
-                if (product == null) return;
+               final product = provider.selectedProduct;
+
+                if (product == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Please wait, product is still loading...")),
+                  );
+                  return;
+                }
 
                 provider.addProductToCart(
                   userId,
-                  productId,
+                  product.id!,
                   product,
                   selectedSku,
                   quantity,
                   context,
                 );
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text("Added to cart")),
                 );
