@@ -346,21 +346,29 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Column(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                color: isSelected
-                                    ? Colors.transparent
-                                    : Colors.amber.shade300,
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.transparent
+                                      : Colors.amber.shade300,
+                                ),
                               ),
-                            ),
-                            height: 50,
-                            width: 50,
-                            clipBehavior: Clip.antiAlias,
-                            child: Image.network(
-                              item["image"]!,
-                              fit: BoxFit.cover,
+                              child: Image.network(
+                                item["image"] ??
+                                    "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.network(
+                                    "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              ),
                             ),
                           ),
                           const SizedBox(height: 4),
