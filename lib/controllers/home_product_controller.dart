@@ -3,7 +3,7 @@ import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/product_service.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/banner_service.dart';
 
-class ProductProvider with ChangeNotifier {
+class HomeProductController with ChangeNotifier {
   List<ProductsResModel> allProducts = [];
   List<ProductsResModel> genderProducts = [];
   List<String> bannerImages = [];

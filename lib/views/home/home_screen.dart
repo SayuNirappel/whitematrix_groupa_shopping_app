@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:whitematrix_groupa_shopping_app/controllers/product_provider.dart';
+import 'package:whitematrix_groupa_shopping_app/controllers/home_product_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
@@ -28,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     // Fetch products from provider when screen loads
     Future.microtask(() {
-      Provider.of<ProductProvider>(context, listen: false).fetchInitialData();
+      Provider.of<HomeProductController>(context, listen: false)
+          .fetchInitialData();
     });
 
     loadInitialData(); // load local or cached data
@@ -41,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final productProvider = Provider.of<ProductProvider>(context);
+    final productProvider = Provider.of<HomeProductController>(context);
 
     return DefaultTabController(
       length: 4,
@@ -219,7 +220,7 @@ class FilteredTabScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProductProvider>(
+    return Consumer<HomeProductController>(
       builder: (context, productProvider, _) {
         final genderedProducts = productProvider.genderProducts;
 
@@ -312,7 +313,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
 
   @override
   Widget build(BuildContext context) {
-    final productProvider = Provider.of<ProductProvider>(context);
+    final productProvider = Provider.of<HomeProductController>(context);
     final categories = productProvider.categories;
     return DefaultTabController(
       length: tabBar3Titles.length,
@@ -416,7 +417,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 10),
-              child: Consumer<ProductProvider>(
+              child: Consumer<HomeProductController>(
                 builder: (context, provider, _) {
                   return CarouselSliders(imageUrls: provider.bannerImages);
                 },
@@ -451,7 +452,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           ///
           ///
           SliverToBoxAdapter(
-            child: Consumer<ProductProvider>(
+            child: Consumer<HomeProductController>(
               builder: (context, provider, _) {
                 final featured = provider.featuredBrandsList;
 
@@ -651,7 +652,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   fontSize: 20,
                 ),
                 SizedBox(height: 10),
-                Consumer<ProductProvider>(
+                Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     return RowWithBorderContainerType1(
                       dBList: provider.featuredBrandsList,
@@ -676,7 +677,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   fontSize: 20,
                   mainAxisAlignment: MainAxisAlignment.start,
                 ),
-                Consumer<ProductProvider>(
+                Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     return ScrollingRow(
                       itemCount: provider.featuredPicks.length,
@@ -806,7 +807,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                 ),
-                Consumer<ProductProvider>(
+                Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     return PhotoTypeRow(bslist: provider.bestSellerCategory);
                   },
@@ -864,7 +865,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   fontSize: 15,
                 ),
                 SizedBox(height: 10),
-                Consumer<ProductProvider>(
+                Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     return RowWithBorderContainerType1(
                         dBList: provider.seasonsBrandsList);
@@ -889,7 +890,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                 ),
                 SizedBox(height: 10),
-                Consumer<ProductProvider>(
+                Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     return PhotoTypeRow(bslist: provider.hiddenGems);
                   },
@@ -940,7 +941,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 SizedBox(
                   height: 10,
                 ),
-                Consumer<ProductProvider>(
+                Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     final picks = provider.featuredPicks;
 
@@ -1059,7 +1060,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                       SizedBox(
                         height: 10,
                       ),
-                      Consumer<ProductProvider>(
+                      Consumer<HomeProductController>(
                         builder: (context, provider, _) {
                           final nearby = provider.trendingNearby;
 
@@ -1137,7 +1138,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 SizedBox(height: 10),
 
                 /// 👇 Wrap with Consumer to access Provider
-                Consumer<ProductProvider>(
+                Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     final featured = provider.featuredBrandsList;
 
@@ -1170,7 +1171,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 ),
 
                 ///  Use Provider for bannerImages
-                Consumer<ProductProvider>(
+                Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     return CarouselSliders(imageUrls: provider.bannerImages);
                   },
@@ -1203,7 +1204,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 SizedBox(height: 10),
 
                 /// 👇 Replace DummyDb with provider version
-                Consumer<ProductProvider>(
+                Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     return RowWithBorderContainerType1(
                       dBList: provider.seasonsBrandsList,
@@ -1368,7 +1369,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
         body: TabBarView(
           controller: tabBar3Controller,
           children: tabBar3Titles.map((title) {
-            return Consumer<ProductProvider>(
+            return Consumer<HomeProductController>(
               builder: (context, provider, _) {
                 final sortedProducts =
                     _sortProductsForTab(title, provider.allProducts);
