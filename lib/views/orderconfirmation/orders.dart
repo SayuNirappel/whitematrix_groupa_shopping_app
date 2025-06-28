@@ -8,7 +8,6 @@ import 'package:whitematrix_groupa_shopping_app/views/orderconfirmation/dummydb.
 import 'package:whitematrix_groupa_shopping_app/views/orderconfirmation/orderdetails.dart';
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
-
 class Orders extends StatefulWidget {
   const Orders({super.key});
 
@@ -25,9 +24,9 @@ class _OrdersState extends State<Orders> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<OrderProvider>().fetchUserOrders(
-        userId: ApiConstants.userID.toString(),
-        token: null,
-      );
+            userId: ApiConstants.userID.toString(),
+            token: null,
+          );
     });
   }
 
@@ -39,10 +38,19 @@ class _OrdersState extends State<Orders> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(onPressed: () {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => Shoppingbag2(userIdddd: ApiConstants.userID.toString(), BearerToken:ApiConstants.token.toString() ),),
-          (Route<dynamic> route) => false,);
-        }, icon: Icon(Icons.arrow_back)),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Shoppingbag2(
+                      userIdddd: ApiConstants.userID.toString(),
+                      BearerToken: ApiConstants.token.toString()),
+                ),
+                (Route<dynamic> route) => false,
+              );
+            },
+            icon: Icon(Icons.arrow_back)),
         title: Text(
           'My Orders',
           style: GoogleFonts.roboto(
@@ -51,16 +59,18 @@ class _OrdersState extends State<Orders> {
             color: Colors.black,
           ),
         ),
-        
       ),
       body: orderProvider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : orderProvider.errorMessage != null
-              ? Center(child: Text("No orders found",style: TextStyle(
-                color: Colors.black54,
-                fontWeight: FontWeight.w600,
-                fontSize: 20
-              ),))
+              ? Center(
+                  child: Text(
+                  "No orders found",
+                  style: TextStyle(
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20),
+                ))
               : orderProvider.orders.isEmpty
                   ? const Center(child: Text('No orders found'))
                   : SingleChildScrollView(
@@ -280,7 +290,8 @@ class _OrdersState extends State<Orders> {
                                         fontWeight: FontWeight.bold,
                                         color: Colors.grey[600],
                                         textStyle: const TextStyle(
-                                          decoration: TextDecoration.lineThrough,
+                                          decoration:
+                                              TextDecoration.lineThrough,
                                           decorationThickness: 2.0,
                                           decorationStyle:
                                               TextDecorationStyle.solid,
@@ -338,22 +349,21 @@ class _OrdersState extends State<Orders> {
   }
 
   Widget _buildOrdersList(OrderProvider orderProvider) {
-   var orders = List<Map<String, dynamic>>.from(orderProvider.orders);
-orders.sort((a, b) {
-  try {
-    final aDate = DateTime.parse(a['placedAt']);
-    final bDate = DateTime.parse(b['placedAt']);
-    return bDate.compareTo(aDate); // Descending order
-  } catch (e) {
-    print("Error parsing placedAt: $e");
-    return 0;
-  }
-});
-
-
+    var orders = List<Map<String, dynamic>>.from(orderProvider.orders);
+    orders.sort((a, b) {
+      try {
+        final aDate = DateTime.parse(a['placedAt']);
+        final bDate = DateTime.parse(b['placedAt']);
+        return bDate.compareTo(aDate); // Descending order
+      } catch (e) {
+        print("Error parsing placedAt: $e");
+        return 0;
+      }
+    });
 
     if (selectedStatus != null && selectedStatus != "All") {
-      orders = orders.where((order) => order['status'] == selectedStatus).toList();
+      orders =
+          orders.where((order) => order['status'] == selectedStatus).toList();
     }
 
     if (selectedTime != null && selectedTime != "Anytime") {
@@ -392,9 +402,10 @@ orders.sort((a, b) {
         orders.length,
         (index) {
           final order = orders[index];
-          final item = order['items'] != null && (order['items'] as List).isNotEmpty
-              ? order['items'][0]
-              : null;
+          final item =
+              order['items'] != null && (order['items'] as List).isNotEmpty
+                  ? order['items'][0]
+                  : null;
 
           if (item == null) return const SizedBox.shrink();
 
@@ -452,7 +463,10 @@ orders.sort((a, b) {
                                 ],
                               ),
                               Text(
-                                order['placedAt']?.toString().substring(0, 10) ?? 'Unknown Date',
+                                order['placedAt']
+                                        ?.toString()
+                                        .substring(0, 10) ??
+                                    'Unknown Date',
                                 style: GoogleFonts.roboto(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
@@ -468,12 +482,12 @@ orders.sort((a, b) {
                     InkWell(
                       onTap: () {
                         Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Orderdetails(orderId: order['_id']?.toString() ?? ''),
-      ),
-    );
-
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Orderdetails(
+                                orderId: order['_id']?.toString() ?? ''),
+                          ),
+                        );
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -493,28 +507,34 @@ orders.sort((a, b) {
                                       item['image']?.toString() ?? '',
                                       height: 70,
                                       width: 70,
-                                      errorBuilder: (context, error, stackTrace) => Container(
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Container(
                                         width: 70,
                                         height: 70,
                                         color: Colors.grey[300],
-                                        child: Image.asset("assets/images/check.jpg"),
+                                        child: Image.asset(
+                                            "assets/images/check.jpg"),
                                       ),
                                     ),
                                   ),
                                   const SizedBox(width: 10),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        item['title']?.toString() ?? 'Unknown Brand',
+                                        item['title']?.toString() ??
+                                            'Unknown Brand',
                                         style: GoogleFonts.roboto(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       Text(
-                                      item['brand']["name"]?.toString() ?? 'Unknown Item',
+                                        item['brand']["name"]?.toString() ??
+                                            'Unknown Item',
                                         style: GoogleFonts.roboto(
                                           fontSize: 12,
                                           fontWeight: FontWeight.normal,
@@ -577,21 +597,23 @@ orders.sort((a, b) {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                           Row(
-                            children: [
-                              StarRating(
-                                size: 25.0,
-                                rating: (item['reviews']?.isNotEmpty ?? false)
-                                    ? item['reviews'][0]['rating']?.toDouble() ?? 3.0
-                                    : 3.0,
-                                color: Colors.red,
-                                borderColor: Colors.grey,
-                                allowHalfRating: true,
-                                starCount: 5,
-                                onRatingChanged: (rating) => setState(() {}),
-                              ),
-                            ],
-                          ),
+                            Row(
+                              children: [
+                                StarRating(
+                                  size: 25.0,
+                                  rating: (item['reviews']?.isNotEmpty ?? false)
+                                      ? item['reviews'][0]['rating']
+                                              ?.toDouble() ??
+                                          3.0
+                                      : 3.0,
+                                  color: Colors.red,
+                                  borderColor: Colors.grey,
+                                  allowHalfRating: true,
+                                  starCount: 5,
+                                  onRatingChanged: (rating) => setState(() {}),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -644,7 +666,8 @@ orders.sort((a, b) {
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          order['shippingAddress']?['fullName']?.toString() ?? 'Unknown',
+                          order['shippingAddress']?['fullName']?.toString() ??
+                              'Unknown',
                           style: GoogleFonts.roboto(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -711,11 +734,16 @@ orders.sort((a, b) {
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _buildFilterOption(setModalState, "All", selectedStatus),
-                        _buildFilterOption(setModalState, "On the way", selectedStatus),
-                        _buildFilterOption(setModalState, "Delivered", selectedStatus),
-                        _buildFilterOption(setModalState, "Cancelled", selectedStatus),
-                        _buildFilterOption(setModalState, "Returned", selectedStatus),
+                        _buildFilterOption(
+                            setModalState, "All", selectedStatus),
+                        _buildFilterOption(
+                            setModalState, "On the way", selectedStatus),
+                        _buildFilterOption(
+                            setModalState, "Delivered", selectedStatus),
+                        _buildFilterOption(
+                            setModalState, "Cancelled", selectedStatus),
+                        _buildFilterOption(
+                            setModalState, "Returned", selectedStatus),
                       ],
                     ),
                     const Divider(height: 30, thickness: 1),
@@ -731,10 +759,14 @@ orders.sort((a, b) {
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _buildFilterOption(setModalState, "Anytime", selectedTime),
-                        _buildFilterOption(setModalState, "Last 30 days", selectedTime),
-                        _buildFilterOption(setModalState, "Last 6 months", selectedTime),
-                        _buildFilterOption(setModalState, "Last year", selectedTime),
+                        _buildFilterOption(
+                            setModalState, "Anytime", selectedTime),
+                        _buildFilterOption(
+                            setModalState, "Last 30 days", selectedTime),
+                        _buildFilterOption(
+                            setModalState, "Last 6 months", selectedTime),
+                        _buildFilterOption(
+                            setModalState, "Last year", selectedTime),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -806,7 +838,8 @@ orders.sort((a, b) {
     );
   }
 
-  Widget _buildFilterOption(StateSetter setModalState, String option, String? selectedValue) {
+  Widget _buildFilterOption(
+      StateSetter setModalState, String option, String? selectedValue) {
     return InkWell(
       onTap: () {
         setModalState(() {

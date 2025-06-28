@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/bottom_nav_bar_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/views/home/home_screen.dart';

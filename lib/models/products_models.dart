@@ -1,5 +1,4 @@
 class Sproduct {
-  
   final String brand;
   final String title;
   final double rating;
@@ -12,7 +11,6 @@ class Sproduct {
   final bool isExpress;
 
   const Sproduct({
-    
     required this.brand,
     required this.title,
     required this.rating,

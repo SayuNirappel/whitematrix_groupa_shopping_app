@@ -3,14 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/cartcontroller.dart';
 import 'package:whitematrix_groupa_shopping_app/views/orderconfirmation/orderconfirmationscreen.dart';
 
-
-
 class OnlinePaymentOption extends StatefulWidget {
-      final String userId;
+  final String userId;
   final String bearerToken;
 
   final Map<String, dynamic> shippingAddress;
-    final double totalMRP;
+  final double totalMRP;
   final double discountMRP;
   final double totalAmount;
   final int itemCount;
@@ -20,7 +18,7 @@ class OnlinePaymentOption extends StatefulWidget {
   const OnlinePaymentOption({
     super.key,
     required this.shippingAddress,
-     required this.userId,
+    required this.userId,
     required this.bearerToken,
     required this.totalMRP,
     required this.discountMRP,
@@ -34,8 +32,7 @@ class OnlinePaymentOption extends StatefulWidget {
 }
 
 class _OnlinePaymentOptionState extends State<OnlinePaymentOption> {
-
-   bool isLoading = false;
+  bool isLoading = false;
 
   String? expandedSection; // Keeps track of expanded tile
   String? selectedUpiOption;
@@ -82,85 +79,85 @@ class _OnlinePaymentOptionState extends State<OnlinePaymentOption> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: SizedBox(
               width: double.infinity,
-              child:
-              isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    :  ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFF3D57),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: () async {
-              // Validate inputs
-                          if (widget.userId.isEmpty ||
-                              widget.bearerToken.isEmpty ||
-                              widget.selectedProducts.isEmpty ||
-                              widget.shippingAddress.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Missing required order details'),
-                                backgroundColor: Colors.red,
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                            return;
-                          }
-
-                          // Log input parameters
-                          print('📋 Placing order with:');
-                          print('User ID: ${widget.userId}');
-                          print('Token: ${widget.bearerToken}');
-                          print('Items: ${widget.selectedProducts}');
-                          print('Shipping Address: ${widget.shippingAddress}');
-                          print('Total Amount: ${widget.totalAmount}');
-
-                          setState(() => isLoading = true);
-                          final cartProvider = Provider.of<CartProvider>(context, listen: false);
-                          final success = await cartProvider.placeOrder(
-                            userId: widget.userId,
-                            items: widget.selectedProducts,
-                            shippingAddress: widget.shippingAddress,
-                            cartTotal: widget.totalAmount,
-                            paymentMethod: "UPI",
-                            token: widget.bearerToken,
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFFF3D57),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () async {
+                        // Validate inputs
+                        if (widget.userId.isEmpty ||
+                            widget.bearerToken.isEmpty ||
+                            widget.selectedProducts.isEmpty ||
+                            widget.shippingAddress.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Missing required order details'),
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 2),
+                            ),
                           );
+                          return;
+                        }
 
-                          setState(() => isLoading = false);
+                        // Log input parameters
+                        print('📋 Placing order with:');
+                        print('User ID: ${widget.userId}');
+                        print('Token: ${widget.bearerToken}');
+                        print('Items: ${widget.selectedProducts}');
+                        print('Shipping Address: ${widget.shippingAddress}');
+                        print('Total Amount: ${widget.totalAmount}');
 
-                          // Navigate to OrderConfirmationScreen only if successful
-                          if (success) {
-                            Navigator.pushReplacement
-                            (
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OrderConfirmationScreen(
+                        setState(() => isLoading = true);
+                        final cartProvider =
+                            Provider.of<CartProvider>(context, listen: false);
+                        final success = await cartProvider.placeOrder(
+                          userId: widget.userId,
+                          items: widget.selectedProducts,
+                          shippingAddress: widget.shippingAddress,
+                          cartTotal: widget.totalAmount,
+                          paymentMethod: "UPI",
+                          token: widget.bearerToken,
+                        );
+
+                        setState(() => isLoading = false);
+
+                        // Navigate to OrderConfirmationScreen only if successful
+                        if (success) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderConfirmationScreen(
                                   // totalMRP: widget.totalMRP,
                                   // discountMRP: widget.discountMRP,
                                   // totalAmount: widget.totalAmount,
                                   // itemCount: widget.itemCount,
                                   // selectedItemImages: widget.selectedItemImages,
                                   // selectedProducts: widget.selectedProducts,
-                                ),
-                              ),
-                            );
-                          } else {
-                            // Show error message if order placement fails
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(cartProvider.couponMessage ?? 'Failed to place order'),
-                                backgroundColor: Colors.red,
-                                duration: const Duration(seconds: 2),
-                              ),
-                            );
-                          }
-                        },
-                child: Text(
-                  'Pay with $value',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+                                  ),
+                            ),
+                          );
+                        } else {
+                          // Show error message if order placement fails
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(cartProvider.couponMessage ??
+                                  'Failed to place order'),
+                              backgroundColor: Colors.red,
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                      },
+                      child: Text(
+                        'Pay with $value',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
             ),
           )
       ],
@@ -246,7 +243,8 @@ class _OnlinePaymentOptionState extends State<OnlinePaymentOption> {
               buildSubOptionTile(
                 value: 'Enter UPI ID',
                 label: 'Enter UPI ID',
-                image: 'assets/images/unified-payment-interface-upi-logo-png_seeklogo-333088.webp',
+                image:
+                    'assets/images/unified-payment-interface-upi-logo-png_seeklogo-333088.webp',
                 groupValue: selectedUpiOption ?? '',
                 onChanged: (val) {
                   setState(() => selectedUpiOption = val);
@@ -309,7 +307,8 @@ class _OnlinePaymentOptionState extends State<OnlinePaymentOption> {
             titleWidget: Row(
               children: [
                 Text('Pay in 3',
-                    style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold)),
+                    style:
+                        TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold)),
                 SizedBox(width: 8),
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -317,7 +316,8 @@ class _OnlinePaymentOptionState extends State<OnlinePaymentOption> {
                     color: Color(0xFFFF3D57),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text('NEW', style: TextStyle(fontSize: 10, color: Colors.white)),
+                  child: Text('NEW',
+                      style: TextStyle(fontSize: 10, color: Colors.white)),
                 ),
               ],
             ),

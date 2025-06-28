@@ -3,28 +3,25 @@ import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/cartcontroller.dart';
 import 'package:whitematrix_groupa_shopping_app/views/orderconfirmation/orderconfirmationscreen.dart';
 
-
-
 class PaymentOptionCard extends StatefulWidget {
-    final String userId;
+  final String userId;
   final String bearerToken;
 
   final Map<String, dynamic> shippingAddress;
-   final double totalMRP;
+  final double totalMRP;
   final double discountMRP;
   final double totalAmount;
   final int itemCount;
   final List<String> selectedItemImages;
   final List<Map<String, dynamic>> selectedProducts;
-  
-    final bool isSelected;
+
+  final bool isSelected;
   final Function(bool) onSelectionChanged;
 
   const PaymentOptionCard({
     super.key,
-     required this.userId,
+    required this.userId,
     required this.bearerToken,
-
     required this.shippingAddress,
     required this.isSelected,
     required this.onSelectionChanged,
@@ -41,16 +38,14 @@ class PaymentOptionCard extends StatefulWidget {
 }
 
 class _PaymentOptionCardState extends State<PaymentOptionCard> {
-
-   bool isLoading = false;
-
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         setState(() {
-         widget.onSelectionChanged(!widget.isSelected);
+          widget.onSelectionChanged(!widget.isSelected);
         });
       },
       child: Container(
@@ -64,14 +59,18 @@ class _PaymentOptionCardState extends State<PaymentOptionCard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Circle
-                SizedBox(width: 7,),
+                SizedBox(
+                  width: 7,
+                ),
                 Container(
                   width: 13.8,
                   height: 13.8,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color:  widget.isSelected? const Color(0xFFFF3D57) : Colors.black,
+                      color: widget.isSelected
+                          ? const Color(0xFFFF3D57)
+                          : Colors.black,
                       width: 1,
                     ),
                   ),
@@ -118,7 +117,7 @@ class _PaymentOptionCardState extends State<PaymentOptionCard> {
             ),
 
             /// Dropdown Description
-            if ( widget.isSelected) ...[
+            if (widget.isSelected) ...[
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.only(left: 23),
@@ -140,9 +139,9 @@ class _PaymentOptionCardState extends State<PaymentOptionCard> {
                 height: 40,
                 child: isLoading
                     ? const Center(child: CircularProgressIndicator())
-                    :  ElevatedButton(
-                  onPressed: () async {
-                        // Validate inputs
+                    : ElevatedButton(
+                        onPressed: () async {
+                          // Validate inputs
                           if (widget.userId.isEmpty ||
                               widget.bearerToken.isEmpty ||
                               widget.selectedProducts.isEmpty ||
@@ -166,7 +165,8 @@ class _PaymentOptionCardState extends State<PaymentOptionCard> {
                           print('Total Amount: ${widget.totalAmount}');
 
                           setState(() => isLoading = true);
-                          final cartProvider = Provider.of<CartProvider>(context, listen: false);
+                          final cartProvider =
+                              Provider.of<CartProvider>(context, listen: false);
                           final success = await cartProvider.placeOrder(
                             userId: widget.userId,
                             items: widget.selectedProducts,
@@ -184,41 +184,42 @@ class _PaymentOptionCardState extends State<PaymentOptionCard> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => OrderConfirmationScreen(
-                                  // totalMRP: widget.totalMRP,
-                                  // discountMRP: widget.discountMRP,
-                                  // totalAmount: widget.totalAmount,
-                                  // itemCount: widget.itemCount,
-                                  // selectedItemImages: widget.selectedItemImages,
-                                  // selectedProducts: widget.selectedProducts,
-                                ),
+                                    // totalMRP: widget.totalMRP,
+                                    // discountMRP: widget.discountMRP,
+                                    // totalAmount: widget.totalAmount,
+                                    // itemCount: widget.itemCount,
+                                    // selectedItemImages: widget.selectedItemImages,
+                                    // selectedProducts: widget.selectedProducts,
+                                    ),
                               ),
                             );
                           } else {
                             // Show error message if order placement fails
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(cartProvider.couponMessage ?? 'Failed to place order'),
+                                content: Text(cartProvider.couponMessage ??
+                                    'Failed to place order'),
                                 backgroundColor: Colors.red,
                                 duration: const Duration(seconds: 2),
                               ),
                             );
                           }
                         },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF3D57),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    "Place Order",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF3D57),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          "Place Order",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
               )
             ]
           ],

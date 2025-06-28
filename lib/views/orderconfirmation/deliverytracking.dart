@@ -7,9 +7,6 @@ import 'dart:math';
 
 import 'package:whitematrix_groupa_shopping_app/views/orderconfirmation/deliveryconirm.dart';
 
-
-
-
 class LiveTracking extends StatefulWidget {
   const LiveTracking({super.key});
 
@@ -74,8 +71,10 @@ class _LiveTrackingState extends State<LiveTracking> {
       setState(() {
         _progress = (timer.tick * 0.1).clamp(0.0, 1.0);
 
-        double latDiff = _userLocation.latitude - _initialDeliveryLocation.latitude;
-        double lngDiff = _userLocation.longitude - _initialDeliveryLocation.longitude;
+        double latDiff =
+            _userLocation.latitude - _initialDeliveryLocation.latitude;
+        double lngDiff =
+            _userLocation.longitude - _initialDeliveryLocation.longitude;
 
         _deliveryBoyLocation = LatLng(
           _initialDeliveryLocation.latitude + (latDiff * _progress),
@@ -113,7 +112,10 @@ class _LiveTrackingState extends State<LiveTracking> {
     double deltaLngRad = (point2.longitude - point1.longitude) * (pi / 180);
 
     double a = sin(deltaLatRad / 2) * sin(deltaLatRad / 2) +
-        cos(lat1Rad) * cos(lat2Rad) * sin(deltaLngRad / 2) * sin(deltaLngRad / 2);
+        cos(lat1Rad) *
+            cos(lat2Rad) *
+            sin(deltaLngRad / 2) *
+            sin(deltaLngRad / 2);
 
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
@@ -145,7 +147,8 @@ class _LiveTrackingState extends State<LiveTracking> {
             borderRadius: BorderRadius.circular(25),
           ),
           child: ClipRRect(
-            child: Image.asset("assets/images/pngtree-delivery-boy-with-food-png-image_6528630.png"),
+            child: Image.asset(
+                "assets/images/pngtree-delivery-boy-with-food-png-image_6528630.png"),
           ),
         ),
       ),
@@ -196,7 +199,8 @@ class _LiveTrackingState extends State<LiveTracking> {
     int segments = 20; // Number of intermediate points for smoothness
 
     double latDiff = _userLocation.latitude - _initialDeliveryLocation.latitude;
-    double lngDiff = _userLocation.longitude - _initialDeliveryLocation.longitude;
+    double lngDiff =
+        _userLocation.longitude - _initialDeliveryLocation.longitude;
 
     for (int i = 0; i <= segments; i++) {
       double t = i / segments;
@@ -337,8 +341,10 @@ class _LiveTrackingState extends State<LiveTracking> {
             mapController: _mapController,
             options: MapOptions(
               initialCenter: LatLng(
-                (_userLocation.latitude + _initialDeliveryLocation.latitude) / 2,
-                (_userLocation.longitude + _initialDeliveryLocation.longitude) / 2,
+                (_userLocation.latitude + _initialDeliveryLocation.latitude) /
+                    2,
+                (_userLocation.longitude + _initialDeliveryLocation.longitude) /
+                    2,
               ),
               initialZoom: 14.0,
               minZoom: 10.0,

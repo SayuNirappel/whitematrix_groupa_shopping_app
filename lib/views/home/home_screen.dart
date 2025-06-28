@@ -419,7 +419,37 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
               padding: EdgeInsets.symmetric(vertical: 10),
               child: Consumer<HomeProductController>(
                 builder: (context, provider, _) {
-                  return CarouselSliders(imageUrls: provider.bannerImages);
+                  final selectedCategory =
+                      categories[selectedCategoryIndex]["title"];
+
+                  final filteredProducts = provider.allProducts
+                      .where((p) =>
+                          (p.category ?? "").toLowerCase() ==
+                          selectedCategory!.toLowerCase())
+                      .toList();
+
+                  final filteredImages = <String>[];
+                  final filteredIds = <String?>[];
+
+                  for (var product in filteredProducts) {
+                    if (product.variants?.isNotEmpty == true &&
+                        product.variants!.first.images?.isNotEmpty == true) {
+                      filteredImages.add(
+                        provider.getFullImageUrl(
+                            product.variants!.first.images!.first),
+                      );
+                      filteredIds.add(product.id);
+                    }
+                  }
+
+                  return CarouselSliders(
+                    imageUrls: filteredImages.isNotEmpty
+                        ? filteredImages
+                        : provider.bannerImages,
+                    productIds: filteredImages.isNotEmpty
+                        ? filteredIds
+                        : null, // Pass null if fallback to banner
+                  );
                 },
               ),
             ),
@@ -429,17 +459,12 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           ///-----------------------Ad-------------------------------------------
           ///
           SliverToBoxAdapter(
-            child: InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CategoryScreen()));
-              },
-              child: TempAdBanner(
-                borderColor: Colors.white,
-                containerColor: Colors.white,
-                textrColor: Colors.black,
-                height: 30,
-                fSize: 10,
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Consumer<HomeProductController>(
+                builder: (context, provider, _) {
+                  return CarouselSliders(imageUrls: provider.bannerImages);
+                },
               ),
             ),
           ),
@@ -554,88 +579,102 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
           ///-------------------------------------Price Store Row------------------------------------------
           ///
           ///
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color.fromARGB(255, 248, 240, 213),
-                          Color.fromARGB(255, 255, 239, 244)
-                        ]),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        "PRICE STORE",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      ScrollingRow(
-                        itemCount: 4,
-                        itemBuilder: (index) {
-                          return Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "Flat",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    "80%",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 25,
-                                      color: Colors.deepPurple,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Off",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward_rounded,
-                                    size: 10,
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                        onTap: (index) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CategoryScreen()));
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // SliverToBoxAdapter(
+          //   child: Column(
+          //     children: [
+          //       SizedBox(
+          //         height: 20,
+          //       ),
+          //       Container(
+          //         decoration: BoxDecoration(
+          //           gradient: LinearGradient(
+          //               begin: Alignment.topCenter,
+          //               end: Alignment.bottomCenter,
+          //               colors: [
+          //                 Color.fromARGB(255, 248, 240, 213),
+          //                 Color.fromARGB(255, 255, 239, 244)
+          //               ]),
+          //         ),
+          //         child: Column(
+          //           children: [
+          //             Text(
+          //               "PRICE STORE",
+          //               maxLines: 1,
+          //               overflow: TextOverflow.ellipsis,
+          //               style: TextStyle(
+          //                   fontWeight: FontWeight.bold, fontSize: 25),
+          //             ),
+          //             SizedBox(
+          //               height: 20,
+          //             ),
+          //             ScrollingRow(
+          //               itemCount: 4,
+          //               itemBuilder: (index) {
+          //                 return Center(
+          //                   child: Padding(
+          //                     padding: const EdgeInsets.all(8.0),
+          //                     child: Column(
+          //                       children: [
+          //                         Text(
+          //                           "Flat",
+          //                           maxLines: 1,
+          //                           overflow: TextOverflow.ellipsis,
+          //                         ),
+          //                         Text(
+          //                           "80%",
+          //                           maxLines: 1,
+          //                           overflow: TextOverflow.ellipsis,
+          //                           style: TextStyle(
+          //                             fontWeight: FontWeight.bold,
+          //                             fontSize: 25,
+          //                             color: Colors.deepPurple,
+          //                           ),
+          //                         ),
+          //                         Text(
+          //                           "Off",
+          //                           maxLines: 1,
+          //                           overflow: TextOverflow.ellipsis,
+          //                           style: TextStyle(
+          //                             fontWeight: FontWeight.bold,
+          //                             color: Colors.black,
+          //                           ),
+          //                         ),
+          //                         Icon(
+          //                           Icons.arrow_forward_rounded,
+          //                           size: 10,
+          //                         )
+          //                       ],
+          //                     ),
+          //                   ),
+          //                 );
+          //               },
+          //               onTap: (index) {
+          //                 Navigator.push(
+          //                     context,
+          //                     MaterialPageRoute(
+          //                         builder: (context) => CategoryScreen()));
+          //               },
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+
+// Positioned(
+//                         bottom: 10,
+//                         left: 100,
+//                         child: Container(
+//                           color: Colors.black45,
+//                           padding:
+//                               EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+//                           child: Text(
+//                             "Min. 55% OFF",
+//                             style: TextStyle(color: Colors.white),
+//                           ),
+//                         ),
+//                       ),
 
           ///
           ///
@@ -648,7 +687,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 SizedBox(height: 20),
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  title: "FEATURED BRANDS",
+                  title: "Featured Brands",
                   fontSize: 20,
                 ),
                 SizedBox(height: 10),
@@ -677,6 +716,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   fontSize: 20,
                   mainAxisAlignment: MainAxisAlignment.start,
                 ),
+                SizedBox(height: 10),
                 Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     return ScrollingRow(
@@ -701,73 +741,74 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     height: double.infinity,
                                     width: double.infinity,
                                   ),
+
+                                  /// ↓↓↓ Semi-transparent background with content ↓↓↓
                                   Positioned(
                                     bottom: 10,
-                                    left: 2,
-                                    right: 2,
+                                    left: 5,
+                                    right: 5,
                                     child: Container(
-                                      width: double.infinity,
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.6),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  item["name"] ?? "",
-                                                  style: TextStyle(
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  /// Add to fav function
-                                                },
-                                                icon: Icon(
-                                                  Icons.favorite_border,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ],
+                                          Text(
+                                            item["name"] ?? "",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                           Text(
                                             item["category"] ?? "",
-                                            style:
-                                                TextStyle(color: Colors.white),
+                                            style: const TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 12,
+                                            ),
                                           ),
+                                          const SizedBox(height: 4),
                                           Row(
-                                            spacing: 5,
                                             children: [
                                               Text(
                                                 item["oP"] ?? "",
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   decoration: TextDecoration
                                                       .lineThrough,
                                                   color: Colors.grey,
+                                                  fontSize: 12,
                                                 ),
                                               ),
+                                              const SizedBox(width: 6),
                                               Text(
                                                 item["nP"] ?? "",
-                                                style: TextStyle(
-                                                    color: Colors.white),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
+                                              const SizedBox(width: 6),
                                               Text(
                                                 item["reduction"] ?? "",
-                                                style: TextStyle(
-                                                    color: Colors.red),
+                                                style: const TextStyle(
+                                                  color: Colors.redAccent,
+                                                  fontSize: 12,
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ],
                                       ),
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -779,9 +820,9 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                           context,
                           MaterialPageRoute(
                             builder: (context) => ProductDetailsPage2(
-                                productId: provider.featuredPicks[index]
-                                        ["id"] ??
-                                    "685cf800728c88a1bc918219"),
+                              productId: provider.featuredPicks[index]["id"] ??
+                                  "685cf800728c88a1bc918219",
+                            ),
                           ),
                         );
                       },
@@ -801,12 +842,12 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
             child: Column(
               children: [
                 SizedBox(height: 20),
-                Text(
-                  "BESTSELLER CATEGORY",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                TitleRow(
+                  title: "Bestseller Category",
+                  fontSize: 20,
+                  mainAxisAlignment: MainAxisAlignment.start,
                 ),
+                SizedBox(height: 10),
                 Consumer<HomeProductController>(
                   builder: (context, provider, _) {
                     return PhotoTypeRow(bslist: provider.bestSellerCategory);
@@ -1159,14 +1200,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
               children: [
                 SizedBox(height: 20),
                 TitleRow(
-                  title: "Season's Best Brands",
+                  title: "Season's Best Offers",
                   fontSize: 20,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                ),
-                TitleRow(
-                  title: "Iconic styles to seal the spotlight",
-                  fontSize: 15,
-                  color: Colors.grey,
                   mainAxisAlignment: MainAxisAlignment.start,
                 ),
 

@@ -11,13 +11,12 @@ import 'package:whitematrix_groupa_shopping_app/views/splash/splash_screen.dart'
 void main() {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => BottomNavBarController()),
-    ChangeNotifierProvider(create: (_) => HomeProductController()),
+    ChangeNotifierProvider(
+        create: (_) => HomeProductController()..fetchInitialData()),
     ChangeNotifierProvider(create: (_) => ProductProvider()),
     ChangeNotifierProvider(create: (context) => CartProvider()),
     ChangeNotifierProvider(create: (context) => offersdb()),
-    ChangeNotifierProvider(
-      create: (context) => OrderProvider(),
-    ),
+    ChangeNotifierProvider(create: (context) => OrderProvider()),
   ], child: const MyApp()));
 }
 

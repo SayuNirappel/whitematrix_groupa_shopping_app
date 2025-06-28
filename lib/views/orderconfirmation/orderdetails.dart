@@ -4,8 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/ordercontrollers.dart';
 
-
-
 class Orderdetails extends StatefulWidget {
   final String orderId;
 
@@ -140,7 +138,8 @@ class _OrderdetailsState extends State<Orderdetails> {
                     width: 150,
                     height: 200,
                     color: Colors.grey[300],
-                    child: Image.asset("assets/images/check.jpg", fit: BoxFit.cover),
+                    child: Image.asset("assets/images/check.jpg",
+                        fit: BoxFit.cover),
                   ),
                 ),
               ),
@@ -258,17 +257,18 @@ class _OrderdetailsState extends State<Orderdetails> {
                     children: [
                       Row(
                         children: [
-                       StarRating(
-                                size: 25.0,
-                                rating: (item['reviews']?.isNotEmpty ?? false)
-                                    ? item['reviews'][0]['rating']?.toDouble() ?? 3.0
-                                    : 3.0,
-                                color: Colors.red,
-                                borderColor: Colors.grey,
-                                allowHalfRating: true,
-                                starCount: 5,
-                                onRatingChanged: (rating) => setState(() {}),
-                              ),
+                          StarRating(
+                            size: 25.0,
+                            rating: (item['reviews']?.isNotEmpty ?? false)
+                                ? item['reviews'][0]['rating']?.toDouble() ??
+                                    3.0
+                                : 3.0,
+                            color: Colors.red,
+                            borderColor: Colors.grey,
+                            allowHalfRating: true,
+                            starCount: 5,
+                            onRatingChanged: (rating) => setState(() {}),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 5),
@@ -412,10 +412,13 @@ class _OrderdetailsState extends State<Orderdetails> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   "Payment Information",
@@ -426,15 +429,20 @@ class _OrderdetailsState extends State<Orderdetails> {
                                                   ),
                                                 ),
                                                 ClipRRect(
-                                                  borderRadius: BorderRadius.circular(10),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
                                                   child: Image.network(
                                                     item['image'],
                                                     height: 70,
-                                                    errorBuilder: (context, error, stackTrace) => Container(
+                                                    errorBuilder: (context,
+                                                            error,
+                                                            stackTrace) =>
+                                                        Container(
                                                       width: 70,
                                                       height: 70,
                                                       color: Colors.grey[300],
-                                                      child: Image.asset("assets/images/check.jpg"),
+                                                      child: Image.asset(
+                                                          "assets/images/check.jpg"),
                                                     ),
                                                   ),
                                                 ),
@@ -442,7 +450,9 @@ class _OrderdetailsState extends State<Orderdetails> {
                                             ),
                                             const SizedBox(height: 20),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   "MRP",
@@ -462,14 +472,16 @@ class _OrderdetailsState extends State<Orderdetails> {
                                                 ),
                                               ],
                                             ),
-                                             Container(
+                                            Container(
                                               height: 2,
                                               width: double.infinity,
                                               color: Colors.grey[300],
                                             ),
                                             const SizedBox(height: 10),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   "Discount",
@@ -497,7 +509,9 @@ class _OrderdetailsState extends State<Orderdetails> {
                                             ),
                                             const SizedBox(height: 10),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   "Discounted Price",
@@ -553,7 +567,9 @@ class _OrderdetailsState extends State<Orderdetails> {
                                             ),
                                             const SizedBox(height: 10),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Text(
                                                   "Total Paid",
@@ -588,10 +604,14 @@ class _OrderdetailsState extends State<Orderdetails> {
                                                   ),
                                                   const SizedBox(width: 10),
                                                   Text(
-                                                    order['paymentMethod'] == "COD" ? "cash on delivery" : "Online Payment",
+                                                    order['paymentMethod'] ==
+                                                            "COD"
+                                                        ? "cash on delivery"
+                                                        : "Online Payment",
                                                     style: GoogleFonts.roboto(
                                                       fontSize: 14,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.grey[600],
                                                     ),
                                                   ),
@@ -634,7 +654,9 @@ class _OrderdetailsState extends State<Orderdetails> {
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                order['paymentMethod'] == "COD" ? "Cash on delivery" : "Online Payment",
+                                order['paymentMethod'] == "COD"
+                                    ? "Cash on delivery"
+                                    : "Online Payment",
                                 style: GoogleFonts.roboto(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -730,7 +752,8 @@ class _OrderdetailsState extends State<Orderdetails> {
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          Icon(Icons.email_outlined, color: Colors.grey[600], size: 14),
+                          Icon(Icons.email_outlined,
+                              color: Colors.grey[600], size: 14),
                           const SizedBox(width: 10),
                           Text(
                             "${order['shippingAddress']['fullName'].replaceAll(' ', '').toLowerCase()}@gmail.com",

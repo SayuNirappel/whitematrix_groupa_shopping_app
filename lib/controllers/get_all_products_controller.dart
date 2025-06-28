@@ -18,34 +18,34 @@ class GetAllProductsController with ChangeNotifier {
   final String _baseUrl =
       "https://myntacloneappbackend-1.onrender.com/all-products";
 
-    String selectedCategory = "Trending Now"; 
+  String selectedCategory = "Trending Now";
 
-Future<void> fetchAllProducts({String? category, String? token}) async {
-  isLoading = true;
-  isError = false;
-  errorMessage = null;
-  isEmpty = false;
-  notifyListeners();
+  Future<void> fetchAllProducts({String? category, String? token}) async {
+    isLoading = true;
+    isError = false;
+    errorMessage = null;
+    isEmpty = false;
+    notifyListeners();
 
-  try {
-    final response = await http.get(
-      Uri.parse(_baseUrl),
-      headers: {
-        "Authorization": (token ?? ApiConstants.token) ?? "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODViNmQ3NTgzNGU1YWE4Y2RhZjE4YjEiLCJpYXQiOjE3NTA4MzUzODUsImV4cCI6MTc1MTQ0MDE4NX0.FSFcXs_RgTC7v17oPWtMseUBfkPxMYsEgK4kLgCSg4E",
-        "Content-Type": "application/json",
-      },
-    );
-    
+    try {
+      final response = await http.get(
+        Uri.parse(_baseUrl),
+        headers: {
+          "Authorization": (token ?? ApiConstants.token) ??
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODViNmQ3NTgzNGU1YWE4Y2RhZjE4YjEiLCJpYXQiOjE3NTA4MzUzODUsImV4cCI6MTc1MTQ0MDE4NX0.FSFcXs_RgTC7v17oPWtMseUBfkPxMYsEgK4kLgCSg4E",
+          "Content-Type": "application/json",
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonResponse = json.decode(response.body);
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = json.decode(response.body);
 
-      productsList =
-          jsonResponse.map((e) => GetAllProductModel.fromJson(e)).toList();
+        productsList =
+            jsonResponse.map((e) => GetAllProductModel.fromJson(e)).toList();
 
-      isEmpty = productsList.isEmpty;
-    
-  /// 🟡 Build unique categories with image map
+        isEmpty = productsList.isEmpty;
+
+        /// 🟡 Build unique categories with image map
         final Map<String, String> categoryImageMap = {};
         for (var product in productsList) {
           if (product.category.isNotEmpty && product.brand != null) {
@@ -57,7 +57,6 @@ Future<void> fetchAllProducts({String? category, String? token}) async {
             } else if (pimage is List<String> && pimage.isNotEmpty) {
               image = pimage.first;
             }
-            
 
             if (image != null && image.isNotEmpty) {
               categoryImageMap[product.category] = image;
@@ -73,8 +72,7 @@ Future<void> fetchAllProducts({String? category, String? token}) async {
         /// 🔸 Sort by category name
         uniqueCategories.sort((a, b) => a.name.compareTo(b.name));
 
-
-  // create filteredcategoryList corresponding to the argument   
+        // create filteredcategoryList corresponding to the argument
         if (category != null && category.isNotEmpty) {
           filteredProducts = productsList
               .where((product) =>
@@ -82,22 +80,22 @@ Future<void> fetchAllProducts({String? category, String? token}) async {
                   category.toLowerCase())
               .toList();
           log("📝 Filtered Products JSON:\n${jsonEncode(filteredProducts.map((e) => e.toJson()).toList())}");
-
         } else {
           filteredProducts = productsList;
         }
 
-
         isEmpty = filteredProducts.isEmpty;
-      
 
-   for (var product in filteredProducts) {
-  final firstVariant = product.variants.isNotEmpty ? product.variants.first : null;
-  final price = firstVariant?.price ?? "N/A";
-  final discount = firstVariant?.discount;
-  final image = firstVariant?.images.isNotEmpty == true ? firstVariant!.images.first : "No image";
+        for (var product in filteredProducts) {
+          final firstVariant =
+              product.variants.isNotEmpty ? product.variants.first : null;
+          final price = firstVariant?.price ?? "N/A";
+          final discount = firstVariant?.discount;
+          final image = firstVariant?.images.isNotEmpty == true
+              ? firstVariant!.images.first
+              : "No image";
 
-  log('''
+          log('''
 🔹 Product: ${product.title}
    🔸 Brand: ${product.brand is Map ? product.brand["name"] : product.brand}
    🔸 Category: ${product.category}
@@ -106,20 +104,20 @@ Future<void> fetchAllProducts({String? category, String? token}) async {
    🔸 Image: $image
    🔸 Reviews: ${product.reviews.length}
 ''');
-}
-    } else {
+        }
+      } else {
+        isError = true;
+        errorMessage =
+            "Failed to load products (Status: ${response.statusCode})";
+        log("❌ Error: $errorMessage");
+      }
+    } catch (e, stackTrace) {
       isError = true;
-      errorMessage =
-          "Failed to load products (Status: ${response.statusCode})";
-      log("❌ Error: $errorMessage");
+      errorMessage = "Exception: $e";
+      log('❌ Error fetching products', error: e, stackTrace: stackTrace);
+    } finally {
+      isLoading = false;
+      notifyListeners();
     }
-  } catch (e, stackTrace) {
-    isError = true;
-    errorMessage = "Exception: $e";
-    log('❌ Error fetching products', error: e, stackTrace: stackTrace);
-  } finally {
-    isLoading = false;
-    notifyListeners();
   }
-}
 }

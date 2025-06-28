@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/paymentpage.dart';
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
-
 class AddressPage extends StatefulWidget {
   final String userId;
   final String bearerToken;
@@ -90,13 +89,15 @@ class _AddressPageState extends State<AddressPage> {
                               ),
                               const SizedBox(width: 6),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 7, vertical: 3),
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.green),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  widget.selectedAddress['addressType'] ?? 'HOME',
+                                  widget.selectedAddress['addressType'] ??
+                                      'HOME',
                                   style: const TextStyle(
                                     color: Colors.green,
                                     fontWeight: FontWeight.bold,
@@ -117,14 +118,16 @@ class _AddressPageState extends State<AddressPage> {
                           const SizedBox(height: 10),
                           RichText(
                             text: TextSpan(
-                              style: const TextStyle(fontSize: 14, color: Colors.black),
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.black),
                               children: [
                                 const TextSpan(
                                   text: "Mobile: ",
                                   style: TextStyle(color: Colors.black54),
                                 ),
                                 TextSpan(
-                                  text: widget.selectedAddress['mobile'] ?? 'Not provided',
+                                  text: widget.selectedAddress['mobile'] ??
+                                      'Not provided',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black87,
@@ -178,13 +181,15 @@ class _AddressPageState extends State<AddressPage> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: widget.selectedItemImages[index].startsWith('http')
+                        child: widget.selectedItemImages[index]
+                                .startsWith('http')
                             ? Image.network(
                                 widget.selectedItemImages[index],
                                 width: 60,
                                 height: 80,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => const Icon(
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(
                                   Icons.error,
                                   size: 60,
                                   color: Colors.grey,
@@ -195,7 +200,8 @@ class _AddressPageState extends State<AddressPage> {
                                 width: 60,
                                 height: 80,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => const Icon(
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(
                                   Icons.error,
                                   size: 60,
                                   color: Colors.grey,
@@ -230,7 +236,6 @@ class _AddressPageState extends State<AddressPage> {
               },
             ),
           ),
-          
         ],
       ),
       bottomNavigationBar: Container(

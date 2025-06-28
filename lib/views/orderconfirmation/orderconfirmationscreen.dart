@@ -6,13 +6,12 @@ import 'package:whitematrix_groupa_shopping_app/controllers/ordercontrollers.dar
 import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/orderconfirmation/deliverytracking.dart';
 
-
-
 class OrderConfirmationScreen extends StatefulWidget {
   const OrderConfirmationScreen({Key? key}) : super(key: key);
 
   @override
-  State<OrderConfirmationScreen> createState() => _OrderConfirmationScreenState();
+  State<OrderConfirmationScreen> createState() =>
+      _OrderConfirmationScreenState();
 }
 
 class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {

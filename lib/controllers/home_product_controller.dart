@@ -19,7 +19,7 @@ class HomeProductController with ChangeNotifier {
 
       // Get the first available image from variants
       final image = product.variants?.first.images?.isNotEmpty == true
-          ? _getFullImageUrl(product.variants!.first.images!.first)
+          ? getFullImageUrl(product.variants!.first.images!.first)
           : "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg";
 
       categoryMap[category] = image;
@@ -135,7 +135,7 @@ class HomeProductController with ChangeNotifier {
     };
   }
 
-  String _getFullImageUrl(String relativePath) {
+  String getFullImageUrl(String relativePath) {
     return relativePath.startsWith("http")
         ? relativePath
         : " https://myntacloneappbackend-1.onrender.com/all-products/$relativePath";
