@@ -62,10 +62,10 @@ class HomeProductController with ChangeNotifier {
 
     return [
       {
-        "type": allProducts[12].category,
-        "offer": allProducts[12].discount?.type.toString() ?? "None",
-        "image": getImage(12),
-        "id": allProducts[12].id,
+        "type": allProducts[11].category,
+        "offer": allProducts[11].discount?.type.toString() ?? "None",
+        "image": getImage(11),
+        "id": allProducts[11].id,
       },
       {
         "type": allProducts[0].category,
