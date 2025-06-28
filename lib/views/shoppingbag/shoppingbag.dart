@@ -1949,18 +1949,7 @@ void _showChangeAddressSheet(BuildContext context, String token, String userId, 
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      'https://myntacloneappbackend-1.onrender.com${item['image'] ?? ''}',
-                      width: 60,
-                      height: 80,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Image.asset('assets/placeholder.png'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
+                  
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
