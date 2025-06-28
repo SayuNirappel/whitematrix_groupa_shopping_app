@@ -353,6 +353,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               width: 50,
                               decoration: BoxDecoration(
                                 border: Border.all(
+                                  width: 2,
                                   color: isSelected
                                       ? Colors.transparent
                                       : Colors.amber.shade300,
