@@ -118,25 +118,14 @@ void initState() {
           icon: const Icon(Icons.favorite_border_outlined,
               color: ColorConstants.textColor),
           onPressed: () {
-             Navigator.push(context, MaterialPageRoute(builder: (context) => Shoppingbag2(
-              userIdddd: ApiConstants.userID.toString(),
-               BearerToken: ApiConstants.token.toString(),
-
-           //token: widget.token
-          //id: widget.id
-        ) ));
+             Navigator.push(context, MaterialPageRoute(builder: (context) => Shoppingbag2(userIdddd: ApiConstants.userID.toString(), BearerToken: ApiConstants.token.toString())));
           },
         ),
         IconButton(
           icon: const Icon(Icons.shopping_bag_outlined,
               color: ColorConstants.textColor),
           onPressed: () {
-             Navigator.push(context, MaterialPageRoute(builder: (context) => Shoppingbag2(
-               userIdddd: ApiConstants.userID.toString(),
-               BearerToken: ApiConstants.token.toString(),
-          //token: widget.token
-          //id: widget.id
-        ) ));
+             Navigator.push(context, MaterialPageRoute(builder: (context) => Shoppingbag2(userIdddd: ApiConstants.userID.toString(), BearerToken: ApiConstants.token.toString()) ));
           },
         ),
       ],
