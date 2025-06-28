@@ -4,6 +4,7 @@ import 'package:whitematrix_groupa_shopping_app/controllers/home_product_control
 import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
+import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/banner_service.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/product_service.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
@@ -94,8 +95,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => CategoryScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => CategoryScreen(
+                              token: ApiConstants.token,
+                              id: ApiConstants.userID,
+                            )));
               },
               child: const Icon(Icons.window_outlined),
             ),
