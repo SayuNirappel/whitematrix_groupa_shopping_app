@@ -31,8 +31,10 @@ class GetAllProductsController with ChangeNotifier {
       final response = await http.get(
         Uri.parse(_baseUrl),
         headers: {
-          "Authorization": (token ?? ApiConstants.token) ??
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODViNmQ3NTgzNGU1YWE4Y2RhZjE4YjEiLCJpYXQiOjE3NTA4MzUzODUsImV4cCI6MTc1MTQ0MDE4NX0.FSFcXs_RgTC7v17oPWtMseUBfkPxMYsEgK4kLgCSg4E",
+          "Authorization": "Bearer ${token ?? ApiConstants.token}",
+
+          // "Authorization": (token ?? ApiConstants.token) ??
+          // "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODViNmQ3NTgzNGU1YWE4Y2RhZjE4YjEiLCJpYXQiOjE3NTA4MzUzODUsImV4cCI6MTc1MTQ0MDE4NX0.FSFcXs_RgTC7v17oPWtMseUBfkPxMYsEgK4kLgCSg4E",
           "Content-Type": "application/json",
         },
       );
