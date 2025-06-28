@@ -72,19 +72,28 @@ class PhotoTypeRow extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.transparent),
-              ),
-              height: 210,
-              width: 150,
-              clipBehavior: Clip.antiAlias,
-              child: Image.network(
-                bslist[index]["image"] ?? "",
-                fit: BoxFit.cover,
-                height: double.infinity,
-                width: double.infinity,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                height: 210,
+                width: 150,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.transparent),
+                ),
+                child: Image.network(
+                  bslist[index]["image"] ??
+                      "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.network(
+                      "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 4),
@@ -141,61 +150,70 @@ class RowWithBorderContainerType1 extends StatelessWidget {
       itemBuilder: (index) {
         return Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              height: 200,
-              width: 180,
-              clipBehavior: Clip.antiAlias,
-              child: Stack(
-                children: [
-                  Image.network(
-                    dBList[index]["image"]!,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                  ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                height: 200,
+                width: 180,
+                color: Colors.grey.shade200, // Optional: placeholder background
+                child: Stack(
+                  children: [
+                    Image.network(
+                      dBList[index]["image"] ??
+                          "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.network(
+                          "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                        );
+                      },
+                    ),
 
-                  /// New styled overlay
-                  Positioned(
-                    bottom: 10,
-                    left: 10,
-                    right: 10,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            dBList[index]["title"]!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.white,
+                    /// Overlay
+                    Positioned(
+                      bottom: 10,
+                      left: 10,
+                      right: 10,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              dBList[index]["title"] ?? "",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          Text(
-                            dBList[index]["subt"]!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.white70,
+                            Text(
+                              dBList[index]["subt"] ?? "",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.white70,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 
@@ -370,6 +388,17 @@ class _CarouselSlidersState extends State<CarouselSliders> {
                       url,
                       fit: BoxFit.cover,
                       width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey.shade300,
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.broken_image,
+                            color: Colors.grey,
+                            size: 40,
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
@@ -435,19 +464,25 @@ class ContinuingRow extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              height: 200,
-              width: MediaQuery.of(context).size.width * 0.45,
-              clipBehavior: Clip.antiAlias,
-              child: Image.network(
-                item["image"] ?? "",
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.image_not_supported);
-                },
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                height: 200,
+                width: MediaQuery.of(context).size.width * 0.45,
+                color: Colors.grey.shade200, // optional placeholder color
+                child: Image.network(
+                  item["image"] ?? "",
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Center(
+                      child: Icon(
+                        Icons.image_not_supported,
+                        size: 40,
+                        color: Colors.grey,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             Text(

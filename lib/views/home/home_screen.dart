@@ -750,10 +750,21 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               child: Stack(
                                 children: [
                                   Image.network(
-                                    item["image"]!,
+                                    item["image"] ?? "",
                                     fit: BoxFit.cover,
                                     height: double.infinity,
                                     width: double.infinity,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: Colors.grey.shade300,
+                                        alignment: Alignment.center,
+                                        child: const Icon(
+                                          Icons.broken_image,
+                                          color: Colors.grey,
+                                          size: 40,
+                                        ),
+                                      );
+                                    },
                                   ),
 
                                   /// ↓↓↓ Semi-transparent background with content ↓↓↓
@@ -1011,8 +1022,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               height: 210,
                               width: 150,
                               child: Image(
-                                image:
-                                    NetworkImage(picks[index]["image"] ?? ""),
+                                image: NetworkImage(picks[index]["image"] ??
+                                    "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg"),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -1131,8 +1142,9 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     height: 210,
                                     width: 150,
                                     child: Image(
-                                      image: NetworkImage(
-                                          nearby[index]["image"] ?? ""),
+                                      image: NetworkImage(nearby[index]
+                                              ["image"] ??
+                                          "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg"),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
