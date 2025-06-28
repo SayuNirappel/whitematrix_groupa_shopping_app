@@ -61,65 +61,55 @@ class PhotoTypeRow extends StatelessWidget {
       backgroundColor: Colors.white,
       itemBuilder: (index) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.center, // Center align texts
           children: [
             Text(
-              bslist[index]["type"]!,
+              bslist[index]["type"] ?? "",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
             ),
             Container(
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.transparent),
               ),
               height: 210,
               width: 150,
               clipBehavior: Clip.antiAlias,
-              child: Stack(
-                children: [
-                  Image(
-                    image: NetworkImage(
-                      bslist[index]["image"]!,
-                    ),
-                    fit: BoxFit.cover,
-                    height: double.infinity,
-                    width: double.infinity,
-                  ),
-                  Positioned(
-                      bottom: 2,
-                      left: 1,
-                      right: 1,
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Text(
-                          bslist[index]["offer"]!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ))
-                ],
+              child: Image.network(
+                bslist[index]["image"] ?? "",
+                fit: BoxFit.cover,
+                height: double.infinity,
+                width: double.infinity,
               ),
             ),
-            TempAdBanner(
-                borderColor: Colors.white,
-                containerColor: Colors.white,
-                textrColor: Colors.black,
-                height: 20,
-                fSize: 10)
+            const SizedBox(height: 4),
+            Text(
+              "Best Seller",
+              style: const TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         );
       },
-      // onTap: (index) {
-      //   Navigator.push(context,
-      //       MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
-      // },
+      onTap: (index) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailsPage2(
+              productId: bslist[index]["id"],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -135,8 +125,10 @@ class PhotoTypeRow extends StatelessWidget {
 ///-----------------------Row With border Container
 ///
 ///
+
 class RowWithBorderContainerType1 extends StatelessWidget {
   final List dBList;
+
   const RowWithBorderContainerType1({
     required this.dBList,
     super.key,
@@ -158,29 +150,35 @@ class RowWithBorderContainerType1 extends StatelessWidget {
               clipBehavior: Clip.antiAlias,
               child: Stack(
                 children: [
-                  Image(
-                    image: NetworkImage(
-                      dBList[index]["image"]!,
-                    ),
+                  Image.network(
+                    dBList[index]["image"]!,
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: double.infinity,
                   ),
+
+                  /// New styled overlay
                   Positioned(
-                      bottom: 2,
-                      left: 0,
-                      right: 0,
+                    bottom: 10,
+                    left: 10,
+                    right: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             dBList[index]["title"]!,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 20,
+                              fontSize: 16,
                               color: Colors.white,
                             ),
                           ),
@@ -188,21 +186,27 @@ class RowWithBorderContainerType1 extends StatelessWidget {
                             dBList[index]["subt"]!,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: Colors.white,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white70,
                             ),
-                          )
+                          ),
                         ],
-                      ))
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
+
+            const SizedBox(height: 6),
+
+            /// Brand name below image
             Text(
               dBList[index]["brand"]!,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 30,
                 color: Colors.black,
@@ -211,13 +215,101 @@ class RowWithBorderContainerType1 extends StatelessWidget {
           ],
         );
       },
-      // onTap: (index) {
-      //   Navigator.push(context,
-      //       MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
-      // },
+      onTap: (index) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProductDetailsPage2(
+                      productId: dBList[index]["id"],
+                    )));
+      },
     );
   }
 }
+
+// class RowWithBorderContainerType1 extends StatelessWidget {
+//   final List dBList;
+//   const RowWithBorderContainerType1({
+//     required this.dBList,
+//     super.key,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ScrollingRow(
+//       itemCount: dBList.length,
+//       itemBuilder: (index) {
+//         return Column(
+//           children: [
+//             Container(
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.circular(10),
+//               ),
+//               height: 200,
+//               width: 180,
+//               clipBehavior: Clip.antiAlias,
+//               child: Stack(
+//                 children: [
+//                   Image(
+//                     image: NetworkImage(
+//                       dBList[index]["image"]!,
+//                     ),
+//                     fit: BoxFit.cover,
+//                     width: double.infinity,
+//                     height: double.infinity,
+//                   ),
+//                   Positioned(
+//                       bottom: 2,
+//                       left: 0,
+//                       right: 0,
+//                       child: Column(
+//                         mainAxisAlignment: MainAxisAlignment.center,
+//                         mainAxisSize: MainAxisSize.min,
+//                         children: [
+//                           Text(
+//                             dBList[index]["title"]!,
+//                             maxLines: 1,
+//                             overflow: TextOverflow.ellipsis,
+//                             style: TextStyle(
+//                               fontWeight: FontWeight.bold,
+//                               fontSize: 20,
+//                               color: Colors.white,
+//                             ),
+//                           ),
+//                           Text(
+//                             dBList[index]["subt"]!,
+//                             maxLines: 1,
+//                             overflow: TextOverflow.ellipsis,
+//                             style: TextStyle(
+//                               fontSize: 10,
+//                               color: Colors.white,
+//                             ),
+//                           )
+//                         ],
+//                       ))
+//                 ],
+//               ),
+//             ),
+//             Text(
+//               dBList[index]["brand"]!,
+//               maxLines: 1,
+//               overflow: TextOverflow.ellipsis,
+//               style: TextStyle(
+//                 fontWeight: FontWeight.bold,
+//                 fontSize: 30,
+//                 color: Colors.black,
+//               ),
+//             ),
+//           ],
+//         );
+//       },
+//       // onTap: (index) {
+//       //   Navigator.push(context,
+//       //       MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
+//       // },
+//     );
+//   }
+// }
 
 ///
 ///
@@ -226,8 +318,12 @@ class RowWithBorderContainerType1 extends StatelessWidget {
 ///
 class CarouselSliders extends StatefulWidget {
   final List<String> imageUrls;
-
-  const CarouselSliders({super.key, required this.imageUrls});
+  final List<String?>? productIds; // Optional list of product IDs
+  const CarouselSliders({
+    super.key,
+    required this.imageUrls,
+    this.productIds,
+  });
 
   @override
   State<CarouselSliders> createState() => _CarouselSlidersState();
@@ -239,10 +335,28 @@ class _CarouselSlidersState extends State<CarouselSliders> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      // onTap: () {
-      //   Navigator.push(context,
-      //       MaterialPageRoute(builder: (context) => ProductDetailsPage2()));
-      // },
+      onTap: () {
+        final id = widget.productIds != null &&
+                _currentIndex < widget.productIds!.length
+            ? widget.productIds![_currentIndex]
+            : null;
+
+        if (id != null && id.isNotEmpty) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductDetailsPage2(productId: id),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CategoryScreen(),
+            ),
+          );
+        }
+      },
       child: Column(
         children: [
           SizedBox(height: 10),
@@ -250,30 +364,13 @@ class _CarouselSlidersState extends State<CarouselSliders> {
             items: widget.imageUrls.map((url) {
               return Builder(
                 builder: (BuildContext context) {
-                  return Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          url,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 10,
-                        left: 100,
-                        child: Container(
-                          color: Colors.black45,
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          child: Text(
-                            "Min. 55% OFF",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ],
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      url,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
                   );
                 },
               );
