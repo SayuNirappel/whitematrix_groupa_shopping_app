@@ -90,7 +90,7 @@ class HomeProductController with ChangeNotifier {
   }
 
   List<Map<String, String>> get featuredPicks {
-    final indices = [1, 3, 5, 7, 9];
+    final indices = [1, 3, 7, 9, 5];
     return indices
         .where((i) => i < allProducts.length)
         .map((i) => {

@@ -56,7 +56,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           bottom: _buildTabBar(),
         ),
         body: productProvider.isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(
+                color: Color(0xFFE91E63),
+              ))
             : TabBarView(
                 children: [
                   NestedTabScreenWidget(),
@@ -981,7 +984,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 ),
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  title: "Mynthre Recommends",
+                  title: "Mynthra Recommends",
                   fontSize: 20,
                 ),
                 SizedBox(
