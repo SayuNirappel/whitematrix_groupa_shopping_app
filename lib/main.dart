@@ -19,6 +19,7 @@ void main() {
     ChangeNotifierProvider(create: (context) => offersdb()),
     ChangeNotifierProvider(create: (context) => OrderProvider()),
     ChangeNotifierProvider(create: (context) => GetAllProductsController()),
+    ChangeNotifierProvider(create: (context) => Dummydb()),
   ], child: const MyApp()));
 }
 

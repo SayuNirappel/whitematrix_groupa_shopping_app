@@ -51,11 +51,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   void initState() {
+    print("📌 Token received in CategoryScreen: ${ApiConstants.token}");
+
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context
           .read<GetAllProductsController>()
           .fetchAllProducts(token: widget.token);
+      // context
+      //     .read<GetAllProductsController>()
+      //     .fetchAllProducts(token: ApiConstants.token);
     });
   }
 

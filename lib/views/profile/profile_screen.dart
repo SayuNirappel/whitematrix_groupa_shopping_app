@@ -40,6 +40,7 @@ class ProfileScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                 ),
+                Text(ApiConstants.token.toString())
               ],
             ),
           ),
