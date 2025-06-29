@@ -1531,9 +1531,31 @@ onPressed: () {
           ),
           const SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () {
-              // TODO: Implement Buy Now action
+           onPressed: () {
+              if (selectedSize == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Please select a size")),
+                );
+                return;
+              }
+
+              // Navigator.push(////////////////////////////////////////////check it
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => PaymentPage(
+              //       userId: userId,
+              //       product: product,
+              //       selectedSize: selectedSize!,
+              //       selectedSku: selectedSku,
+              //       quantity: quantity,
+              //       offerPrice: offerPrice,
+              //       formattedDate: formattedDate,
+              //       pin: pin,
+              //     ),
+              //   ),
+              // );
             },
+
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 160),
               shape: RoundedRectangleBorder(
