@@ -12,7 +12,7 @@ class PaymentOptionCard extends StatefulWidget {
   final double discountMRP;
   final double totalAmount;
   final int itemCount;
-  final List<String> selectedItemImages;
+ 
   final List<Map<String, dynamic>> selectedProducts;
 
   final bool isSelected;
@@ -29,7 +29,7 @@ class PaymentOptionCard extends StatefulWidget {
     required this.discountMRP,
     required this.totalAmount,
     required this.itemCount,
-    required this.selectedItemImages,
+
     required this.selectedProducts,
   });
 

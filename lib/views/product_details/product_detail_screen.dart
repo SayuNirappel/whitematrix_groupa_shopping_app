@@ -11,6 +11,7 @@ import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/reviewOrder.dart';
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
 class ProductDetailsPage2 extends StatefulWidget {
@@ -221,7 +222,8 @@ setState(() {
                               variantSizes: variantSizes,
                               onSizeSelected: onSizeSelected,
                               formattedDate:formattedDate,
-                              pin:pin
+                              pin:pin, 
+                              images: images.toString()
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -280,7 +282,8 @@ setState(() {
                         variantSizes: variantSizes,
                        onSizeSelected: onSizeSelected,
                        formattedDate:formattedDate,
-                       pin:pin
+                       pin:pin,
+                        images: images.toString()
                       ),
                 ),
               ),
@@ -1348,6 +1351,7 @@ Column buildTitleAndSize(
 }
 
  SafeArea buildBottomButtons({
+  required String images,
   required String userId,
   required ProductsResModel product, 
   required String? selectedSize,
@@ -1554,6 +1558,19 @@ onPressed: () {
               //     ),
               //   ),
               // );
+              Navigator.push(context, MaterialPageRoute(builder:(context) => Revieworder(
+                  userIdddd: ApiConstants.userID.toString(),
+                    product: product,
+                    selectedSize: selectedSize!,
+                    selectedSku: selectedSku,
+                    quantity: quantity,
+                    offerPrice: offerPrice,
+                    formattedDate: formattedDate,
+                    totalprice:selectedVariant.price.toString(),
+                    image:images,
+                    // pin: pin, 
+                     bearerToken: ApiConstants.token.toString(),
+              ),));
             },
 
             style: OutlinedButton.styleFrom(

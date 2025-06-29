@@ -268,7 +268,7 @@ class _AddressPageState extends State<AddressPage> {
                         cartTotal: widget.cartTotal,
                         shippingAddress: widget.selectedAddress,
                         itemCount: widget.itemCount,
-                        selectedItemImages: widget.selectedItemImages,
+                       
                         totalMRP: widget.totalMRP,
                         discountMRP: widget.discountMRP,
                       ),

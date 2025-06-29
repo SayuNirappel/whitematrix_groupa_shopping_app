@@ -12,7 +12,7 @@ class OnlinePaymentOption extends StatefulWidget {
   final double discountMRP;
   final double totalAmount;
   final int itemCount;
-  final List<String> selectedItemImages;
+ 
   final List<Map<String, dynamic>> selectedProducts;
 
   const OnlinePaymentOption({
@@ -24,7 +24,7 @@ class OnlinePaymentOption extends StatefulWidget {
     required this.discountMRP,
     required this.totalAmount,
     required this.itemCount,
-    required this.selectedItemImages,
+  
     required this.selectedProducts,
   });
   @override
@@ -132,12 +132,7 @@ class _OnlinePaymentOptionState extends State<OnlinePaymentOption> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => OrderConfirmationScreen(
-                                  // totalMRP: widget.totalMRP,
-                                  // discountMRP: widget.discountMRP,
-                                  // totalAmount: widget.totalAmount,
-                                  // itemCount: widget.itemCount,
-                                  // selectedItemImages: widget.selectedItemImages,
-                                  // selectedProducts: widget.selectedProducts,
+                               
                                   ),
                             ),
                           );
