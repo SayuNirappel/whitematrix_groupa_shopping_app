@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:whitematrix_groupa_shopping_app/core/network/api_helper.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
+import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 
 class ProductsApiServices {
   Future<List<ProductsResModel>?> fetchProducts() async {
@@ -16,7 +17,7 @@ class ProductsApiServices {
     return null;
   }
 
-  Future<ProductsResModel?> fetchProductById(String id) async {
+  Future<ProductsResModel?> fetchProductById({required String id}) async {
     final resp = await ApiHelper.getData(endpoint: "/product/$id");
     if (resp != null) {
       try {
@@ -29,17 +30,22 @@ class ProductsApiServices {
     return null;
   }
   
-Future<bool> addToCart(String? userId, Map<String, dynamic> data) async {
-  final resolvedUserId = userId ?? '685d96d6530d52e9c7e6e686'; // Default 
+
+Future<bool> addToCart({
+  required String? userId,
+  required String productId,
+  required String variantSKU,
+  required int quantity,
+}) async {
+  final userId = ApiConstants.userID ; 
 
   final response = await ApiHelper.postData(
-    endpoint: "/cart/add-product-to-cart/$resolvedUserId",
+    endpoint: "/cart/add-product-to-cart/$userId",
     data: {
-  "productId": "685cf803728c88a1bc91821e",
-  "variantSKU": "NRTN-SHOES-BLK-9",
-  "quantity" : 1
-}
-,
+      "productId": productId,
+      "variantSKU": variantSKU,
+      "quantity": quantity,
+    },
   );
 
   if (response != null) {
