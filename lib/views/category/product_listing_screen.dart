@@ -526,7 +526,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     List<String> nameList = [];
 
     switch (widget.title.toLowerCase()) {
-      case "t-shirts":
+      case "shoes":
         imageList = DummyDb.tshirtList;
         nameList = DummyDb.tshirtTypes;
         break;
@@ -792,8 +792,8 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                                   Container(
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: NetworkImage(image == null
-                                            ? ImageConstants.MenSection
+                                        image: NetworkImage(widget.title == 'Shoes'
+                                            ? imageList[index]
                                             : image),
                                         fit: BoxFit.cover,
                                       ),

@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/cartcontroller.dart';
+import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/orderconfirmation/orderconfirmationscreen.dart';
 
 class PaymentOptionCard extends StatefulWidget {
@@ -157,12 +160,12 @@ class _PaymentOptionCardState extends State<PaymentOptionCard> {
                           }
 
                           // Log input parameters
-                          print('📋 Placing order with:');
-                          print('User ID: ${widget.userId}');
-                          print('Token: ${widget.bearerToken}');
-                          print('Items: ${widget.selectedProducts}');
-                          print('Shipping Address: ${widget.shippingAddress}');
-                          print('Total Amount: ${widget.totalAmount}');
+                          log('📋 Placing order with:');
+                          log('User ID: ${widget.userId}');
+                          log('Token: ${ApiConstants.token}');
+                          log('Items: ${widget.selectedProducts}');
+                          log('Shipping Address: ${widget.shippingAddress}');
+                          log('Total Amount: ${widget.totalAmount}');
 
                           setState(() => isLoading = true);
                           final cartProvider =
@@ -173,7 +176,7 @@ class _PaymentOptionCardState extends State<PaymentOptionCard> {
                             shippingAddress: widget.shippingAddress,
                             cartTotal: widget.totalAmount,
                             paymentMethod: 'COD',
-                            token: widget.bearerToken,
+                            token: ApiConstants.token.toString(),
                           );
 
                           setState(() => isLoading = false);

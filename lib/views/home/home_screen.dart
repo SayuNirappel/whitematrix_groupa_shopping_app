@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/home_product_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
@@ -7,6 +8,8 @@ import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/banner_service.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/product_service.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/home/home_screen_widgets.dart';
@@ -106,7 +109,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               id: ApiConstants.userID,
                             )));
               },
-              child: const Icon(Icons.window_outlined),
+              child: Container(
+                padding: EdgeInsets.all(1),
+                height: 20,
+                width: 20,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1,color: ColorConstants.textColor),
+                  borderRadius: BorderRadius.circular(3)
+                ),
+                child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,
+                crossAxisSpacing: 1), itemBuilder: (context, index) {
+                  return Center(
+                    child: CircleAvatar(
+                      radius: 3,
+                      backgroundColor: ColorConstants.darkGreyColor,
+                    ),
+                  );
+
+                },
+                itemCount: 4,),
+              ),
             ),
           )
         ],
@@ -124,22 +146,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.black),
         ),
-        child: const Padding(
-          padding: EdgeInsets.all(5),
+        child: Padding(
+          padding: const EdgeInsets.all(5),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
                 children: [
-                  Text(" M",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFE91E63))),
-                  SizedBox(width: 8),
-                  Text("Search", style: TextStyle(fontSize: 15)),
+                  SvgPicture.asset(
+                    ImageConstants.logo, 
+                    height: 20,
+                    width: 25,
+                  ),
+                  const SizedBox(width: 8),
+                  const Text("Search", style: TextStyle(fontSize: 15)),
                 ],
               ),
-              Icon(Icons.search),
+              const Icon(Icons.search),
             ],
           ),
         ),

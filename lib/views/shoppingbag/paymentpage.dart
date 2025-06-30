@@ -269,8 +269,7 @@ class _PaymentpageState extends State<Paymentpage> {
               totalMRP: widget.totalMRP,
               discountMRP: widget.discountMRP,
               totalAmount: widget.cartTotal,
-              itemCount: widget.itemCount,
-      
+              itemCount: widget.itemCount,    
               selectedProducts: widget.selectedItems,
               userId: widget.userId,
               bearerToken: widget.bearerToken, shippingAddress: widget.shippingAddress,

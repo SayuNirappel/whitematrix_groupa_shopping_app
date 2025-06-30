@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/paymentpage.dart';
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
@@ -258,6 +260,14 @@ class _AddressPageState extends State<AddressPage> {
               height: 48,
               child: ElevatedButton(
                 onPressed: () {
+                  log("""  userId: ${widget.userId}
+                        bearerToken: ${widget.bearerToken},
+                        selectedItems: ${widget.selectedItems},
+                        cartTotal: ${widget.cartTotal},
+                        shippingAddress: ${widget.selectedAddress},
+                        itemCount: ${widget.itemCount},                
+                        totalMRP: ${widget.totalMRP},
+                        discountMRP: ${widget.discountMRP}""");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -267,8 +277,7 @@ class _AddressPageState extends State<AddressPage> {
                         selectedItems: widget.selectedItems,
                         cartTotal: widget.cartTotal,
                         shippingAddress: widget.selectedAddress,
-                        itemCount: widget.itemCount,
-                       
+                        itemCount: widget.itemCount,                
                         totalMRP: widget.totalMRP,
                         discountMRP: widget.discountMRP,
                       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/bottom_nav_bar_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/cartcontroller.dart';
@@ -7,7 +8,9 @@ import 'package:whitematrix_groupa_shopping_app/controllers/home_product_control
 import 'package:whitematrix_groupa_shopping_app/controllers/ordercontrollers.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/product_details_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/dummydb.dart';
+import 'package:whitematrix_groupa_shopping_app/views/home/home_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/splash/splash_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/widgets/bottom_nav_bar.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
@@ -30,17 +33,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        // theme: ThemeData(
-        //   tooltipTheme: TooltipThemeData(
-        //     decoration: BoxDecoration(
-        //       color: Colors.black87,
-        //       borderRadius: BorderRadius.circular(4),
-        //     ),
-        //     textStyle: const TextStyle(color: Colors.white),
-        //     waitDuration: Duration(milliseconds: 500),
-        //     showDuration: Duration(seconds: 4),
-        //   ),
-        // ),
+        theme: ThemeData(
+          textTheme: GoogleFonts.manropeTextTheme(
+            Theme.of(context).textTheme,
+          ),
+        ),
         home: SplashScreen());
   }
 }

@@ -101,7 +101,7 @@ setState(() {
       return const Center(child: Text("Product not found"));
     }
     String userId = ApiConstants.userID ??'685d96d6530d52e9c7e6e686'; ///////
-    String bearerToken='';
+    String bearerToken = ApiConstants.token ?? '';
     int quantity = 1; ///////
     final selectedVariant = product.variants![selectedVariantIndex];
     final selectedSku = selectedVariant.sku;
@@ -1558,6 +1558,14 @@ onPressed: () {
               //     ),
               //   ),
               // );
+
+              final selectedVariant = product.variants!.firstWhere(
+    (v) => v.sku == selectedSku,
+    orElse: () => product.variants!.first,
+  );
+  final pricing = provider.getPricingInfo(product, selectedSize);
+  final offerPrice = pricing['offerPrice'];
+  final discountText = pricing['discountText'];
               Navigator.push(context, MaterialPageRoute(builder:(context) => Revieworder(
                   userIdddd: ApiConstants.userID.toString(),
                     product: product,
@@ -1567,7 +1575,9 @@ onPressed: () {
                     offerPrice: offerPrice,
                     formattedDate: formattedDate,
                     totalprice:selectedVariant.price.toString(),
-                    image:images,
+                    image: selectedVariant.images != null && selectedVariant.images!.isNotEmpty
+                        ? selectedVariant.images!.first
+                        : '',
                     // pin: pin, 
                      bearerToken: ApiConstants.token.toString(),
               ),));

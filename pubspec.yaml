@@ -46,6 +46,7 @@ dependencies:
   flutter_rating: ^2.0.2
   latlong2: ^0.9.1
   flutter_map: ^8.1.1
+  email_validator: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -91,10 +92,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: Marko One
+      fonts:
+        - asset: assets/fonts/MarkoOne-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

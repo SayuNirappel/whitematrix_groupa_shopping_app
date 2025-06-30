@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/ordercontrollers.dart';
 
+
 class Orderdetails extends StatefulWidget {
   final String orderId;
 
@@ -138,8 +139,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                     width: 150,
                     height: 200,
                     color: Colors.grey[300],
-                    child: Image.asset("assets/images/check.jpg",
-                        fit: BoxFit.cover),
+                    child: Image.asset("assets/images/check.jpg", fit: BoxFit.cover),
                   ),
                 ),
               ),
@@ -257,18 +257,17 @@ class _OrderdetailsState extends State<Orderdetails> {
                     children: [
                       Row(
                         children: [
-                          StarRating(
-                            size: 25.0,
-                            rating: (item['reviews']?.isNotEmpty ?? false)
-                                ? item['reviews'][0]['rating']?.toDouble() ??
-                                    3.0
-                                : 3.0,
-                            color: Colors.red,
-                            borderColor: Colors.grey,
-                            allowHalfRating: true,
-                            starCount: 5,
-                            onRatingChanged: (rating) => setState(() {}),
-                          ),
+                       StarRating(
+                                size: 25.0,
+                                rating: (item['reviews']?.isNotEmpty ?? false)
+                                    ? item['reviews'][0]['rating']?.toDouble() ?? 3.0
+                                    : 3.0,
+                                color: Colors.red,
+                                borderColor: Colors.grey,
+                                allowHalfRating: true,
+                                starCount: 5,
+                                onRatingChanged: (rating) => setState(() {}),
+                              ),
                         ],
                       ),
                       const SizedBox(height: 5),
@@ -392,237 +391,413 @@ class _OrderdetailsState extends State<Orderdetails> {
                           ),
                           Row(
                             children: [
-                              Text(
-                                "₹${item['priceAtPurchase']}",
-                                style: GoogleFonts.roboto(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
+                              InkWell(
+                                onTap: () {
+                                     showModalBottomSheet(
+  context: context,
+  builder: (context) => Container(
+    height: 370,
+    width: double.infinity,
+    color: Colors.white,
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Payment Information",
+                style: GoogleFonts.roboto(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  item['image'],
+                  height: 70,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 70,
+                    height: 70,
+                    color: Colors.grey[300],
+                    child: Image.asset("assets/images/check.jpg"),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "MRP",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                "₹${order['subtotalAmount']}",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            height: 2,
+            width: double.infinity,
+            color: Colors.grey[300],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Discount",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                "-₹${order['discountAmount']}",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+               Container(
+            height: 2,
+            width: double.infinity,
+            color: Colors.grey[300],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Platform Fee",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                "₹20",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          
+          if (order['paymentMethod'] == "COD") ...[
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Cash/Pay on Delivery",
+                  style: GoogleFonts.roboto(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                Text(
+                  "₹10",
+                  style: GoogleFonts.roboto(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ],
+          const SizedBox(height: 10),
+          Container(
+            height: 2,
+            width: double.infinity,
+            color: Colors.grey[300],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Total Paid",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                "₹${(item['priceAtPurchase'] as num) + 20 + (order['paymentMethod'] == "COD" ? 10 : 0)}",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Container(
+            height: 40,
+            color: Colors.grey[200],
+            width: double.infinity,
+            child: Row(
+              children: [
+                Image.asset(
+                  "assets/images/2-512.webp",
+                  height: 30,
+                  width: 30,
+                  fit: BoxFit.cover,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  order['paymentMethod'] == "COD" ? "Cash on Delivery" : "Online Payment",
+                  style: GoogleFonts.roboto(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+);
+                                },
+                                child: Text(
+                                  "₹${(item['priceAtPurchase'] as num) + 20 + (order['paymentMethod'] == "COD" ? 10 : 0)}",
+                                  style: GoogleFonts.roboto(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 5),
                               InkWell(
                                 onTap: () {
                                   showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => Container(
-                                      height: 370,
-                                      width: double.infinity,
-                                      color: Colors.white,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Payment Information",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  child: Image.network(
-                                                    item['image'],
-                                                    height: 70,
-                                                    errorBuilder: (context,
-                                                            error,
-                                                            stackTrace) =>
-                                                        Container(
-                                                      width: 70,
-                                                      height: 70,
-                                                      color: Colors.grey[300],
-                                                      child: Image.asset(
-                                                          "assets/images/check.jpg"),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 20),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "MRP",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey[600],
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "₹${order['subtotalAmount'] + order['discountAmount']}",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Container(
-                                              height: 2,
-                                              width: double.infinity,
-                                              color: Colors.grey[300],
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Discount",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey[600],
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "-₹${order['discountAmount']}",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Container(
-                                              height: 2,
-                                              width: double.infinity,
-                                              color: Colors.grey[300],
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Discounted Price",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey[600],
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "₹${order['subtotalAmount']}",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 10),
-                                            // Container(
-                                            //   height: 2,
-                                            //   width: double.infinity,
-                                            //   color: Colors.grey[300],
-                                            // ),
-                                            // const SizedBox(height: 10),
-                                            // Row(
-                                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            //   children: [
-                                            //     Text(
-                                            //       "Coupon discount",
-                                            //       style: GoogleFonts.roboto(
-                                            //         fontSize: 16,
-                                            //         fontWeight: FontWeight.bold,
-                                            //         color: Colors.grey[600],
-                                            //       ),
-                                            //     ),
-                                            //     Text(
-                                            //       order['couponCode'] != null ? "-₹0" : "-₹0",
-                                            //       style: GoogleFonts.roboto(
-                                            //         fontSize: 16,
-                                            //         fontWeight: FontWeight.bold,
-                                            //         color: Colors.black,
-                                            //       ),
-                                            //     ),
-                                            //   ],
-                                            // ),
-                                            // const SizedBox(height: 10),
-                                            Container(
-                                              height: 2,
-                                              width: double.infinity,
-                                              color: Colors.grey[300],
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Total Paid",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.grey[600],
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "₹${item['priceAtPurchase']}",
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Container(
-                                              height: 40,
-                                              color: Colors.grey[200],
-                                              width: double.infinity,
-                                              child: Row(
-                                                children: [
-                                                  Image.asset(
-                                                    "assets/images/2-512.webp",
-                                                    height: 30,
-                                                    width: 30,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                  const SizedBox(width: 10),
-                                                  Text(
-                                                    order['paymentMethod'] ==
-                                                            "COD"
-                                                        ? "cash on delivery"
-                                                        : "Online Payment",
-                                                    style: GoogleFonts.roboto(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.grey[600],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ], // End of Column children
-                                        ),
-                                      ),
-                                    ), // End of Container
-                                  ); // End of showModalBottomSheet
+  context: context,
+  builder: (context) => Container(
+    height: 370,
+    width: double.infinity,
+    color: Colors.white,
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Payment Information",
+                style: GoogleFonts.roboto(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  item['image'],
+                  height: 70,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 70,
+                    height: 70,
+                    color: Colors.grey[300],
+                    child: Image.asset("assets/images/check.jpg"),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "MRP",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                "₹${order['subtotalAmount']}",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            height: 2,
+            width: double.infinity,
+            color: Colors.grey[300],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Discount",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                "-₹${order['discountAmount']}",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+               Container(
+            height: 2,
+            width: double.infinity,
+            color: Colors.grey[300],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Platform Fee",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                "₹20",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          
+          if (order['paymentMethod'] == "COD") ...[
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Cash/Pay on Delivery",
+                  style: GoogleFonts.roboto(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                Text(
+                  "₹10",
+                  style: GoogleFonts.roboto(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ],
+          const SizedBox(height: 10),
+          Container(
+            height: 2,
+            width: double.infinity,
+            color: Colors.grey[300],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Total Paid",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                "₹${(item['priceAtPurchase'] as num) + 20 + (order['paymentMethod'] == "COD" ? 10 : 0)}",
+                style: GoogleFonts.roboto(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Container(
+            height: 40,
+            color: Colors.grey[200],
+            width: double.infinity,
+            child: Row(
+              children: [
+                Image.asset(
+                  "assets/images/2-512.webp",
+                  height: 30,
+                  width: 30,
+                  fit: BoxFit.cover,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  order['paymentMethod'] == "COD" ? "Cash on Delivery" : "Online Payment",
+                  style: GoogleFonts.roboto(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  ),
+);
                                 }, // End of onTap
                                 child: const Icon(
                                   Icons.arrow_drop_down,
@@ -654,9 +829,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                order['paymentMethod'] == "COD"
-                                    ? "Cash on delivery"
-                                    : "Online Payment",
+                                order['paymentMethod'] == "COD" ? "Cash on delivery" : "Online Payment",
                                 style: GoogleFonts.roboto(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -752,8 +925,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          Icon(Icons.email_outlined,
-                              color: Colors.grey[600], size: 14),
+                          Icon(Icons.email_outlined, color: Colors.grey[600], size: 14),
                           const SizedBox(width: 10),
                           Text(
                             "${order['shippingAddress']['fullName'].replaceAll(' ', '').toLowerCase()}@gmail.com",

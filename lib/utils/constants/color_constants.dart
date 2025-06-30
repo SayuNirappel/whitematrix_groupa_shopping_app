@@ -12,8 +12,9 @@ class ColorConstants {
   static const Color lightPinkColor = Color.fromARGB(255, 248, 225, 226);
   static const Color brownText = Color.fromARGB(255, 222, 93, 112);
   static const Color blueColor = Color.fromARGB(255, 1, 67, 121);
-  static  Color secondaryColor1 = Colors.grey.shade400;
-   static  Color grey = Colors.grey.shade800;
+  static Color secondaryColor1 = Colors.grey.shade400;
+   static Color grey = Colors.grey.shade800;
+   
 
  
 }
