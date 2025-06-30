@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/auth_api/auth_api_service.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/auth/registration_screen.dart';
-import 'package:whitematrix_groupa_shopping_app/views/home/home_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/widgets/bottom_nav_bar.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,28 +14,27 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool obscurePassword = true;
+
   final formKey = GlobalKey<FormState>();
-
   final TextEditingController userNameController = TextEditingController();
-
   final TextEditingController passwordController = TextEditingController();
 
   @override
   void dispose() {
     userNameController.dispose();
-
     passwordController.dispose();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Form(
               key: formKey,
               child: Column(
@@ -49,49 +48,51 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 120,
                     fit: BoxFit.contain,
                   ),
-                  Text(
+                  const Text(
                     "Welcome Back to Mynthra",
                     style: TextStyle(
                       fontFamily: 'MarckOne',
-                      fontWeight: FontWeight.w400, // Normal
+                      fontWeight: FontWeight.w400,
                       fontSize: 24,
-                      color: Color(0xFFE91E63),
+                      color: ColorConstants.mynthraPink,
                     ),
                   ),
+                  const SizedBox(height: 20),
                   TextFormField(
-                    style: TextStyle(
+                    controller: userNameController,
+                    style: const TextStyle(
                       fontFamily: 'Manrope',
                       fontWeight: FontWeight.w500,
                       fontSize: 14.0,
                       color: Colors.black87,
                     ),
-                    controller: userNameController,
                     decoration: InputDecoration(
-                        labelText: "User Email",
-                        labelStyle: TextStyle(
-                          fontFamily: 'Manrope',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0,
-                          color: Colors.grey[700],
-                        ),
-                        hintText: "Enter Email",
-                        hintStyle: TextStyle(
-                          fontFamily: 'Manrope',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0,
-                          color: Colors.grey[700],
-                        ),
-                        prefixIcon: Icon(Icons.person),
-                        //suffixIcon: Icon(Icons.email),
-                        filled: true,
-                        fillColor: Colors.grey.shade200,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 20,
-                        ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none)),
+                      labelText: "User Email",
+                      labelStyle: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.0,
+                        color: Colors.grey[700],
+                      ),
+                      hintText: "Enter Email",
+                      hintStyle: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.0,
+                        color: Colors.grey[700],
+                      ),
+                      prefixIcon: const Icon(Icons.person),
+                      filled: true,
+                      fillColor: ColorConstants.homeBG,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 20,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please enter an email";
@@ -103,40 +104,53 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   TextFormField(
-                    style: TextStyle(
+                    controller: passwordController,
+                    obscureText: obscurePassword,
+                    style: const TextStyle(
+                      fontFamily: 'Manrope',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14.0,
+                      color: Colors.black87,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      labelStyle: TextStyle(
                         fontFamily: 'Manrope',
                         fontWeight: FontWeight.w500,
                         fontSize: 14.0,
-                        color: Colors.black87),
-                    obscureText: true,
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                        labelText: "Password",
-                        labelStyle: TextStyle(
-                          fontFamily: 'Manrope',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0,
-                          color: Colors.grey[700],
+                        color: Colors.grey[700],
+                      ),
+                      hintText: "Enter Password",
+                      hintStyle: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.0,
+                        color: Colors.grey[700],
+                      ),
+                      prefixIcon: const Icon(Icons.lock_open),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
-                        hintText: "Enter Password",
-                        hintStyle: TextStyle(
-                          fontFamily: 'Manrope',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14.0,
-                          color: Colors.grey[700],
-                        ),
-                        prefixIcon: Icon(Icons.password),
-                        //suffixIcon: Icon(Icons.email),
-
-                        filled: true,
-                        fillColor: Colors.grey.shade200,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                          horizontal: 20,
-                        ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none)),
+                        onPressed: () {
+                          setState(() {
+                            obscurePassword = !obscurePassword;
+                          });
+                        },
+                      ),
+                      filled: true,
+                      fillColor: ColorConstants.homeBG,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 20,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please enter Password";
@@ -149,7 +163,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFE91E63)),
+                      backgroundColor: ColorConstants.mynthraPink,
+                    ),
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         final email = userNameController.text.trim();
@@ -158,30 +173,30 @@ class _LoginScreenState extends State<LoginScreen> {
                         showDialog(
                           context: context,
                           barrierDismissible: false,
-                          builder: (_) =>
-                              const Center(child: CircularProgressIndicator()),
+                          builder: (_) => const Center(
+                              child: CircularProgressIndicator(
+                            color: ColorConstants.mynthraPink,
+                          )),
                         );
 
                         final result =
                             await AuthService.loginUser(email, password);
 
-                        Navigator.pop(context); // Close loading dialog
+                        Navigator.pop(context);
 
                         if (result != null) {
-                          // Login successful – Navigate
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (_) => BottomNavBar()),
                           );
                         } else {
-                          // Show error
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Login failed')),
+                            const SnackBar(content: Text('Login failed')),
                           );
                         }
                       }
                     },
-                    child: Text(
+                    child: const Text(
                       "LogIn",
                       style: TextStyle(
                         color: Colors.white,
@@ -194,8 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Don't have an account",
+                      const Text(
+                        "Don't have an account?",
                         style: TextStyle(
                           fontFamily: 'Manrope',
                           fontWeight: FontWeight.w700,
@@ -203,21 +218,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                                (context),
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        RegistrationScreen()));
-                          },
-                          child: Text(
-                            "Register",
-                            style: TextStyle(
-                                fontFamily: 'Manrope',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 14.0,
-                                color: Colors.pink.shade300),
-                          ))
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegistrationScreen()),
+                          );
+                        },
+                        child: Text(
+                          "Register",
+                          style: TextStyle(
+                            fontFamily: 'Manrope',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14.0,
+                            color: Colors.pink.shade300,
+                          ),
+                        ),
+                      )
                     ],
                   )
                 ],
