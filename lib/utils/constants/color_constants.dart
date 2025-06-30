@@ -16,4 +16,7 @@ class ColorConstants {
   static Color grey = Colors.grey.shade800;
   static const Color mynthraPink = Color(0xFFE91E63);
   static const Color homeBG = Color.fromARGB(255, 255, 239, 244);
+  static const Color homeYellow = Color.fromARGB(255, 248, 240, 213);
+  static const Color bnavpink = Color.fromARGB(255, 248, 221, 230);
+  static const Color bnavpink2 = Color.fromARGB(255, 255, 209, 226);
 }

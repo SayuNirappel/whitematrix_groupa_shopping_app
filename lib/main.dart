@@ -8,7 +8,9 @@ import 'package:whitematrix_groupa_shopping_app/controllers/home_product_control
 import 'package:whitematrix_groupa_shopping_app/controllers/ordercontrollers.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/product_details_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/dummydb.dart';
+import 'package:whitematrix_groupa_shopping_app/views/home/home_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/splash/splash_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/widgets/bottom_nav_bar.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
