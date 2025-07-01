@@ -90,16 +90,20 @@ setState(() {
       return '${diff.inMinutes} minute ago';
     }
 
-    final provider = context.watch<ProductProvider>();
-    final product = provider.selectedProduct;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body:Consumer<ProductProvider>(
+      builder: (context, provider, _) {
+        final provider = context.watch<ProductProvider>();
+        final product = provider.selectedProduct;
 
-    if (provider.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+        if (provider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    if (product == null) {
-      return const Center(child: Text("Product not found"));
-    }
+        if (product == null) {
+          return const Center(child: Text("Product not found"));
+        }
     String userId = ApiConstants.userID ??'685d96d6530d52e9c7e6e686'; ///////
     String bearerToken = ApiConstants.token ?? '';
     int quantity = 1; ///////
@@ -131,10 +135,8 @@ setState(() {
         ? 0.0
         : reviews.map((r) => r.rating as int).fold<int>(0, (a, b) => a + b) /
             reviews.length;
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
+      
+      return Stack(
         children: [
           CustomScrollView(
             controller: scrollController,
@@ -290,8 +292,9 @@ setState(() {
             ),
           ),
         ],
-      ),
-    );
+      );
+      }
+    ));
   }
 
   Column buildDeliveryandServices(String formattedDate) {
