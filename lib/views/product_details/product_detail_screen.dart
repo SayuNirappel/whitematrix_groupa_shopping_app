@@ -90,16 +90,20 @@ setState(() {
       return '${diff.inMinutes} minute ago';
     }
 
-    final provider = context.watch<ProductProvider>();
-    final product = provider.selectedProduct;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body:Consumer<ProductProvider>(
+      builder: (context, provider, _) {
+        final provider = context.watch<ProductProvider>();
+        final product = provider.selectedProduct;
 
-    if (provider.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+        if (provider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    if (product == null) {
-      return const Center(child: Text("Product not found"));
-    }
+        if (product == null) {
+          return const Center(child: Text("Product not found"));
+        }
     String userId = ApiConstants.userID ??'685d96d6530d52e9c7e6e686'; ///////
     String bearerToken = ApiConstants.token ?? '';
     int quantity = 1; ///////
@@ -131,10 +135,8 @@ setState(() {
         ? 0.0
         : reviews.map((r) => r.rating as int).fold<int>(0, (a, b) => a + b) /
             reviews.length;
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
+      
+      return Stack(
         children: [
           CustomScrollView(
             controller: scrollController,
@@ -206,7 +208,7 @@ setState(() {
 
                           const SizedBox(height: 20),
                           buildSummary(selectedVariant, offerPrice,
-                              discountText, formattedDate),
+                              discountText, formattedDate, hasDiscount),
                           // screen button
                           Container(
                             key: screenButtonKey,
@@ -290,8 +292,9 @@ setState(() {
             ),
           ),
         ],
-      ),
-    );
+      );
+      }
+    ));
   }
 
   Column buildDeliveryandServices(String formattedDate) {
@@ -395,7 +398,7 @@ setState(() {
   }
 
   Column buildSummary(
-      Variant selectedVariant, offerPrice, discountText, formattedDate) {
+      Variant selectedVariant, offerPrice, discountText, formattedDate, bool hasDiscount) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -411,9 +414,8 @@ setState(() {
 // Pricing Row
         Row(
           children: [
-            if (selectedVariant.price != null &&
-                selectedVariant.discount != null &&
-                selectedVariant.discount?.isActive == true) ...[
+            if (hasDiscount) ...[
+             
               Text(
                 '₹${selectedVariant.price != null ? selectedVariant.price!.toStringAsFixed(0) : ''}',
                 style: GoogleFonts.roboto(
@@ -423,14 +425,22 @@ setState(() {
                 ),
               ),
               const SizedBox(width: 8),
-            ],
-            Text(
+              Text(
               '₹${offerPrice.toStringAsFixed(0)}',
               style: GoogleFonts.roboto(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
+            ]
+           else...[
+            Text(
+              '₹${offerPrice.toStringAsFixed(0)}',
+              style: GoogleFonts.roboto(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),],
             if (discountText != null) ...[
               const SizedBox(width: 8),
               Text(
@@ -1137,33 +1147,55 @@ Column buildTitleAndSize(
       /// Price section
       Row(
         children: [
-          if (hasDiscount) ...[
-            Text(
-              'MRP',
-              style: GoogleFonts.roboto(
-                fontSize: 22,
-                color: Colors.grey,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              '₹${product.variants != null ? product.variants![selectedVariantIndex].price : ''}',
-              style: GoogleFonts.roboto(
-                fontSize: 22,
-                color: Colors.grey,
-                decoration: TextDecoration.lineThrough,
-              ),
-            ),
-            const SizedBox(width: 8),
-          ],
-          Text(
-            '₹${offerPrice.toStringAsFixed(0)}',
-            style: GoogleFonts.roboto(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        if (hasDiscount) ...[
+      Text(
+        'MRP',
+        style: GoogleFonts.roboto(
+          fontSize: 22,
+          color: Colors.grey,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      const SizedBox(width: 4),
+     
+      Text(
+        '₹${product.variants != null ? product.variants![selectedVariantIndex].price : ''}',
+        style: GoogleFonts.roboto(
+          fontSize: 22,
+          color: Colors.grey,
+          decoration: TextDecoration.lineThrough, 
+        ),
+      ),
+      const SizedBox(width: 8),
+    ]
+    else ...[
+      // If no discount, just show MRP without line-through
+      Text(
+        'MRP',
+        style: GoogleFonts.roboto(
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      const SizedBox(width: 4),
+      Text(
+        '₹${product.variants != null ? product.variants![selectedVariantIndex].price : ''}',
+        style: GoogleFonts.roboto(
+          fontSize: 22,
+        ),
+      ),
+      const SizedBox(width: 8),
+    ],
+    
+    // Display the offer price
+     if (hasDiscount) ...[
+    Text(
+      '₹${offerPrice.toStringAsFixed(0)}',
+      style: GoogleFonts.roboto(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
+    ),],
           if (discountText != null) ...[
             const SizedBox(width: 8),
             Container(
