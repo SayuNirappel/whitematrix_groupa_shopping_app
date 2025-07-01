@@ -1,8 +1,10 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/auth_api/auth_api_service.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/auth/login_screen.dart';
-import 'package:whitematrix_groupa_shopping_app/views/home/home_screen.dart';
-import 'package:whitematrix_groupa_shopping_app/views/widgets/bottom_nav_bar.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -12,18 +14,18 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
+
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController userNameController = TextEditingController();
-  final TextEditingController confirmUNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+
   @override
   void dispose() {
     emailController.dispose();
-    userNameController.dispose();
-    confirmUNameController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
@@ -32,184 +34,224 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Form(
               key: formKey,
               child: Column(
-                spacing: 20,
+                spacing: 16,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  SvgPicture.asset(
+                    ImageConstants.logo,
+                    height: 120,
+                    width: 120,
+                    fit: BoxFit.contain,
+                  ),
+                  const Text(
                     "Welcome to Mynthra",
                     style: TextStyle(
-                        color: Color(0xFFE91E63),
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold),
+                      fontFamily: 'MarckOne',
+                      fontWeight: FontWeight.w400,
+                      fontSize: 24,
+                      color: ColorConstants.mynthraPink,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
                   ),
                   TextFormField(
                     controller: emailController,
+                    style: const TextStyle(
+                      fontFamily: 'Manrope',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
                     decoration: InputDecoration(
-                        labelText: "Email",
-                        hintText: "Enter Email",
-                        prefixIcon: Icon(Icons.email),
-                        //suffixIcon: Icon(Icons.email),
-                        filled: true,
-                        fillColor: Colors.grey.shade200,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 20,
-                        ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none)),
+                      labelText: "Email",
+                      labelStyle: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                      hintText: "Enter Email",
+                      hintStyle: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                      prefixIcon: const Icon(Icons.email),
+                      filled: true,
+                      fillColor: ColorConstants.homeBG,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 20,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please enter an email";
                       }
-                      if (!value.contains("@")) {
+                      if (!EmailValidator.validate(value)) {
                         return "Enter a valid Email";
                       }
                       return null;
                     },
                   ),
-                  // TextFormField(
-                  //   controller: userNameController,
-                  //   decoration: InputDecoration(
-                  //       labelText: "User Name",
-                  //       hintText: "Create User Name",
-                  //       prefixIcon: Icon(Icons.person),
-                  //       //suffixIcon: Icon(Icons.email),
-                  //       filled: true,
-                  //       fillColor: Colors.grey.shade200,
-                  //       contentPadding: const EdgeInsets.symmetric(
-                  //         vertical: 20,
-                  //         horizontal: 20,
-                  //       ),
-                  //       border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(12),
-                  //           borderSide: BorderSide.none)),
-                  //   validator: (value) {
-                  //     if (value == null || value.isEmpty) {
-                  //       return "Please enter username";
-                  //     }
-                  //     if (value.length < 6) {
-                  //       return "Weak Username";
-                  //     }
-                  //     return null;
-                  //   },
-                  // ),
-                  // TextFormField(
-                  //   controller: confirmUNameController,
-                  //   decoration: InputDecoration(
-                  //       labelText: "Confirm Username",
-                  //       hintText: "Re enter your User Name",
-                  //       prefixIcon: Icon(Icons.verified),
-                  //       //suffixIcon: Icon(Icons.email),
-                  //       filled: true,
-                  //       fillColor: Colors.grey.shade200,
-                  //       contentPadding: const EdgeInsets.symmetric(
-                  //         vertical: 20,
-                  //         horizontal: 20,
-                  //       ),
-                  //       border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(12),
-                  //           borderSide: BorderSide.none)),
-                  //   validator: (value) {
-                  //     if (value == null || value.isEmpty) {
-                  //       return "Please re-enter your username";
-                  //     }
-                  //     if (value != userNameController.text) {
-                  //       return "Wrong username";
-                  //     }
-                  //     return null;
-                  //   },
-                  // ),
                   TextFormField(
-                    obscureText: true,
                     controller: passwordController,
+                    obscureText: obscurePassword,
+                    style: const TextStyle(
+                      fontFamily: 'Manrope',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
                     decoration: InputDecoration(
-                        labelText: "Password",
-                        hintText: "Create Password",
-                        prefixIcon: Icon(Icons.password),
-                        //suffixIcon: Icon(Icons.email),
-
-                        filled: true,
-                        fillColor: Colors.grey.shade200,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 20,
+                      labelText: "Password",
+                      labelStyle: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                      hintText: "Create Password",
+                      hintStyle: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none)),
+                        onPressed: () {
+                          setState(() {
+                            obscurePassword = !obscurePassword;
+                          });
+                        },
+                      ),
+                      prefixIcon: const Icon(Icons.lock),
+                      filled: true,
+                      fillColor: ColorConstants.homeBG,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 20,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Please enter Password";
+                        return "Please enter password";
                       }
                       if (value.length < 6) {
-                        return "Weak Password";
+                        return "Weak password";
                       }
                       return null;
                     },
                   ),
                   TextFormField(
-                    obscureText: true,
                     controller: confirmPasswordController,
+                    obscureText: obscureConfirmPassword,
+                    style: const TextStyle(
+                      fontFamily: 'Manrope',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
                     decoration: InputDecoration(
-                        labelText: "Confirm Password",
-                        hintText: "Re Enter your password to confirm",
-                        prefixIcon: Icon(Icons.verified),
-                        //suffixIcon: Icon(Icons.email),
-                        filled: true,
-                        fillColor: Colors.grey.shade200,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 20,
-                          horizontal: 20,
+                      labelText: "Confirm Password",
+                      labelStyle: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                      hintText: "Re-enter password",
+                      hintStyle: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.grey[700],
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none)),
+                        onPressed: () {
+                          setState(() {
+                            obscureConfirmPassword = !obscureConfirmPassword;
+                          });
+                        },
+                      ),
+                      prefixIcon: const Icon(Icons.verified_user),
+                      filled: true,
+                      fillColor: ColorConstants.homeBG,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 20,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Please enter Password";
+                        return "Please confirm password";
                       }
                       if (value != passwordController.text) {
-                        return "Wrong Password";
+                        return "Passwords do not match";
                       }
                       return null;
                     },
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFE91E63)),
+                      backgroundColor: ColorConstants.mynthraPink,
+                    ),
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
-                        try {
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (_) => const Center(
-                                child: CircularProgressIndicator()),
-                          );
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (_) => const Center(
+                              child: CircularProgressIndicator(
+                            color: ColorConstants.mynthraPink,
+                          )),
+                        );
 
+                        try {
                           final user = await AuthService.registerUser(
                             emailController.text.trim(),
                             passwordController.text.trim(),
                           );
-
-                          Navigator.pop(context); // remove the loading dialog
+                          Navigator.pop(context);
 
                           if (user != null) {
-                            // Optionally save user.token or user.user!.id using SharedPreferences
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                   content: Text("Registered Successfully!")),
                             );
-
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -217,42 +259,55 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             );
                           }
                         } catch (e) {
-                          Navigator.pop(context); // remove the loading dialog
-
+                          Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text(
-                                    "Registration Failed: ${e.toString()}")),
+                              content:
+                                  Text("Registration Failed: ${e.toString()}"),
+                            ),
                           );
                         }
                       }
                     },
-                    child: Text(
+                    child: const Text(
                       "Register",
                       style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
+                        color: Colors.white,
+                        fontFamily: 'Manrope',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16.0,
+                      ),
                     ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("If already have an account"),
+                      const Text(
+                        "Already have an account?",
+                        style: TextStyle(
+                          fontFamily: 'Manrope',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14.0,
+                        ),
+                      ),
                       TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()),
-                            );
-                          },
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 118, 16, 50),
-                                fontWeight: FontWeight.bold),
-                          ))
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginScreen()),
+                          );
+                        },
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                            fontFamily: 'Manrope',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14.0,
+                            color: Colors.pink.shade300,
+                          ),
+                        ),
+                      ),
                     ],
                   )
                 ],

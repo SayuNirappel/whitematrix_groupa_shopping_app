@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/bottom_nav_bar_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/home/home_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
@@ -12,101 +15,89 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final bnavController = Provider.of<BottomNavBarController>(context);
 
-    List screens = [
+    List<Widget> screens = [
       HomeScreen(),
       HomeScreen(),
       HomeScreen(),
       HomeScreen(),
       Shoppingbag2(
-          userIdddd: ApiConstants.userID.toString(),
-          BearerToken: ApiConstants.token.toString())
+        userIdddd: ApiConstants.userID.toString(),
+        BearerToken: ApiConstants.token.toString(),
+      )
     ];
 
     return Scaffold(
       body: screens[bnavController.currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Color.fromARGB(255, 248, 221, 230),
-          currentIndex: bnavController.currentIndex,
-          selectedItemColor: bnavController.currentIndex == 3
-              ? Colors.amber.shade500
-              : bnavController.currentIndex == 1
-                  ? Colors.green
-                  : Color(0xFFE91E63), // Myntra pink
-          unselectedItemColor: Colors.grey[600],
-          showUnselectedLabels: true,
-          showSelectedLabels: true,
-          selectedFontSize: 12,
-          unselectedFontSize: 11,
-          type: BottomNavigationBarType.fixed,
-          onTap: (value) {
-            bnavController.setIndex(value);
-          },
-          items: [
-            _bNavBarItems(
-                passedlabel: "Home",
-                passedIcon: Text(
-                  "   M   ",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFE91E63),
-                      fontSize: 20),
-                )),
-            _bNavBarItems(
-                passedlabel: "Under₹999",
-                passedIcon: Text(
-                  "  fwd  ",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green.shade900,
-                      fontSize: 20),
-                )),
-            _bNavBarItems(
-                passedlabel: "in 30 min",
-                passedIcon: Text(
-                  "MNow",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      //color: Color(0xFFE91E63),
-                      fontSize: 18),
-                )),
-            _bNavBarItems(
-                passedlabel: "Luxuary",
-                passedIcon: Text(
-                  "  LUXE  ",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      //color: Colors.amber.shade500,
-                      fontSize: 20),
-                )),
-            _bNavBarItems(
-                passedlabel: "Bag",
-                passedIcon: Icon(
-                  Icons.shopping_bag_outlined,
-                  size: 30,
-                )),
-          ]),
+        backgroundColor: ColorConstants.bnavpink,
+        currentIndex: bnavController.currentIndex,
+        onTap: bnavController.setIndex,
+        type: BottomNavigationBarType.fixed,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        selectedFontSize: 12,
+        unselectedFontSize: 11,
+        selectedItemColor: _getColor(bnavController.currentIndex),
+        unselectedItemColor: Colors.black,
+        items: [
+          _navItem(
+              "Home",
+              0,
+              bnavController.currentIndex,
+               SvgPicture.asset(
+                    ImageConstants.logo, 
+                    height: 20,
+                    width: 25,
+                  ),),
+          _navItem("Under₹999", 1, bnavController.currentIndex,
+              Icon(Icons.local_offer_outlined, size: 22)),
+          _navItem("in 30 min", 2, bnavController.currentIndex,
+              Icon(Icons.flash_on_rounded, size: 22)),
+          _navItem("Luxuary", 3, bnavController.currentIndex,
+              Icon(Icons.workspace_premium, size: 24)),
+          _navItem("Bag", 4, bnavController.currentIndex,
+              Icon(Icons.shopping_bag_outlined, size: 30)),
+        ],
+      ),
     );
   }
 
-  BottomNavigationBarItem _bNavBarItems(
-      {required String passedlabel, required Widget passedIcon}) {
+  /// Returns correct color based on index
+  static Color _getColor(int index) {
+    if (index == 1) return Colors.green.shade900;
+    if (index == 3) return Colors.amber.shade400;
+    return Color(0xFFE91E63); // Myntra Pink
+  }
+
+  /// Builds custom BottomNavigationBarItem with top indicator bar
+  BottomNavigationBarItem _navItem(
+      String label, int index, int currentIndex, Widget iconWidget) {
+    final bool isSelected = currentIndex == index;
+    final Color iconColor = isSelected ? _getColor(index) : Colors.black;
+
     return BottomNavigationBarItem(
-        icon: passedIcon,
-        label: passedlabel,
-        activeIcon: Container(
-            padding: EdgeInsets.all(6),
+      label: label,
+      icon: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          /// Top Indicator Bar
+          Container(
+            height: 4,
+            width: 50,
             decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-              passedlabel == "Under#999"
-                  ? Colors.green.shade900
-                  : passedlabel == "Luxuary"
-                      ? Colors.amber.shade500
-                      : Color(0xFFE91E63),
-              Color.fromARGB(255, 255, 209, 226)
-            ], stops: [
-              0.1,
-              0.3
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-            child: passedIcon));
+              color: isSelected ? iconColor : Colors.transparent,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 4),
+
+          /// Icon Widget
+          IconTheme(
+            data: IconThemeData(color: iconColor),
+            child: iconWidget,
+          ),
+        ],
+      ),
+    );
   }
 }

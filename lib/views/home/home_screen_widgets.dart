@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/home_product_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/font_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
@@ -68,6 +70,7 @@ class PhotoTypeRow extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
+                fontSize: FontConstants.ititle,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
@@ -80,16 +83,22 @@ class PhotoTypeRow extends StatelessWidget {
                 width: 150,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.transparent),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 1,
+                      offset: Offset(0, 1),
+                    )
+                  ],
                 ),
                 child: Image.network(
-                  bslist[index]["image"] ??
-                      "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                  bslist[index]["image"] ?? ImageConstants.fallbackImage,
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
                   errorBuilder: (context, error, stackTrace) {
                     return Image.network(
-                      "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                      ImageConstants.fallbackImage,
                       fit: BoxFit.cover,
                     );
                   },
@@ -159,14 +168,13 @@ class RowWithBorderContainerType1 extends StatelessWidget {
                 child: Stack(
                   children: [
                     Image.network(
-                      dBList[index]["image"] ??
-                          "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                      dBList[index]["image"] ?? ImageConstants.fallbackImage,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
                       errorBuilder: (context, error, stackTrace) {
                         return Image.network(
-                          "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                          ImageConstants.fallbackImage,
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,
@@ -195,7 +203,7 @@ class RowWithBorderContainerType1 extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: FontConstants.ititle,
                                 color: Colors.white,
                               ),
                             ),
@@ -204,7 +212,7 @@ class RowWithBorderContainerType1 extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontSize: 12,
+                                fontSize: FontConstants.isubtitle,
                                 color: Colors.white70,
                               ),
                             ),
@@ -221,7 +229,7 @@ class RowWithBorderContainerType1 extends StatelessWidget {
 
             /// Brand name below image
             Text(
-              dBList[index]["brand"]!,
+              dBList[index]["brand"] ?? "Custom",
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
@@ -384,22 +392,15 @@ class _CarouselSlidersState extends State<CarouselSliders> {
                 builder: (BuildContext context) {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      url,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey.shade300,
-                          alignment: Alignment.center,
-                          child: const Icon(
-                            Icons.broken_image,
-                            color: Colors.grey,
-                            size: 40,
-                          ),
-                        );
-                      },
-                    ),
+                    child: Image.network(url,
+                        fit: BoxFit.cover, width: double.infinity,
+                        errorBuilder: (context, error, stackTrace) {
+                      return Image.network(
+                        ImageConstants.fallbackImage,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      );
+                    }),
                   );
                 },
               );
@@ -474,12 +475,9 @@ class ContinuingRow extends StatelessWidget {
                   item["image"] ?? "",
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    return const Center(
-                      child: Icon(
-                        Icons.image_not_supported,
-                        size: 40,
-                        color: Colors.grey,
-                      ),
+                    return Image.network(
+                      ImageConstants.fallbackImage,
+                      fit: BoxFit.cover,
                     );
                   },
                 ),
@@ -491,7 +489,7 @@ class ContinuingRow extends StatelessWidget {
               maxLines: 1,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: FontConstants.ititle,
                 color: Colors.black,
               ),
             ),
@@ -500,7 +498,7 @@ class ContinuingRow extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: const TextStyle(
-                fontSize: 15,
+                fontSize: FontConstants.isubtitle,
                 color: Colors.grey,
               ),
             ),
@@ -526,45 +524,6 @@ class ContinuingRow extends StatelessWidget {
               builder: (context) => ProductDetailsPage2(productId: productId)),
         );
       },
-    );
-  }
-}
-
-///
-///
-///---------Extracted Ad Container
-///
-///
-class TempAdBanner extends StatelessWidget {
-  final Color borderColor;
-  final Color containerColor;
-  final Color textrColor;
-  final double height;
-  final double fSize;
-  const TempAdBanner({
-    required this.borderColor,
-    required this.containerColor,
-    required this.textrColor,
-    required this.height,
-    required this.fSize,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-          color: containerColor,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: borderColor)),
-      child: Center(
-        child: Text(
-          "Loading Ad........",
-          style: TextStyle(
-              color: textrColor, fontWeight: FontWeight.bold, fontSize: fSize),
-        ),
-      ),
     );
   }
 }

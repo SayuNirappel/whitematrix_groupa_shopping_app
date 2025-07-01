@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/home_product_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
@@ -9,6 +9,7 @@ import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart'
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/banner_service.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/product_service.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/font_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/product_listing_screen.dart';
@@ -51,9 +52,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 255, 239, 244),
+        backgroundColor: ColorConstants.homeBG,
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 255, 239, 244),
+          backgroundColor: ColorConstants.bnavpink,
           title: _buildSearchBar(),
           actions: _buildAppBarActions(context),
           bottom: _buildTabBar(),
@@ -61,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         body: productProvider.isLoading
             ? const Center(
                 child: CircularProgressIndicator(
-                color: Color(0xFFE91E63),
+                color: ColorConstants.mynthraPink,
               ))
             : TabBarView(
                 children: [
@@ -86,9 +87,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           Expanded(
             child: TabBar(
               isScrollable: false,
-              labelColor: const Color(0xFFE91E63),
+              labelColor: ColorConstants.mynthraPink,
               unselectedLabelColor: Colors.black,
-              indicatorColor: const Color(0xFFE91E63),
+              indicatorColor: ColorConstants.mynthraPink,
               tabs: const [
                 Tab(text: "All"),
                 Tab(text: "Men"),
@@ -109,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               id: ApiConstants.userID,
                             )));
               },
-              child: Container(
+              child:Container(
                 padding: EdgeInsets.all(1),
                 height: 20,
                 width: 20,
@@ -153,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             children: [
               Row(
                 children: [
-                  SvgPicture.asset(
+                   SvgPicture.asset(
                     ImageConstants.logo, 
                     height: 20,
                     width: 25,
@@ -352,6 +353,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
       child: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverToBoxAdapter(child: SizedBox(height: 5)),
+
+          ///
+          ///------------------------------first widget ---------------------------------
+          ///
           SliverToBoxAdapter(
             child: SizedBox(
               height: 90,
@@ -374,27 +379,30 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
-                            child: Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 2,
-                                  color: isSelected
-                                      ? Colors.transparent
-                                      : Colors.amber.shade300,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 2,
+                                    color: isSelected
+                                        ? Colors.transparent
+                                        : Colors.amber.shade300,
+                                  ),
                                 ),
-                              ),
-                              child: Image.network(
-                                item["image"] ??
-                                    "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.network(
-                                    "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
-                                    fit: BoxFit.cover,
-                                  );
-                                },
+                                clipBehavior: Clip.hardEdge, // <-- important
+                                child: Image.network(
+                                  item["image"] ?? ImageConstants.fallbackImage,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.network(
+                                      ImageConstants.fallbackImage,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -405,8 +413,9 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               fontWeight: isSelected
                                   ? FontWeight.bold
                                   : FontWeight.normal,
-                              color:
-                                  isSelected ? Color(0xFFE91E63) : Colors.black,
+                              color: isSelected
+                                  ? ColorConstants.mynthraPink
+                                  : Colors.black,
                             ),
                           ),
                         ],
@@ -528,31 +537,50 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               child: Stack(
                                 children: [
                                   Image.network(
-                                    item["image"]!,
+                                    item["image"] ??
+                                        ImageConstants.fallbackImage,
                                     fit: BoxFit.cover,
                                     height: double.infinity,
                                     width: double.infinity,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.network(
+                                        ImageConstants.fallbackImage,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
                                   ),
                                   Positioned(
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          item["brand"]!,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,
-                                            color: Colors.white,
-                                            backgroundColor: Colors.black,
+                                    bottom: 4,
+                                    left: 4,
+                                    right: 4,
+                                    child: Container(
+                                      color: Colors.black54,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4, vertical: 2),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              item["brand"]!,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                                color: Colors.white,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
-                                        ),
-                                        Icon(
-                                          Icons.arrow_forward_ios_outlined,
-                                          color: Colors.grey,
-                                          size: 10,
-                                        )
-                                      ],
+                                          const Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                            color: Colors.white70,
+                                            size: 10,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -592,7 +620,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Continue Shopping",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                 ),
                 SizedBox(height: 10),
                 ContinuingRow(),
@@ -729,7 +757,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Featured Brands",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                 ),
                 SizedBox(height: 10),
                 Consumer<HomeProductController>(
@@ -754,7 +782,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 SizedBox(height: 20),
                 TitleRow(
                   title: "Featured Picks",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                   mainAxisAlignment: MainAxisAlignment.start,
                 ),
                 SizedBox(height: 10),
@@ -777,19 +805,16 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               child: Stack(
                                 children: [
                                   Image.network(
-                                    item["image"] ?? "",
+                                    item["image"]?.isNotEmpty == true
+                                        ? item["image"]!
+                                        : ImageConstants.fallbackImage,
                                     fit: BoxFit.cover,
                                     height: double.infinity,
                                     width: double.infinity,
                                     errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        color: Colors.grey.shade300,
-                                        alignment: Alignment.center,
-                                        child: const Icon(
-                                          Icons.broken_image,
-                                          color: Colors.grey,
-                                          size: 40,
-                                        ),
+                                      return Image.network(
+                                        ImageConstants.fallbackImage,
+                                        fit: BoxFit.cover,
                                       );
                                     },
                                   ),
@@ -815,6 +840,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
+                                              fontSize: 16,
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -830,11 +856,11 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                           Row(
                                             children: [
                                               Text(
-                                                item["oP"] ?? "",
+                                                "₹${item["oP"] ?? ""}",
                                                 style: const TextStyle(
                                                   decoration: TextDecoration
                                                       .lineThrough,
-                                                  color: Colors.grey,
+                                                  color: ColorConstants.homeBG,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -843,7 +869,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                                 item["nP"] ?? "",
                                                 style: const TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 13,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
@@ -851,7 +877,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                               Text(
                                                 item["reduction"] ?? "",
                                                 style: const TextStyle(
-                                                  color: Colors.redAccent,
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.w700,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -896,7 +923,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 SizedBox(height: 20),
                 TitleRow(
                   title: "Bestseller Category",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                   mainAxisAlignment: MainAxisAlignment.start,
                 ),
                 SizedBox(height: 10),
@@ -924,7 +951,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Continue Browsing These Styles",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                 ),
                 SizedBox(
                   height: 10,
@@ -949,13 +976,13 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Season's Best Brands",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                 ),
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Iconic styles to steal the spot light",
                   color: Colors.grey,
-                  fontSize: 15,
+                  fontSize: FontConstants.subtitle,
                 ),
                 SizedBox(height: 10),
                 Consumer<HomeProductController>(
@@ -981,7 +1008,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Hidden Gems",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                 ),
                 SizedBox(height: 10),
                 Consumer<HomeProductController>(
@@ -1008,7 +1035,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Mynthra Recommends",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                 ),
                 SizedBox(
                   height: 10,
@@ -1020,14 +1047,16 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                       padding: EdgeInsets.symmetric(horizontal: 5),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: Color(0xFFE91E63))),
+                          border:
+                              Border.all(color: ColorConstants.mynthraPink)),
                       child: Text(
                         "Picks You'll Love",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
+                            fontSize: FontConstants.subtitle,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFFE91E63)),
+                            color: ColorConstants.mynthraPink),
                       ),
                     ),
                   ],
@@ -1050,7 +1079,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               width: 150,
                               child: Image(
                                 image: NetworkImage(picks[index]["image"] ??
-                                    "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg"),
+                                    ImageConstants.fallbackImage),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -1063,27 +1092,32 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     picks[index]["name"] ?? "",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: FontConstants.ititle,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   Text(
                                     picks[index]["category"] ?? "",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(color: Colors.grey),
+                                    style: TextStyle(
+                                        fontSize: FontConstants.isubtitle,
+                                        color: Colors.grey),
                                   ),
                                   Row(spacing: 5, children: [
                                     Text(
-                                      picks[index]["oP"] ?? "",
+                                      "₹${picks[index][" oP"] ?? ""}",
                                       style: TextStyle(
                                         decoration: TextDecoration.lineThrough,
-                                        color: Colors.grey,
+                                        color: Colors.blueGrey,
                                       ),
                                     ),
                                     Text(
                                       picks[index]["nP"] ?? "",
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: FontConstants.isubtitle,
+                                      ),
                                     ),
                                     Text(
                                       picks[index]["reduction"] ?? "",
@@ -1131,7 +1165,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   height: 20,
                 ),
                 Container(
-                  color: Color.fromARGB(255, 248, 240, 213),
+                  color: ColorConstants.homeYellow,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -1171,22 +1205,29 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     child: Image(
                                       image: NetworkImage(nearby[index]
                                               ["image"] ??
-                                          "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg"),
+                                          ImageConstants.fallbackImage),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
                                   Positioned(
                                     bottom: 0,
-                                    left: 0,
+                                    left: -8, // Shift left to overflow
                                     child: Text(
                                       "${index + 1}",
                                       style: TextStyle(
                                         fontSize: 100,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
+                                        shadows: [
+                                          Shadow(
+                                            blurRadius: 10,
+                                            color: Colors.black87,
+                                            offset: Offset(2, 2),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  )
+                                  ),
                                 ],
                               );
                             },
@@ -1454,6 +1495,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
               ),
             ),
           ),
+          SliverToBoxAdapter(child: SizedBox(height: 8)),
         ],
         body: TabBarView(
           controller: tabBar3Controller,
@@ -1477,7 +1519,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
   //____________________________________for tab switch-----------------
   Future<void> fetchAndStoreProducts() async {
     allProducts = await ProductService.fetchProducts();
-    setState(() {}); // Refresh UI after data is loaded
+
+    if (!mounted) return; // Exit if widget is no longer in the tree
+
+    setState(() {}); // Refresh UI safely
   }
 
   List<ProductsResModel> _sortProductsForTab(
@@ -1615,7 +1660,10 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
       ),
       itemBuilder: (context, index) {
         if (index >= allProducts.length) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(
+            color: ColorConstants.mynthraPink,
+          ));
         }
 
         final product = allProducts[index];
@@ -1678,17 +1726,21 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                       style: const TextStyle(color: Colors.grey),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      product.variants?.first.price.toString() ?? "0",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                     const SizedBox(width: 4),
                     Row(
                       children: [
+                        Text(
+                          "₹ ${product.variants?.first.price.toString()} " ??
+                              "0 ",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 4,
+                        ),
                         Text(
                           getFormattedDiscount(product),
                           maxLines: 1,

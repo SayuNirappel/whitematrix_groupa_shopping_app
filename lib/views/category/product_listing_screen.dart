@@ -1,12 +1,13 @@
 import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/get_all_products_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/dummydb.dart';
-import 'package:whitematrix_groupa_shopping_app/models/category_model.dart';
+import 'package:whitematrix_groupa_shopping_app/models/category_model.dart' as app_models;
 import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
@@ -237,7 +238,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
   }
 
   Widget _buildTrendsView() {
-    final List<Category> categories = DummyDb().dummyCategories;
+    final List<app_models.Category> categories = DummyDb().dummyCategories;
 
     List<String> imageList = [];
     List<String> nameList = [];
@@ -320,7 +321,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                       fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               Container(
-                height: 235,
+                height: kIsWeb ? 380 : 235,
                 child: Row(
                   children: [
                     _build_BigSection(imageList, index, nameList),
@@ -353,7 +354,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
   }
 
   Expanded _build_SmallSection(
-      Category category, List<String> imageList, int index) {
+      app_models.Category category, List<String> imageList, int index) {
     return Expanded(
       child: GridView.builder(
         padding: EdgeInsets.all(.8),
@@ -379,8 +380,11 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(
-                          image: NetworkImage(
-                              imageList[(index + i) % imageList.length]),
+                          image: kIsWeb
+          ? NetworkImage(ImageConstants.fallbackImage)
+          : NetworkImage(
+              imageList[(index + i) % imageList.length] ?? ImageConstants.fallbackImage,
+            ),
                           fit: BoxFit.cover,
                         ),
                       ),

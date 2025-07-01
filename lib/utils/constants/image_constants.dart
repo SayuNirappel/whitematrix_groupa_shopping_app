@@ -4,6 +4,7 @@ class ImageConstants{
   static const String WomenSection = 'assets/images/womenswear.jpg';
   static const String logo = "assets/images/myntra.svg";
   static const String card = "assets/images/card.png";
-  
+    static const String fallbackImage =
+      "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg";
  
 }
