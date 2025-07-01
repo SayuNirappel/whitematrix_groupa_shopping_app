@@ -39,8 +39,19 @@ class HomeProductController with ChangeNotifier {
     notifyListeners();
 
     final products = await ProductService.fetchProducts();
-    setAllProducts(products); //  this replaces your direct assignment
 
+    ///
+    print("Raw Products fetched: ${products.length}");
+    for (var p in products) {
+      print("${p.title} - CreatedAt: ${p.createdAt}");
+    }
+
+    ///
+    setAllProducts(products); //  this replaces your direct assignment
+    ///
+    print("Products Length : ${products.length}");
+
+    ///
     bannerImages = await BannerService.fetchActiveBannerImages();
 
     isLoading = false;
@@ -205,16 +216,22 @@ class HomeProductController with ChangeNotifier {
   }
 
   void setAllProducts(List<ProductsResModel> products) {
-    allProducts = products;
-    genderProducts = products
+    final cutoffDate = DateTime(2025, 6, 30, 23, 59, 59);
+
+    // ✅ Avoid products with null createdAt explicitly
+    allProducts = products.where((p) {
+      final created = p.createdAt;
+      if (created == null) return false; // 👈 Skip nulls safely
+      return created.isBefore(cutoffDate);
+    }).toList();
+
+    genderProducts = allProducts
         .where((e) => (e.gender ?? '').toString().toLowerCase() == 'men')
         .toList();
 
-    // Debugging aid — you can remove this later
-    print("Total Products: ${products.length}");
-    print("Men's Products: ${genderProducts.length}");
-    for (var p in products) {
-      print("→ ${p.title} | Gender: ${p.gender}");
+    print("Filtered Products (Before 31/06/2025): ${allProducts.length}");
+    for (var p in allProducts) {
+      print("→ ${p.title} | Created At: ${p.createdAt} | Gender: ${p.gender}");
     }
 
     notifyListeners();

@@ -92,7 +92,8 @@ class PhotoTypeRow extends StatelessWidget {
                   ],
                 ),
                 child: Image.network(
-                  bslist[index]["image"] ?? ImageConstants.fallbackImage,
+                  bslist[index]["image"],
+                  //?? ImageConstants.fallbackImage,
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
@@ -168,7 +169,8 @@ class RowWithBorderContainerType1 extends StatelessWidget {
                 child: Stack(
                   children: [
                     Image.network(
-                      dBList[index]["image"] ?? ImageConstants.fallbackImage,
+                      dBList[index]["image"],
+                      //?? ImageConstants.fallbackImage,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
