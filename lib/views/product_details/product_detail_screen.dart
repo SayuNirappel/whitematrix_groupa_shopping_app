@@ -206,7 +206,7 @@ setState(() {
 
                           const SizedBox(height: 20),
                           buildSummary(selectedVariant, offerPrice,
-                              discountText, formattedDate),
+                              discountText, formattedDate, hasDiscount),
                           // screen button
                           Container(
                             key: screenButtonKey,
@@ -395,7 +395,7 @@ setState(() {
   }
 
   Column buildSummary(
-      Variant selectedVariant, offerPrice, discountText, formattedDate) {
+      Variant selectedVariant, offerPrice, discountText, formattedDate, bool hasDiscount) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -411,9 +411,8 @@ setState(() {
 // Pricing Row
         Row(
           children: [
-            if (selectedVariant.price != null &&
-                selectedVariant.discount != null &&
-                selectedVariant.discount?.isActive == true) ...[
+            if (hasDiscount) ...[
+             
               Text(
                 '₹${selectedVariant.price != null ? selectedVariant.price!.toStringAsFixed(0) : ''}',
                 style: GoogleFonts.roboto(
@@ -423,14 +422,22 @@ setState(() {
                 ),
               ),
               const SizedBox(width: 8),
-            ],
-            Text(
+              Text(
               '₹${offerPrice.toStringAsFixed(0)}',
               style: GoogleFonts.roboto(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
+            ]
+           else...[
+            Text(
+              '₹${offerPrice.toStringAsFixed(0)}',
+              style: GoogleFonts.roboto(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),],
             if (discountText != null) ...[
               const SizedBox(width: 8),
               Text(
@@ -1137,33 +1144,55 @@ Column buildTitleAndSize(
       /// Price section
       Row(
         children: [
-          if (hasDiscount) ...[
-            Text(
-              'MRP',
-              style: GoogleFonts.roboto(
-                fontSize: 22,
-                color: Colors.grey,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              '₹${product.variants != null ? product.variants![selectedVariantIndex].price : ''}',
-              style: GoogleFonts.roboto(
-                fontSize: 22,
-                color: Colors.grey,
-                decoration: TextDecoration.lineThrough,
-              ),
-            ),
-            const SizedBox(width: 8),
-          ],
-          Text(
-            '₹${offerPrice.toStringAsFixed(0)}',
-            style: GoogleFonts.roboto(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        if (hasDiscount) ...[
+      Text(
+        'MRP',
+        style: GoogleFonts.roboto(
+          fontSize: 22,
+          color: Colors.grey,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      const SizedBox(width: 4),
+     
+      Text(
+        '₹${product.variants != null ? product.variants![selectedVariantIndex].price : ''}',
+        style: GoogleFonts.roboto(
+          fontSize: 22,
+          color: Colors.grey,
+          decoration: TextDecoration.lineThrough, 
+        ),
+      ),
+      const SizedBox(width: 8),
+    ]
+    else ...[
+      // If no discount, just show MRP without line-through
+      Text(
+        'MRP',
+        style: GoogleFonts.roboto(
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      const SizedBox(width: 4),
+      Text(
+        '₹${product.variants != null ? product.variants![selectedVariantIndex].price : ''}',
+        style: GoogleFonts.roboto(
+          fontSize: 22,
+        ),
+      ),
+      const SizedBox(width: 8),
+    ],
+    
+    // Display the offer price
+     if (hasDiscount) ...[
+    Text(
+      '₹${offerPrice.toStringAsFixed(0)}',
+      style: GoogleFonts.roboto(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
+    ),],
           if (discountText != null) ...[
             const SizedBox(width: 8),
             Container(
