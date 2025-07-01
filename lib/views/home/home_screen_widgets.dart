@@ -396,7 +396,7 @@ class _CarouselSlidersState extends State<CarouselSliders> {
                         fit: BoxFit.cover, width: double.infinity,
                         errorBuilder: (context, error, stackTrace) {
                       return Image.network(
-                        ImageConstants.fallbackImage,
+                        ImageConstants.bannerImage,
                         fit: BoxFit.cover,
                         width: double.infinity,
                       );

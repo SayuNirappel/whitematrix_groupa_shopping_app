@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/home_product_controller.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +27,8 @@ class NotificationScreen extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xFFE91E63), width: 1.2),
+                      border: Border.all(
+                          color: ColorConstants.mynthraPink, width: 1.2),
                       borderRadius: BorderRadius.circular(12),
                       color: Colors.white,
                     ),
@@ -40,8 +43,12 @@ class NotificationScreen extends StatelessWidget {
                             height: 180,
                             width: double.infinity,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.image),
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.network(
+                                ImageConstants.fallbackImage,
+                                fit: BoxFit.cover,
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -66,22 +73,23 @@ class NotificationScreen extends StatelessWidget {
                         Center(
                           child: InkWell(
                             onTap: () {
-                              Navigator.pop(context);
-                              Future.delayed(const Duration(milliseconds: 50),
-                                  () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductDetailsPage2(
-                                        productId: notifications[index]["id"] ??
-                                            "685cf800728c88a1bc918219"),
-                                  ),
-                                );
-                              });
+                              final id = notifications[index]["id"];
+                              print(
+                                  "🔍 Going to ProductDetailsPage2 with ID: $id");
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetailsPage2(
+                                      productId: notifications[index]["id"] ??
+                                          "685cf800728c88a1bc918219"),
+                                ),
+                              );
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                border: Border.all(color: Color(0xFFE91E63)),
+                                border: Border.all(
+                                    color: ColorConstants.mynthraPink),
                                 borderRadius: BorderRadius.circular(50),
                               ),
                               padding: const EdgeInsets.symmetric(
@@ -89,12 +97,13 @@ class NotificationScreen extends StatelessWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: const [
-                                  Icon(Icons.lock, color: Color(0xFFE91E63)),
+                                  Icon(Icons.lock,
+                                      color: ColorConstants.mynthraPink),
                                   SizedBox(width: 8),
                                   Text(
                                     "SHOP NOW",
                                     style: TextStyle(
-                                        color: Color(0xFFE91E63),
+                                        color: ColorConstants.mynthraPink,
                                         fontWeight: FontWeight.bold),
                                   )
                                 ],

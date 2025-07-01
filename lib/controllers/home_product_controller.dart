@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/product_service.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/home_api/banner_service.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 
 class HomeProductController with ChangeNotifier {
   List<ProductsResModel> allProducts = [];
@@ -10,7 +13,7 @@ class HomeProductController with ChangeNotifier {
   List<ProductsResModel> menProducts = [];
   List<ProductsResModel> womenProducts = [];
   List<ProductsResModel> kidsProducts = [];
-
+  bool hasNewDiscount = false;
   bool isLoading = true;
   List<Map<String, String>> get categories {
     final Map<String, String> categoryMap = {}; // categoryName -> imageUrl
@@ -130,6 +133,7 @@ class HomeProductController with ChangeNotifier {
   Map<String, String> _mapNotification(int index) {
     final product = allProducts[index];
     return {
+      "id": product.id ?? "",
       "image": product.variants?.first.images?.first ??
           "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
       "brand": product.title ?? "Untitled",
@@ -139,10 +143,16 @@ class HomeProductController with ChangeNotifier {
     };
   }
 
-  String getFullImageUrl(String relativePath) {
+  String getFullImageUrl(String? relativePath) {
+    const serverUrl = "https://myntacloneappbackend-1.onrender.com";
+
+    if (relativePath == null || relativePath.isEmpty) {
+      return ImageConstants.fallbackImage; // fallback
+    }
+
     return relativePath.startsWith("http")
         ? relativePath
-        : " https://myntacloneappbackend-1.onrender.com/all-products/$relativePath";
+        : "$serverUrl$relativePath";
   }
 
   Map<String, String> _mapNotificationFromProduct(ProductsResModel product) {
@@ -159,12 +169,14 @@ class HomeProductController with ChangeNotifier {
 
     final offerText =
         offerType == "flat" ? "$offerValue OFF" : "$offerValue% OFF";
+    final pid = product.id;
 
     return {
       "image": image,
       "brand": product.title ?? "Untitled",
       "offer": offerText,
       "time": "Just now", // You can make this dynamic if needed
+      "id": pid ?? ""
     };
   }
 
@@ -225,6 +237,7 @@ class HomeProductController with ChangeNotifier {
     //   return created.isBefore(cutoffDate);
     // }).toList();
     allProducts = products;
+    checkForNewDiscounts();
 
     /// --- Gender filters ---
     menProducts = allProducts.where((p) {
@@ -247,6 +260,31 @@ class HomeProductController with ChangeNotifier {
     print("→ Women: ${womenProducts.length}");
     print("→ Kids: ${kidsProducts.length}");
 
+    notifyListeners();
+  }
+
+//
+//-------------------notifications
+//
+  void checkForNewDiscounts() {
+    final today = DateTime.now();
+    hasNewDiscount = allProducts.any((product) {
+      final discount = product.variants?.first.discount;
+      if (discount == null || discount.isActive != true) return false;
+
+      final start = discount.startDate;
+      if (start == null) return false;
+
+      return start.year == today.year &&
+          start.month == today.month &&
+          start.day == today.day;
+    });
+
+    notifyListeners();
+  }
+
+  void clearNewDiscountNotification() {
+    hasNewDiscount = false;
     notifyListeners();
   }
 }

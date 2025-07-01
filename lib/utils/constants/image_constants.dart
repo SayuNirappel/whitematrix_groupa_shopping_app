@@ -6,4 +6,6 @@ class ImageConstants {
   static const String card = "assets/images/card.png";
   static const String fallbackImage =
       "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg";
+  static const String bannerImage =
+      "https://images.pexels.com/photos/34639/pexels-photo.jpg";
 }

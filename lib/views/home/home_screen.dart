@@ -177,12 +177,39 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   List<Widget> _buildAppBarActions(BuildContext context) {
     return [
-      InkWell(
-        onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => NotificationScreen()));
+      Consumer<HomeProductController>(
+        builder: (context, provider, _) {
+          return Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.notifications_none),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const NotificationScreen()),
+                  ).then((_) {
+                    Provider.of<HomeProductController>(context, listen: false)
+                        .clearNewDiscountNotification();
+                  });
+                },
+              ),
+              if (provider.hasNewDiscount)
+                Positioned(
+                  right: 12,
+                  top: 12,
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
+          );
         },
-        child: const Icon(Icons.notification_important_outlined),
       ),
       const SizedBox(width: 15),
       const Icon(Icons.favorite_outline),
@@ -337,42 +364,20 @@ class _FilteredTabScreenWidgetState extends State<FilteredTabScreenWidget>
               ///
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Consumer<HomeProductController>(
                     builder: (context, provider, _) {
-                      return CarouselSliders(imageUrls: provider.bannerImages);
+                      final fullBannerUrls = provider.bannerImages
+                          .map((path) => provider.getFullImageUrl(path))
+                          .toList();
+
+                      return CarouselSliders(imageUrls: fullBannerUrls);
                     },
                   ),
                 ),
               ),
 
-              ///
-              ///
-              ///-------------------------------------Featured Brands Row------------------------------------------
-              ///
-              ///
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    SizedBox(height: 20),
-                    TitleRow(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      title: "Featured Brands",
-                      fontSize: FontConstants.title,
-                    ),
-                    SizedBox(height: 10),
-                    Consumer<HomeProductController>(
-                      builder: (context, provider, _) {
-                        return RowWithBorderContainerType1(
-                          dBList: provider.featuredBrandsList,
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
-              /// ➤ Featured Brands Row
+              /// ➤ Catergory HList Row
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 12),
@@ -392,7 +397,7 @@ class _FilteredTabScreenWidgetState extends State<FilteredTabScreenWidget>
                             child: Stack(
                               children: [
                                 Image.network(
-                                  item["image"] ?? ImageConstants.fallbackImage,
+                                  provider.getFullImageUrl(item["image"]),
                                   fit: BoxFit.cover,
                                   height: double.infinity,
                                   width: double.infinity,
@@ -450,9 +455,36 @@ class _FilteredTabScreenWidgetState extends State<FilteredTabScreenWidget>
                   ),
                 ),
               ),
+
+              ///
+              ///
+              ///-------------------------------------Featured Brands Row------------------------------------------
+              ///
+              ///
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    TitleRow(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      title: "Featured Brands",
+                      fontSize: FontConstants.title,
+                    ),
+                    SizedBox(height: 10),
+                    Consumer<HomeProductController>(
+                      builder: (context, provider, _) {
+                        return RowWithBorderContainerType1(
+                          dBList: provider.featuredBrandsList,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
               SliverToBoxAdapter(
                 child: SizedBox(
-                  height: 15,
+                  height: 20,
                 ),
               ),
 
@@ -1946,12 +1978,11 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: Image.network(
-                    product.variants?.first.images?.first ??
-                        "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
-                    fit: BoxFit.cover,
+                    Provider.of<HomeProductController>(context, listen: false)
+                        .getFullImageUrl(product.variants?.first.images?.first),
                     errorBuilder: (context, error, stackTrace) {
                       return Image.network(
-                        "https://images.pexels.com/photos/96381/pexels-photo-96381.jpeg",
+                        ImageConstants.fallbackImage,
                         fit: BoxFit.cover,
                       );
                     },
