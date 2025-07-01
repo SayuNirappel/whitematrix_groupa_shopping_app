@@ -21,6 +21,10 @@ class ProductService {
 
       if (response.statusCode == 200) {
         final List decoded = jsonDecode(response.body);
+        // 🔍 Add this debug print here
+        // final genders = decoded.map((e) => e["gender"]).toSet().toList();
+        // print("🧩 Unique gender values in API: $genders");
+        //
         print("🟢 Decoded length: ${decoded.length}");
 
         final List<ProductsResModel> safeProducts = [];

@@ -41,14 +41,15 @@ class BottomNavBar extends StatelessWidget {
         unselectedItemColor: Colors.black,
         items: [
           _navItem(
-              "Home",
-              0,
-              bnavController.currentIndex,
-               SvgPicture.asset(
-                    ImageConstants.logo, 
-                    height: 20,
-                    width: 25,
-                  ),),
+            "Home",
+            0,
+            bnavController.currentIndex,
+            SvgPicture.asset(
+              ImageConstants.logo,
+              height: 20,
+              width: 25,
+            ),
+          ),
           _navItem("Under₹999", 1, bnavController.currentIndex,
               Icon(Icons.local_offer_outlined, size: 22)),
           _navItem("in 30 min", 2, bnavController.currentIndex,

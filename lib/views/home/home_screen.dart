@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
 import 'package:provider/provider.dart';
@@ -67,12 +68,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             : TabBarView(
                 children: [
                   NestedTabScreenWidget(),
-                  NestedTabScreenWidget(),
-                  NestedTabScreenWidget(),
-                  NestedTabScreenWidget(),
-                  // const FilteredTabScreenWidget(gender: "men"),
-                  // const FilteredTabScreenWidget(gender: "women"),
-                  // const FilteredTabScreenWidget(gender: "unisex"),
+                  //NestedTabScreenWidget(),
+                  //NestedTabScreenWidget(),
+                  //NestedTabScreenWidget(),
+
+                  FilteredTabScreenWidget(gender: "men"),
+                  FilteredTabScreenWidget(gender: "women"),
+                  FilteredTabScreenWidget(gender: "kids"),
                 ],
               ),
       ),
@@ -110,25 +112,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               id: ApiConstants.userID,
                             )));
               },
-              child:Container(
+              child: Container(
                 padding: EdgeInsets.all(1),
                 height: 20,
                 width: 20,
                 decoration: BoxDecoration(
-                  border: Border.all(width: 1,color: ColorConstants.textColor),
-                  borderRadius: BorderRadius.circular(3)
+                    border:
+                        Border.all(width: 1, color: ColorConstants.textColor),
+                    borderRadius: BorderRadius.circular(3)),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, crossAxisSpacing: 1),
+                  itemBuilder: (context, index) {
+                    return Center(
+                      child: CircleAvatar(
+                        radius: 3,
+                        backgroundColor: ColorConstants.darkGreyColor,
+                      ),
+                    );
+                  },
+                  itemCount: 4,
                 ),
-                child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,
-                crossAxisSpacing: 1), itemBuilder: (context, index) {
-                  return Center(
-                    child: CircleAvatar(
-                      radius: 3,
-                      backgroundColor: ColorConstants.darkGreyColor,
-                    ),
-                  );
-
-                },
-                itemCount: 4,),
               ),
             ),
           )
@@ -154,8 +158,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             children: [
               Row(
                 children: [
-                   SvgPicture.asset(
-                    ImageConstants.logo, 
+                  SvgPicture.asset(
+                    ImageConstants.logo,
                     height: 20,
                     width: 25,
                   ),
@@ -213,17 +217,61 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 ///
 ///
 
-class FilteredTabScreenWidget extends StatelessWidget {
+class FilteredTabScreenWidget extends StatefulWidget {
+  final String gender;
+  const FilteredTabScreenWidget({super.key, required this.gender});
+
+  @override
+  State<FilteredTabScreenWidget> createState() =>
+      _FilteredTabScreenWidgetState();
+}
+
+class _FilteredTabScreenWidgetState extends State<FilteredTabScreenWidget>
+    with TickerProviderStateMixin {
+  late TabController tabBar3Controller;
+
+  final List<String> tabBar3Titles = [
+    "Trending",
+    "New Arrivals",
+    "Top Rated",
+    "On Sale",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    tabBar3Controller =
+        TabController(length: tabBar3Titles.length, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    tabBar3Controller.dispose();
+    super.dispose();
+  }
+
+  List<String> _genderVariants(String inputGender) {
+    switch (inputGender.toLowerCase()) {
+      case 'men':
+        return ['male', 'men', 'unisex'];
+      case 'women':
+        return ['female', 'women', 'unisex'];
+      case 'kids':
+        return ['kids', 'unisex'];
+      default:
+        return ['unisex'];
+    }
+  }
+
   List<ProductsResModel> _sortProductsForTab(
       String title, List<ProductsResModel> products) {
     switch (title) {
       case "Trending":
         return products.where((product) {
           final hasProductDiscount = product.discount?.isActive == true;
-          final hasVariantDiscount = product.variants?.any(
-                (v) => v.discount?.isActive == true,
-              ) ??
-              false;
+          final hasVariantDiscount =
+              product.variants?.any((v) => v.discount?.isActive == true) ??
+                  false;
           return hasProductDiscount || hasVariantDiscount;
         }).toList();
 
@@ -233,46 +281,241 @@ class FilteredTabScreenWidget extends StatelessWidget {
 
       case "Top Rated":
         return products.toList()
-          ..sort((a, b) =>
-              _totalStock(b.variants) -
-              _totalStock(a.variants)); // More stock = popular
+          ..sort((a, b) => _totalStock(b.variants) - _totalStock(a.variants));
 
       case "On Sale":
         return products.toList()
-          ..sort((a, b) =>
-              _totalStock(a.variants) -
-              _totalStock(b.variants)); // Low stock = selling fast
+          ..sort((a, b) => _totalStock(a.variants) - _totalStock(b.variants));
 
       default:
         return products;
     }
   }
 
-  final String gender;
-  const FilteredTabScreenWidget({super.key, required this.gender});
+  int _totalStock(List<Variant>? variants) {
+    if (variants == null || variants.isEmpty) return 0;
+    return variants.fold(0, (sum, v) => sum + (v.stock ?? 0));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HomeProductController>(
-      builder: (context, productProvider, _) {
-        final genderedProducts = productProvider.genderProducts;
+    final matchKeywords = _genderVariants(widget.gender);
 
-        return Center(
-          child: Column(
-            children: [
-              Text("Gender: $gender"),
-              Text("Filtered List Count: ${genderedProducts.length}"),
-              Text("All Products Count: ${productProvider.allProducts.length}"),
+    return Consumer<HomeProductController>(
+      builder: (context, provider, _) {
+        final List<ProductsResModel> genderedProducts =
+            switch (widget.gender.toLowerCase()) {
+          'men' => provider.menProducts,
+          'women' => provider.womenProducts,
+          'kids' => provider.kidsProducts,
+          _ => const <ProductsResModel>[],
+        };
+
+        final categories = provider.categories;
+        final featured = provider.featuredBrandsList;
+
+        final filteredImages = <String>[];
+        final filteredIds = <String?>[];
+
+        for (var product in genderedProducts) {
+          if (product.variants?.isNotEmpty == true &&
+              product.variants!.first.images?.isNotEmpty == true) {
+            filteredImages.add(
+              provider.getFullImageUrl(product.variants!.first.images!.first),
+            );
+            filteredIds.add(product.id);
+          }
+        }
+
+        return DefaultTabController(
+          length: tabBar3Titles.length,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              /// ➤ Carousel Slider
+              ///
+              ///-----------------------Ad-------------------------------------------
+              ///
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Consumer<HomeProductController>(
+                    builder: (context, provider, _) {
+                      return CarouselSliders(imageUrls: provider.bannerImages);
+                    },
+                  ),
+                ),
+              ),
+
+              ///
+              ///
+              ///-------------------------------------Featured Brands Row------------------------------------------
+              ///
+              ///
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    TitleRow(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      title: "Featured Brands",
+                      fontSize: FontConstants.title,
+                    ),
+                    SizedBox(height: 10),
+                    Consumer<HomeProductController>(
+                      builder: (context, provider, _) {
+                        return RowWithBorderContainerType1(
+                          dBList: provider.featuredBrandsList,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              /// ➤ Featured Brands Row
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: ScrollingRow(
+                    itemCount: featured.length,
+                    itemBuilder: (index) {
+                      final item = featured[index];
+                      return Column(
+                        children: [
+                          Container(
+                            height: 80,
+                            width: 80,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Stack(
+                              children: [
+                                Image.network(
+                                  item["image"] ?? ImageConstants.fallbackImage,
+                                  fit: BoxFit.cover,
+                                  height: double.infinity,
+                                  width: double.infinity,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.network(
+                                      ImageConstants.fallbackImage,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                ),
+                                Positioned(
+                                  bottom: 4,
+                                  left: 4,
+                                  right: 4,
+                                  child: Container(
+                                    color: Colors.black54,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4, vertical: 2),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            item["brand"]!,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                              color: Colors.white,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        const Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                            size: 10,
+                                            color: Colors.white70),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    onTap: (index) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CategoryScreen()),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 15,
+                ),
+              ),
+
+              /// ➤ Sticky TabBar
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: TabBarDelegate(
+                  TabBar(
+                    controller: tabBar3Controller,
+                    isScrollable: true,
+                    indicatorColor: Colors.transparent,
+                    tabs: tabBar3Titles.map((title) {
+                      final index = tabBar3Titles.indexOf(title);
+                      return Tab(
+                        child: AnimatedBuilder(
+                          animation: tabBar3Controller,
+                          builder: (context, _) {
+                            final isSelected = tabBar3Controller.index == index;
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(
+                                  color: isSelected ? Colors.pink : Colors.grey,
+                                  width: 2,
+                                ),
+                              ),
+                              child: Text(
+                                title,
+                                style: TextStyle(
+                                  color:
+                                      isSelected ? Colors.pink : Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 15,
+                ),
+              ),
             ],
+
+            /// ➤ Infinite GridView for each tab content (filtered and sorted)
+            body: TabBarView(
+              controller: tabBar3Controller,
+              children: tabBar3Titles.map<Widget>((title) {
+                final sortedList = _sortProductsForTab(title, genderedProducts);
+                return InfiniteScrollGridView(sourceList: sortedList);
+              }).toList(),
+            ),
           ),
         );
       },
     );
-  }
-
-  int _totalStock(List<Variant>? variants) {
-    if (variants == null || variants.isEmpty) return 0;
-    return variants.fold(0, (sum, v) => sum + (v.stock ?? 0));
   }
 }
 
@@ -1177,7 +1420,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                             fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 4,
                       ),
                       Text(
                         "discover What's Hot in Your Region",
@@ -1207,6 +1450,13 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                               ["image"] ??
                                           ImageConstants.fallbackImage),
                                       fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Image.network(
+                                          ImageConstants.fallbackImage,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
                                     ),
                                   ),
                                   Positioned(

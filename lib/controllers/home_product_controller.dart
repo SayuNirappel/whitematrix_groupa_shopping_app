@@ -7,6 +7,10 @@ class HomeProductController with ChangeNotifier {
   List<ProductsResModel> allProducts = [];
   List<ProductsResModel> genderProducts = [];
   List<String> bannerImages = [];
+  List<ProductsResModel> menProducts = [];
+  List<ProductsResModel> womenProducts = [];
+  List<ProductsResModel> kidsProducts = [];
+
   bool isLoading = true;
   List<Map<String, String>> get categories {
     final Map<String, String> categoryMap = {}; // categoryName -> imageUrl
@@ -204,24 +208,44 @@ class HomeProductController with ChangeNotifier {
     };
   }
 
-  void setAllProducts(List<ProductsResModel> products) {
-    final cutoffDate = DateTime(2025, 6, 30, 23, 59, 59);
+  List<ProductsResModel> _filterByGenderKeywords(List<String> keywords) {
+    return allProducts.where((product) {
+      final gender = (product.gender ?? '').toString().toLowerCase().trim();
+      return keywords.contains(gender);
+    }).toList();
+  }
 
-    // ✅ Avoid products with null createdAt explicitly
-    allProducts = products.where((p) {
-      final created = p.createdAt;
-      if (created == null) return false; // 👈 Skip nulls safely
-      return created.isBefore(cutoffDate);
+  void setAllProducts(List<ProductsResModel> products) {
+    // final cutoffDate = DateTime(2025, 6, 30, 23, 59, 59);
+
+    // ✅ Filter out products with null or future createdAt dates
+    // allProducts = products.where((p) {
+    //   final created = p.createdAt;
+    //   if (created == null) return false;
+    //   return created.isBefore(cutoffDate);
+    // }).toList();
+    allProducts = products;
+
+    /// --- Gender filters ---
+    menProducts = allProducts.where((p) {
+      final g = p.gender?.name.toLowerCase().trim() ?? '';
+      return ['male', 'men', 'unisex'].contains(g);
     }).toList();
 
-    genderProducts = allProducts
-        .where((e) => (e.gender ?? '').toString().toLowerCase() == 'men')
-        .toList();
+    womenProducts = allProducts.where((p) {
+      final g = p.gender?.name.toLowerCase().trim() ?? '';
+      return ['female', 'women', 'unisex'].contains(g);
+    }).toList();
 
-    print("Filtered Products (Before 31/06/2025): ${allProducts.length}");
-    for (var p in allProducts) {
-      print("→ ${p.title} | Created At: ${p.createdAt} | Gender: ${p.gender}");
-    }
+    kidsProducts = allProducts.where((p) {
+      final g = p.gender?.name.toLowerCase().trim() ?? '';
+      return ['kids', 'unisex'].contains(g);
+    }).toList();
+
+    print("→ All: ${allProducts.length}");
+    print("→ Men: ${menProducts.length}");
+    print("→ Women: ${womenProducts.length}");
+    print("→ Kids: ${kidsProducts.length}");
 
     notifyListeners();
   }
