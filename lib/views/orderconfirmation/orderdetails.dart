@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating/flutter_rating.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:whitematrix_groupa_shopping_app/controllers/ordercontrollers.dart';
-
 
 class Orderdetails extends StatefulWidget {
   final String orderId;
+  final Map<String, dynamic> selectedItem;
+  final Map<String, dynamic> order; // Add order parameter
 
   const Orderdetails({
     Key? key,
     required this.orderId,
+    required this.selectedItem,
+    required this.order,
   }) : super(key: key);
 
   @override
@@ -20,30 +21,8 @@ class Orderdetails extends StatefulWidget {
 class _OrderdetailsState extends State<Orderdetails> {
   @override
   Widget build(BuildContext context) {
-    var orderProvider = context.watch<OrderProvider>();
-
-    if (orderProvider.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    if (orderProvider.errorMessage != null) {
-      return Scaffold(
-        body: Center(child: Text(orderProvider.errorMessage!)),
-      );
-    }
-
-    if (orderProvider.orders.isEmpty) {
-      return const Scaffold(
-        body: Center(child: Text('No order details found')),
-      );
-    }
-
-    final order = orderProvider.orders.firstWhere(
-      (o) => o['_id'] == widget.orderId,
-      orElse: () => <String, dynamic>{},
-    );
+    final item = widget.selectedItem;
+    final order = widget.order;
 
     if (order.isEmpty) {
       return const Scaffold(
@@ -51,18 +30,16 @@ class _OrderdetailsState extends State<Orderdetails> {
       );
     }
 
-    final item = order['items'].isNotEmpty ? order['items'][0] : null;
-
-    if (item == null) {
+    if (item.isEmpty) {
       return const Scaffold(
-        body: Center(child: Text('No items found for this order')),
+        body: Center(child: Text('No item selected')),
       );
     }
 
     // Parse placedAt date
     DateTime placedAt;
     try {
-      placedAt = DateTime.parse(order['placedAt']);
+      placedAt = DateTime.parse(order['placedAt']?.toString() ?? '');
     } catch (e) {
       placedAt = DateTime.now();
     }
@@ -71,6 +48,12 @@ class _OrderdetailsState extends State<Orderdetails> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -131,7 +114,7 @@ class _OrderdetailsState extends State<Orderdetails> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(
-                  item['image'],
+                  item['image']?.toString() ?? '',
                   width: 150,
                   height: 200,
                   fit: BoxFit.cover,
@@ -145,7 +128,7 @@ class _OrderdetailsState extends State<Orderdetails> {
               ),
               const SizedBox(height: 20),
               Text(
-                item['brand']['name'],
+                item['brand']?['name']?.toString() ?? 'Unknown Brand',
                 style: GoogleFonts.roboto(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -153,7 +136,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                 ),
               ),
               Text(
-                item['title'],
+                item['title']?.toString() ?? 'Unknown Item',
                 style: GoogleFonts.roboto(
                   fontSize: 16,
                   color: Colors.grey[700],
@@ -162,7 +145,7 @@ class _OrderdetailsState extends State<Orderdetails> {
               ),
               const SizedBox(height: 20),
               Text(
-                "Size: ${item['size']}",
+                "Size: ${item['size']?.toString() ?? 'N/A'}",
                 style: GoogleFonts.roboto(
                   fontSize: 16,
                   color: Colors.grey[700],
@@ -193,8 +176,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Delivered",
-                              // order['status'],
+                              'Delivered',
                               style: GoogleFonts.roboto(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -257,17 +239,17 @@ class _OrderdetailsState extends State<Orderdetails> {
                     children: [
                       Row(
                         children: [
-                       StarRating(
-                                size: 25.0,
-                                rating: (item['reviews']?.isNotEmpty ?? false)
-                                    ? item['reviews'][0]['rating']?.toDouble() ?? 3.0
-                                    : 3.0,
-                                color: Colors.red,
-                                borderColor: Colors.grey,
-                                allowHalfRating: true,
-                                starCount: 5,
-                                onRatingChanged: (rating) => setState(() {}),
-                              ),
+                          StarRating(
+                            size: 25.0,
+                            rating: (item['reviews']?.isNotEmpty ?? false)
+                                ? item['reviews'][0]['rating']?.toDouble() ?? 3.0
+                                : 3.0,
+                            color: Colors.red,
+                            borderColor: Colors.grey,
+                            allowHalfRating: true,
+                            starCount: 5,
+                            onRatingChanged: (rating) => setState(() {}),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 5),
@@ -332,7 +314,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                       Row(
                         children: [
                           Text(
-                            order['shippingAddress']['fullName'],
+                            order['shippingAddress']?['fullName']?.toString() ?? 'Unknown',
                             style: GoogleFonts.roboto(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -347,7 +329,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            order['shippingAddress']['mobile'],
+                            order['shippingAddress']?['mobile']?.toString() ?? 'Unknown',
                             style: GoogleFonts.roboto(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -358,7 +340,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        "${order['shippingAddress']['address']}, ${order['shippingAddress']['city']}, ${order['shippingAddress']['state']} ${order['shippingAddress']['pincode']}",
+                        "${order['shippingAddress']?['address']?.toString() ?? 'Unknown'}, ${order['shippingAddress']?['city']?.toString() ?? 'Unknown'}, ${order['shippingAddress']?['state']?.toString() ?? 'Unknown'} ${order['shippingAddress']?['pincode']?.toString() ?? 'Unknown'}",
                         style: GoogleFonts.roboto(
                           fontSize: 14,
                           fontWeight: FontWeight.normal,
@@ -589,7 +571,7 @@ class _OrderdetailsState extends State<Orderdetails> {
     ),
   ),
 );
-                                },
+      },
                                 child: Text(
                                   "₹${(item['priceAtPurchase'] as num) + 20 + (order['paymentMethod'] == "COD" ? 10 : 0)}",
                                   style: GoogleFonts.roboto(
@@ -602,7 +584,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                               const SizedBox(width: 5),
                               InkWell(
                                 onTap: () {
-                                  showModalBottomSheet(
+                                                           showModalBottomSheet(
   context: context,
   builder: (context) => Container(
     height: 370,
@@ -797,18 +779,17 @@ class _OrderdetailsState extends State<Orderdetails> {
       ),
     ),
   ),
-);
-                                }, // End of onTap
+);            },
                                 child: const Icon(
                                   Icons.arrow_drop_down,
                                   size: 15,
                                   color: Colors.red,
                                 ),
-                              ), // End of InkWell
-                            ], // End of Row children
-                          ), // End of Row
-                        ], // End of Row children
-                      ), // End of Row
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 10),
                       Container(
                         height: 50,
@@ -829,7 +810,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                order['paymentMethod'] == "COD" ? "Cash on delivery" : "Online Payment",
+                                order['paymentMethod'] == "COD" ? "Cash on Delivery" : "Online Payment",
                                 style: GoogleFonts.roboto(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -839,8 +820,8 @@ class _OrderdetailsState extends State<Orderdetails> {
                             ],
                           ),
                         ),
-                      ), // End of Container
-                    ], // End of Column children
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -914,7 +895,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                           Icon(Icons.phone, color: Colors.grey[600], size: 14),
                           const SizedBox(width: 10),
                           Text(
-                            order['shippingAddress']['mobile'],
+                            order['shippingAddress']?['mobile']?.toString() ?? 'Unknown',
                             style: GoogleFonts.roboto(
                               fontSize: 14,
                               fontWeight: FontWeight.normal,
@@ -928,7 +909,7 @@ class _OrderdetailsState extends State<Orderdetails> {
                           Icon(Icons.email_outlined, color: Colors.grey[600], size: 14),
                           const SizedBox(width: 10),
                           Text(
-                            "${order['shippingAddress']['fullName'].replaceAll(' ', '').toLowerCase()}@gmail.com",
+                            "${order['shippingAddress']?['fullName']?.toString().replaceAll(' ', '').toLowerCase() ?? 'unknown'}@gmail.com",
                             style: GoogleFonts.roboto(
                               fontSize: 14,
                               fontWeight: FontWeight.normal,
@@ -940,11 +921,10 @@ class _OrderdetailsState extends State<Orderdetails> {
                   ),
                 ),
               ),
-            ], // End of main Column children
+            ],
           ),
         ),
       ),
-    ); // End of Scaffold
-  } // End of build method
-} // End of _OrderdetailsState
-// End of Orderdetails class
+    );
+  }
+}
