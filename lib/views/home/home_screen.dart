@@ -68,8 +68,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   NestedTabScreenWidget(),
                   NestedTabScreenWidget(),
                   NestedTabScreenWidget(),
-                  NestedTabScreenWidget(),
-                  // const FilteredTabScreenWidget(gender: "men"),
+                  //NestedTabScreenWidget(),
+                  //const
+                  FilteredTabScreenWidget(gender: "men"),
                   // const FilteredTabScreenWidget(gender: "women"),
                   // const FilteredTabScreenWidget(gender: "unisex"),
                 ],
@@ -194,65 +195,65 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 ///
 
 class FilteredTabScreenWidget extends StatelessWidget {
-  List<ProductsResModel> _sortProductsForTab(
-      String title, List<ProductsResModel> products) {
-    switch (title) {
-      case "Trending":
-        return products.where((product) {
-          final hasProductDiscount = product.discount?.isActive == true;
-          final hasVariantDiscount = product.variants?.any(
-                (v) => v.discount?.isActive == true,
-              ) ??
-              false;
-          return hasProductDiscount || hasVariantDiscount;
-        }).toList();
-
-      case "New Arrivals":
-        return products.where((p) => p.createdAt != null).toList()
-          ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-
-      case "Top Rated":
-        return products.toList()
-          ..sort((a, b) =>
-              _totalStock(b.variants) -
-              _totalStock(a.variants)); // More stock = popular
-
-      case "On Sale":
-        return products.toList()
-          ..sort((a, b) =>
-              _totalStock(a.variants) -
-              _totalStock(b.variants)); // Low stock = selling fast
-
-      default:
-        return products;
-    }
-  }
-
   final String gender;
   const FilteredTabScreenWidget({super.key, required this.gender});
+
+  List<String> _genderVariants(String inputGender) {
+    switch (inputGender.toLowerCase()) {
+      case 'men':
+        return ['male', 'men', 'unisex'];
+      case 'women':
+        return ['female', 'women', 'unisex'];
+      case 'kids':
+        return ['kids', 'unisex'];
+      default:
+        return ['unisex']; // fallback
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<HomeProductController>(
       builder: (context, productProvider, _) {
-        final genderedProducts = productProvider.genderProducts;
+        final matchKeywords = _genderVariants(gender);
+        final allProducts = productProvider.allProducts;
 
-        return Center(
-          child: Column(
-            children: [
-              Text("Gender: $gender"),
-              Text("Filtered List Count: ${genderedProducts.length}"),
-              Text("All Products Count: ${productProvider.allProducts.length}"),
-            ],
-          ),
+        final genderedProducts = switch (gender.toLowerCase()) {
+          'men' => productProvider.menProducts,
+          'women' => productProvider.womenProducts,
+          'kids' => productProvider.kidsProducts,
+          _ => [],
+        };
+
+        print("📌 All Products Count: ${allProducts.length}");
+        print("📌 Filter keyword: $gender -> ${matchKeywords.join(', ')}");
+        print("📌 Product genders: ${allProducts.map((p) => p.gender)}");
+        print("📌 Filtered Count: ${genderedProducts.length}");
+
+        if (genderedProducts.isEmpty) {
+          return Center(
+            child: Text("No products found for gender: $gender"),
+          );
+        }
+
+        return ListView.builder(
+          itemCount: genderedProducts.length,
+          itemBuilder: (context, index) {
+            final product = genderedProducts[index];
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(
+                  product.variants?.first.images?.first ??
+                      'https://via.placeholder.com/150',
+                ),
+              ),
+              title: Text(product.title ?? 'Untitled'),
+              subtitle: Text("Gender: ${product.gender ?? 'N/A'}"),
+            );
+          },
         );
       },
     );
-  }
-
-  int _totalStock(List<Variant>? variants) {
-    if (variants == null || variants.isEmpty) return 0;
-    return variants.fold(0, (sum, v) => sum + (v.stock ?? 0));
   }
 }
 
@@ -1157,7 +1158,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                             fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 4,
                       ),
                       Text(
                         "discover What's Hot in Your Region",
@@ -1187,6 +1188,13 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                               ["image"] ??
                                           ImageConstants.fallbackImage),
                                       fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Image.network(
+                                          ImageConstants.fallbackImage,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
                                     ),
                                   ),
                                   Positioned(
