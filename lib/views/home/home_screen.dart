@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/home_product_controller.dart';
@@ -66,13 +67,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             : TabBarView(
                 children: [
                   NestedTabScreenWidget(),
-                  NestedTabScreenWidget(),
-                  NestedTabScreenWidget(),
                   //NestedTabScreenWidget(),
-                  //const
+                  //NestedTabScreenWidget(),
+                  //NestedTabScreenWidget(),
+
                   FilteredTabScreenWidget(gender: "men"),
-                  // const FilteredTabScreenWidget(gender: "women"),
-                  // const FilteredTabScreenWidget(gender: "unisex"),
+                  FilteredTabScreenWidget(gender: "women"),
+                  FilteredTabScreenWidget(gender: "kids"),
                 ],
               ),
       ),
@@ -194,9 +195,38 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 ///
 ///
 
-class FilteredTabScreenWidget extends StatelessWidget {
+class FilteredTabScreenWidget extends StatefulWidget {
   final String gender;
   const FilteredTabScreenWidget({super.key, required this.gender});
+
+  @override
+  State<FilteredTabScreenWidget> createState() =>
+      _FilteredTabScreenWidgetState();
+}
+
+class _FilteredTabScreenWidgetState extends State<FilteredTabScreenWidget>
+    with TickerProviderStateMixin {
+  late TabController tabBar3Controller;
+
+  final List<String> tabBar3Titles = [
+    "Trending",
+    "New Arrivals",
+    "Top Rated",
+    "On Sale",
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    tabBar3Controller =
+        TabController(length: tabBar3Titles.length, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    tabBar3Controller.dispose();
+    super.dispose();
+  }
 
   List<String> _genderVariants(String inputGender) {
     switch (inputGender.toLowerCase()) {
@@ -207,50 +237,260 @@ class FilteredTabScreenWidget extends StatelessWidget {
       case 'kids':
         return ['kids', 'unisex'];
       default:
-        return ['unisex']; // fallback
+        return ['unisex'];
     }
+  }
+
+  List<ProductsResModel> _sortProductsForTab(
+      String title, List<ProductsResModel> products) {
+    switch (title) {
+      case "Trending":
+        return products.where((product) {
+          final hasProductDiscount = product.discount?.isActive == true;
+          final hasVariantDiscount =
+              product.variants?.any((v) => v.discount?.isActive == true) ??
+                  false;
+          return hasProductDiscount || hasVariantDiscount;
+        }).toList();
+
+      case "New Arrivals":
+        return products.where((p) => p.createdAt != null).toList()
+          ..sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+      case "Top Rated":
+        return products.toList()
+          ..sort((a, b) => _totalStock(b.variants) - _totalStock(a.variants));
+
+      case "On Sale":
+        return products.toList()
+          ..sort((a, b) => _totalStock(a.variants) - _totalStock(b.variants));
+
+      default:
+        return products;
+    }
+  }
+
+  int _totalStock(List<Variant>? variants) {
+    if (variants == null || variants.isEmpty) return 0;
+    return variants.fold(0, (sum, v) => sum + (v.stock ?? 0));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<HomeProductController>(
-      builder: (context, productProvider, _) {
-        final matchKeywords = _genderVariants(gender);
-        final allProducts = productProvider.allProducts;
+    final matchKeywords = _genderVariants(widget.gender);
 
-        final genderedProducts = switch (gender.toLowerCase()) {
-          'men' => productProvider.menProducts,
-          'women' => productProvider.womenProducts,
-          'kids' => productProvider.kidsProducts,
-          _ => [],
+    return Consumer<HomeProductController>(
+      builder: (context, provider, _) {
+        final List<ProductsResModel> genderedProducts =
+            switch (widget.gender.toLowerCase()) {
+          'men' => provider.menProducts,
+          'women' => provider.womenProducts,
+          'kids' => provider.kidsProducts,
+          _ => const <ProductsResModel>[],
         };
 
-        print("📌 All Products Count: ${allProducts.length}");
-        print("📌 Filter keyword: $gender -> ${matchKeywords.join(', ')}");
-        print("📌 Product genders: ${allProducts.map((p) => p.gender)}");
-        print("📌 Filtered Count: ${genderedProducts.length}");
+        final categories = provider.categories;
+        final featured = provider.featuredBrandsList;
 
-        if (genderedProducts.isEmpty) {
-          return Center(
-            child: Text("No products found for gender: $gender"),
-          );
+        final filteredImages = <String>[];
+        final filteredIds = <String?>[];
+
+        for (var product in genderedProducts) {
+          if (product.variants?.isNotEmpty == true &&
+              product.variants!.first.images?.isNotEmpty == true) {
+            filteredImages.add(
+              provider.getFullImageUrl(product.variants!.first.images!.first),
+            );
+            filteredIds.add(product.id);
+          }
         }
 
-        return ListView.builder(
-          itemCount: genderedProducts.length,
-          itemBuilder: (context, index) {
-            final product = genderedProducts[index];
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(
-                  product.variants?.first.images?.first ??
-                      'https://via.placeholder.com/150',
+        return DefaultTabController(
+          length: tabBar3Titles.length,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              /// ➤ Carousel Slider
+              ///
+              ///-----------------------Ad-------------------------------------------
+              ///
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Consumer<HomeProductController>(
+                    builder: (context, provider, _) {
+                      return CarouselSliders(imageUrls: provider.bannerImages);
+                    },
+                  ),
                 ),
               ),
-              title: Text(product.title ?? 'Untitled'),
-              subtitle: Text("Gender: ${product.gender ?? 'N/A'}"),
-            );
-          },
+
+              ///
+              ///
+              ///-------------------------------------Featured Brands Row------------------------------------------
+              ///
+              ///
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    TitleRow(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      title: "Featured Brands",
+                      fontSize: FontConstants.title,
+                    ),
+                    SizedBox(height: 10),
+                    Consumer<HomeProductController>(
+                      builder: (context, provider, _) {
+                        return RowWithBorderContainerType1(
+                          dBList: provider.featuredBrandsList,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              /// ➤ Featured Brands Row
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: ScrollingRow(
+                    itemCount: featured.length,
+                    itemBuilder: (index) {
+                      final item = featured[index];
+                      return Column(
+                        children: [
+                          Container(
+                            height: 80,
+                            width: 80,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Stack(
+                              children: [
+                                Image.network(
+                                  item["image"] ?? ImageConstants.fallbackImage,
+                                  fit: BoxFit.cover,
+                                  height: double.infinity,
+                                  width: double.infinity,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.network(
+                                      ImageConstants.fallbackImage,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                ),
+                                Positioned(
+                                  bottom: 4,
+                                  left: 4,
+                                  right: 4,
+                                  child: Container(
+                                    color: Colors.black54,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4, vertical: 2),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            item["brand"]!,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                              color: Colors.white,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        const Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                            size: 10,
+                                            color: Colors.white70),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                    onTap: (index) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CategoryScreen()),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 15,
+                ),
+              ),
+
+              /// ➤ Sticky TabBar
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: TabBarDelegate(
+                  TabBar(
+                    controller: tabBar3Controller,
+                    isScrollable: true,
+                    indicatorColor: Colors.transparent,
+                    tabs: tabBar3Titles.map((title) {
+                      final index = tabBar3Titles.indexOf(title);
+                      return Tab(
+                        child: AnimatedBuilder(
+                          animation: tabBar3Controller,
+                          builder: (context, _) {
+                            final isSelected = tabBar3Controller.index == index;
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(
+                                  color: isSelected ? Colors.pink : Colors.grey,
+                                  width: 2,
+                                ),
+                              ),
+                              child: Text(
+                                title,
+                                style: TextStyle(
+                                  color:
+                                      isSelected ? Colors.pink : Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 15,
+                ),
+              ),
+            ],
+
+            /// ➤ Infinite GridView for each tab content (filtered and sorted)
+            body: TabBarView(
+              controller: tabBar3Controller,
+              children: tabBar3Titles.map<Widget>((title) {
+                final sortedList = _sortProductsForTab(title, genderedProducts);
+                return InfiniteScrollGridView(sourceList: sortedList);
+              }).toList(),
+            ),
+          ),
         );
       },
     );

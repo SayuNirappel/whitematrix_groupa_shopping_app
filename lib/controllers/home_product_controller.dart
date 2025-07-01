@@ -216,14 +216,15 @@ class HomeProductController with ChangeNotifier {
   }
 
   void setAllProducts(List<ProductsResModel> products) {
-    final cutoffDate = DateTime(2025, 6, 30, 23, 59, 59);
+    // final cutoffDate = DateTime(2025, 6, 30, 23, 59, 59);
 
     // ✅ Filter out products with null or future createdAt dates
-    allProducts = products.where((p) {
-      final created = p.createdAt;
-      if (created == null) return false;
-      return created.isBefore(cutoffDate);
-    }).toList();
+    // allProducts = products.where((p) {
+    //   final created = p.createdAt;
+    //   if (created == null) return false;
+    //   return created.isBefore(cutoffDate);
+    // }).toList();
+    allProducts = products;
 
     /// --- Gender filters ---
     menProducts = allProducts.where((p) {
