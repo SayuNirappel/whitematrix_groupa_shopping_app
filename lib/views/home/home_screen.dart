@@ -53,9 +53,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        backgroundColor: ColorConstants.homeBG,
+        backgroundColor: ColorConstants.backgroundColor,
         appBar: AppBar(
-          backgroundColor: ColorConstants.bnavpink,
+          backgroundColor: ColorConstants.homeBG,
           title: _buildSearchBar(),
           actions: _buildAppBarActions(context),
           bottom: _buildTabBar(),
@@ -1971,7 +1971,9 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                   height: 160,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12)),
                     // image: DecorationImage(
                     //   image: NetworkImage(
                     //     item["image"],
@@ -2000,6 +2002,7 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
+                        fontSize: FontConstants.ititle,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -2007,7 +2010,10 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                       product.category ?? "Unknown",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.grey),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: FontConstants.isubtitle,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     const SizedBox(width: 4),
@@ -2019,8 +2025,8 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                              fontWeight: FontWeight.bold,
+                              fontSize: FontConstants.isubtitle),
                         ),
                         SizedBox(
                           width: 4,
@@ -2032,7 +2038,7 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                           style: const TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
-                            fontSize: 12,
+                            fontSize: FontConstants.isubtitle,
                           ),
                         ),
                       ],
