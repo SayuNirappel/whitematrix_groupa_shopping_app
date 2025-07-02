@@ -11,6 +11,7 @@ import 'package:whitematrix_groupa_shopping_app/data/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/model/product_res_model.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/reviewOrder.dart';
 import 'package:whitematrix_groupa_shopping_app/views/shoppingbag/shoppingbag.dart';
 
@@ -1005,7 +1006,7 @@ SliverAppBar buildHeader({
           width: double.infinity,
           fit: BoxFit.cover,
           placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-          errorWidget: (context, url, error) => const Center(child: Icon(Icons.broken_image, size: 100)),
+          errorWidget: (context, url, error) => Image.asset(ImageConstants.dummyImage),
         ),
       ),
       
