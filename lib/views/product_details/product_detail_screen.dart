@@ -1636,7 +1636,7 @@ onPressed: () {
             },
 
             style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 160),
+              padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
