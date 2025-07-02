@@ -1,8 +1,8 @@
 class FontConstants {
   static const String fontFamily = 'Roboto';
-  static const double title = 20;
-  static const double subtitle = 16;
-  static const double ititle = 18;
-  static const double isubtitle = 15;
-  static const double caption = 13;
+  static const double title = 16;
+  static const double subtitle = 14;
+  static const double ititle = 14;
+  static const double isubtitle = 12;
+  static const double caption = 10;
 }

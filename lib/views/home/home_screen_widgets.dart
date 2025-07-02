@@ -228,14 +228,17 @@ class RowWithBorderContainerType1 extends StatelessWidget {
             const SizedBox(height: 6),
 
             /// Brand name below image
-            Text(
-              dBList[index]["brand"] ?? "Custom",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 30,
-                color: Colors.black,
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                dBList[index]["brand"] ?? "Custom",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Colors.black,
+                ),
               ),
             ),
           ],

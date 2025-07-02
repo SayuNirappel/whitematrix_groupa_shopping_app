@@ -65,17 +65,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: CircularProgressIndicator(
                 color: ColorConstants.mynthraPink,
               ))
-            : TabBarView(
-                children: [
-                  NestedTabScreenWidget(),
-                  //NestedTabScreenWidget(),
-                  //NestedTabScreenWidget(),
-                  //NestedTabScreenWidget(),
+            : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: TabBarView(
+                  children: [
+                    NestedTabScreenWidget(),
+                    //NestedTabScreenWidget(),
+                    //NestedTabScreenWidget(),
+                    //NestedTabScreenWidget(),
 
-                  FilteredTabScreenWidget(gender: "men"),
-                  FilteredTabScreenWidget(gender: "women"),
-                  FilteredTabScreenWidget(gender: "kids"),
-                ],
+                    FilteredTabScreenWidget(gender: "men"),
+                    FilteredTabScreenWidget(gender: "women"),
+                    FilteredTabScreenWidget(gender: "kids"),
+                  ],
+                ),
               ),
       ),
     );
