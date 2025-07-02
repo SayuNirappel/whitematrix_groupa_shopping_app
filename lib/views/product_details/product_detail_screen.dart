@@ -303,7 +303,7 @@ setState(() {
       children: [
         Text(
           "Delivery & Services",
-          style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 14),
+          style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 13),
         ),
         const SizedBox(height: 10),
 
@@ -347,7 +347,7 @@ setState(() {
               child: Text(
                 "Express delivery by $formattedDate",
                 style: GoogleFonts.roboto(
-                    fontSize: 14, fontWeight: FontWeight.bold),
+                    fontSize: 13, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -364,7 +364,7 @@ setState(() {
               child: Text(
                 "Pay on Delivery is available",
                 style: GoogleFonts.roboto(
-                    fontSize: 14, fontWeight: FontWeight.bold),
+                    fontSize: 13, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -382,7 +382,7 @@ setState(() {
               child: Text(
                 "Hassle-free 7 days Return & Exchange",
                 style: GoogleFonts.roboto(
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
                 maxLines: 2,
@@ -405,7 +405,7 @@ setState(() {
         Text(
           "Tag past purchases & get right size recommendations",
           style: GoogleFonts.roboto(
-            fontSize: 14,
+            fontSize: 13,
             color: Colors.grey.shade500,
           ),
         ),
@@ -419,7 +419,7 @@ setState(() {
               Text(
                 '₹${selectedVariant.price != null ? selectedVariant.price!.toStringAsFixed(0) : ''}',
                 style: GoogleFonts.roboto(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: Colors.grey,
                   decoration: TextDecoration.lineThrough,
                 ),
@@ -428,7 +428,7 @@ setState(() {
               Text(
               '₹${offerPrice.toStringAsFixed(0)}',
               style: GoogleFonts.roboto(
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -437,7 +437,7 @@ setState(() {
             Text(
               '₹${offerPrice.toStringAsFixed(0)}',
               style: GoogleFonts.roboto(
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.bold,
               ),
             ),],
@@ -447,7 +447,7 @@ setState(() {
                 '($discountText)',
                 style: GoogleFonts.roboto(
                   color: Colors.orange.shade300,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -467,7 +467,7 @@ setState(() {
               style: GoogleFonts.roboto(
                 color: ColorConstants.primaryColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 14,
+                fontSize: 13,
               ),
             ),
           ],
@@ -509,7 +509,7 @@ Column buildCustomerRating(
                   Text(
                     "Ratings & Reviews",
                     style: GoogleFonts.roboto(
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -528,7 +528,7 @@ Column buildCustomerRating(
                             '${avgRating.toStringAsFixed(1)} ★',
                             style: GoogleFonts.roboto(
                               color: Colors.white,
-                              fontSize: isExpanded ? 15 : 12,
+                              fontSize: isExpanded ? 13 : 11,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -538,7 +538,7 @@ Column buildCustomerRating(
                       const SizedBox(width: 8),
                       Text(
                         '$totalRatings review',
-                        style: TextStyle(fontSize: isExpanded ? 14 : 11, 
+                        style: TextStyle(fontSize: isExpanded ? 13 : 11, 
                                          fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal
                                          ),
                       ),
@@ -586,7 +586,7 @@ Column buildCustomerRating(
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text(comment, style: GoogleFonts.roboto(fontSize: 16)),
+                    Text(comment, style: GoogleFonts.roboto(fontSize: 13)),
                     const SizedBox(height: 16),
                   ],
                 );
@@ -601,7 +601,7 @@ Column buildCustomerRating(
             style: GoogleFonts.roboto(
               color: ColorConstants.primaryColor,
               fontWeight: FontWeight.bold,
-              fontSize: 14,
+              fontSize: 13,
             ),
           ),
         ),
@@ -645,7 +645,7 @@ Column buildCustomerRating(
                 Dummydb.items[itemIndex]['text']!,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.roboto(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: ColorConstants.primaryColor,
                   fontWeight: FontWeight.bold,
                 ),
@@ -791,7 +791,7 @@ Column buildCustomerRating(
           Text(
             "More Information",
             style: GoogleFonts.roboto(
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -913,7 +913,7 @@ SliverAppBar buildHeader({
                 : Text(
                     product.title ?? '',
                     style: GoogleFonts.roboto(
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -1023,10 +1023,10 @@ SliverAppBar buildHeader({
               children: [
                 Text(
                   avgRating.toStringAsFixed(1),
-                  style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
+                  style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 10),
                 ),
                 const SizedBox(width: 4),
-                const Icon(Icons.star, color: Colors.green, size: 16),
+                const Icon(Icons.star, color: Colors.green, size: 12),
               ],
             ),
           ),
@@ -1044,7 +1044,7 @@ ExpansionTile buildcustomerQuestions() {
     title: Text(
       "Customer Questions",
       style: GoogleFonts.roboto(
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -1121,7 +1121,7 @@ ExpansionTile buildProductDetails(product) {
       children: [
         Text(
           "Product details",
-          style: GoogleFonts.roboto(fontSize: 14, fontWeight: FontWeight.bold),
+          style: GoogleFonts.roboto(fontSize: 13, fontWeight: FontWeight.bold),
         ),
         Text(
           "Explore product’s standout features",
@@ -1167,7 +1167,7 @@ Column buildTitleAndSize(
         maxLines: 4,
         overflow: TextOverflow.ellipsis,
         text: TextSpan(
-          style: GoogleFonts.roboto(fontSize: 14, color: Colors.black),
+          style: GoogleFonts.roboto(fontSize: 13, color: Colors.black),
           children: [
             TextSpan(
               text: '${product.title} ',
@@ -1185,7 +1185,7 @@ Column buildTitleAndSize(
       Text(
         'MRP',
         style: GoogleFonts.roboto(
-          fontSize: 14,
+          fontSize: 13,
           color: Colors.grey,
           fontWeight: FontWeight.w600,
         ),
@@ -1195,7 +1195,7 @@ Column buildTitleAndSize(
       Text(
         '₹${product.variants != null ? product.variants![selectedVariantIndex].price : ''}',
         style: GoogleFonts.roboto(
-          fontSize: 14,
+          fontSize: 13,
           color: Colors.grey,
           decoration: TextDecoration.lineThrough, 
         ),
@@ -1207,7 +1207,7 @@ Column buildTitleAndSize(
       Text(
         'MRP',
         style: GoogleFonts.roboto(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -1215,7 +1215,7 @@ Column buildTitleAndSize(
       Text(
         '₹${product.variants != null ? product.variants![selectedVariantIndex].price : ''}',
         style: GoogleFonts.roboto(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -1227,7 +1227,7 @@ Column buildTitleAndSize(
     Text(
       '₹${offerPrice.toStringAsFixed(0)}',
       style: GoogleFonts.roboto(
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: FontWeight.bold,
       ),
     ),],
@@ -1247,7 +1247,7 @@ Column buildTitleAndSize(
                   discountText,
                   style: GoogleFonts.roboto(
                     color: Colors.white,
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1270,7 +1270,7 @@ Column buildTitleAndSize(
                   text: 'Colour ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 13,
                     color: Colors.black,
                   ),
                 ),
@@ -1280,7 +1280,7 @@ Column buildTitleAndSize(
                       : '',
                   style: const TextStyle(
                     fontWeight: FontWeight.normal,
-                    fontSize: 14,
+                    fontSize: 13,
                     color: Colors.black,
                   ),
                 ),
@@ -1353,14 +1353,14 @@ Column buildTitleAndSize(
                   'SIZE: ${selectedSize ?? ''}',
                   style: GoogleFonts.roboto(
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 13,
                   ),
                 ),
                 const Spacer(),
                 Text(
                   "Size Chart",
                   style: GoogleFonts.roboto(
-                    fontSize: 14,
+                    fontSize: 13,
                     color: ColorConstants.primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1402,7 +1402,7 @@ Column buildTitleAndSize(
                           style: GoogleFonts.roboto(
                             color: isSelected ? Colors.white : Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: 13,
                           ),
                         ),
                       ),
@@ -1480,14 +1480,14 @@ onPressed: () {
                 'SIZE: ${selectedSize ?? ''}',
                 style: GoogleFonts.roboto(
                   fontWeight: FontWeight.bold,
-                  fontSize: 14,
+                  fontSize: 13,
                 ),
               ),
               const Spacer(),
               Text(
                 "Size Chart",
                 style: GoogleFonts.roboto(
-                  fontSize: 14,
+                  fontSize: 13,
                   color: ColorConstants.primaryColor,
                   fontWeight: FontWeight.bold,
                 ),
@@ -1528,7 +1528,7 @@ onPressed: () {
                         style: GoogleFonts.roboto(
                           color: isSelected ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                          fontSize: 13,
                         ),
                       ),
                     ),
@@ -1542,7 +1542,7 @@ onPressed: () {
           Text(
             "Tag past purchases & get right size recommendations",
             style: GoogleFonts.roboto(
-              fontSize: 14,
+              fontSize: 13,
               color: Colors.grey.shade500,
             ),
           ),
@@ -1556,7 +1556,7 @@ onPressed: () {
                 Text(
                   '₹${selectedVariant.price != null ? selectedVariant.price!.toStringAsFixed(0) : ''}',
                   style: GoogleFonts.roboto(
-                    fontSize: 14,
+                    fontSize: 13,
                     color: Colors.grey,
                     decoration: TextDecoration.lineThrough,
                   ),
@@ -1566,7 +1566,7 @@ onPressed: () {
               Text(
                 '₹${offerPrice.toStringAsFixed(0)}',
                 style: GoogleFonts.roboto(
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1576,7 +1576,7 @@ onPressed: () {
                   '($discountText)',
                   style: GoogleFonts.roboto(
                     color: Colors.orange.shade300,
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1595,7 +1595,7 @@ onPressed: () {
                 style: GoogleFonts.roboto(
                   color: ColorConstants.primaryColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 14,
+                  fontSize: 13,
                 ),
               ),
             ],
@@ -1656,7 +1656,7 @@ onPressed: () {
                 children: [
                   Icon(Icons.shopping_bag_outlined, size: 20),
                   const SizedBox(width: 6),
-                  Text("Buy Now", style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 15)),
+                  Text("Buy Now", style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 14)),
                 ],
               ),
             ),
@@ -1699,7 +1699,7 @@ onPressed: () {
                 children: [
                   Icon(Icons.shopping_bag_outlined, size: 20, color: ColorConstants.backgroundColor),
                   const SizedBox(width: 6),
-                  Text("Add To Bag", style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 15)),
+                  Text("Add To Bag", style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 14)),
                 ],
               ),
             ),
