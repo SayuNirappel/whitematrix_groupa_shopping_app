@@ -120,8 +120,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 height: 20,
                 width: 20,
                 decoration: BoxDecoration(
-                    border:
-                        Border.all(width: 1, color: ColorConstants.textColor),
+                    color: ColorConstants.textColor,
+                    border: Border.all(
+                        width: 1, color: ColorConstants.backgroundColor),
                     borderRadius: BorderRadius.circular(3)),
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -130,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     return Center(
                       child: CircleAvatar(
                         radius: 3,
-                        backgroundColor: ColorConstants.darkGreyColor,
+                        backgroundColor: ColorConstants.backgroundColor,
                       ),
                     );
                   },
@@ -412,11 +413,11 @@ class _FilteredTabScreenWidgetState extends State<FilteredTabScreenWidget>
                                   },
                                 ),
                                 Positioned(
-                                  bottom: 4,
-                                  left: 4,
-                                  right: 4,
+                                  bottom: 1,
+                                  left: 1,
+                                  right: 1,
                                   child: Container(
-                                    color: Colors.black54,
+                                    color: Colors.black26,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 4, vertical: 2),
                                     child: Row(
@@ -833,7 +834,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     left: 1,
                                     right: 1,
                                     child: Container(
-                                      color: Colors.black54,
+                                      color: Colors.black26,
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 4, vertical: 2),
                                       child: Row(
@@ -1107,7 +1108,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     child: Container(
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.5),
+                                        color: Colors.black.withOpacity(0.2),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Column(
@@ -1333,7 +1334,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                           border:
                               Border.all(color: ColorConstants.mynthraPink)),
                       child: Padding(
-                        padding: const EdgeInsets.all(4.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 4, vertical: 2),
                         child: Text(
                           "Picks You'll Love",
                           maxLines: 1,
@@ -1370,7 +1372,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               ),
                             ),
                             Container(
-                              padding: EdgeInsets.all(2),
+                              padding: EdgeInsets.all(4),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -1413,7 +1415,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     ),
                                   ]),
                                   SizedBox(
-                                    height: 5,
+                                    height: 3,
                                   )
                                 ],
                               ),
@@ -1458,6 +1460,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(height: 3),
                       Text(
                         "What's Trending Nearby!",
                         maxLines: 1,

@@ -190,7 +190,7 @@ class RowWithBorderContainerType1 extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 6),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.6),
+                          color: Colors.black.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Column(
@@ -461,7 +461,7 @@ class ContinuingRow extends StatelessWidget {
     if (featured.isEmpty) return const SizedBox();
 
     return ScrollingRow(
-      itemCount: 2,
+      itemCount: featured.length,
       itemBuilder: (index) {
         final item = featured[index];
         return Column(
