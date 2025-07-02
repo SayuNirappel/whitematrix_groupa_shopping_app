@@ -233,16 +233,16 @@ setState(() {
                           buildProductDetails(product),
                           Divider(
                             thickness: 1,
-                            color: ColorConstants.secondaryColor,
-                            indent: 6,
-                            endIndent: 6,
+                            color: ColorConstants.secondaryColor1,
+                            indent: 2,
+                            endIndent: 4,
                           ),
                           buildcustomerQuestions(),
                           Divider(
                             thickness: 1,
-                            color: ColorConstants.secondaryColor,
-                            indent: 6,
-                            endIndent: 6,
+                            color: ColorConstants.secondaryColor1,
+                            indent: 2,
+                            endIndent: 4,
                           ),
                           buildCustomerRating(
                               reviews ?? [], timeAgo, avgRating),
@@ -303,13 +303,13 @@ setState(() {
       children: [
         Text(
           "Delivery & Services",
-          style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 22),
+          style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         const SizedBox(height: 10),
 
         /// PIN Code Row
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey.shade400),
             borderRadius: BorderRadius.circular(12),
@@ -318,7 +318,7 @@ setState(() {
             children: [
               Text(
                 '456788',
-                style: GoogleFonts.roboto(fontSize: 16),
+                style: GoogleFonts.roboto(fontSize: 12),
               ),
               const Spacer(),
               TextButton(
@@ -327,7 +327,7 @@ setState(() {
                   "Change",
                   style: GoogleFonts.roboto(
                     color: ColorConstants.primaryColor,
-                    fontSize: 16,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -347,7 +347,7 @@ setState(() {
               child: Text(
                 "Express delivery by $formattedDate",
                 style: GoogleFonts.roboto(
-                    fontSize: 18, fontWeight: FontWeight.bold),
+                    fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -364,7 +364,7 @@ setState(() {
               child: Text(
                 "Pay on Delivery is available",
                 style: GoogleFonts.roboto(
-                    fontSize: 18, fontWeight: FontWeight.bold),
+                    fontSize: 14, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -382,7 +382,7 @@ setState(() {
               child: Text(
                 "Hassle-free 7 days Return & Exchange",
                 style: GoogleFonts.roboto(
-                  fontSize: 18,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
                 maxLines: 2,
@@ -405,7 +405,7 @@ setState(() {
         Text(
           "Tag past purchases & get right size recommendations",
           style: GoogleFonts.roboto(
-            fontSize: 16,
+            fontSize: 14,
             color: Colors.grey.shade500,
           ),
         ),
@@ -419,7 +419,7 @@ setState(() {
               Text(
                 '₹${selectedVariant.price != null ? selectedVariant.price!.toStringAsFixed(0) : ''}',
                 style: GoogleFonts.roboto(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: Colors.grey,
                   decoration: TextDecoration.lineThrough,
                 ),
@@ -428,7 +428,7 @@ setState(() {
               Text(
               '₹${offerPrice.toStringAsFixed(0)}',
               style: GoogleFonts.roboto(
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -437,7 +437,7 @@ setState(() {
             Text(
               '₹${offerPrice.toStringAsFixed(0)}',
               style: GoogleFonts.roboto(
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
             ),],
@@ -447,7 +447,7 @@ setState(() {
                 '($discountText)',
                 style: GoogleFonts.roboto(
                   color: Colors.orange.shade300,
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -467,7 +467,7 @@ setState(() {
               style: GoogleFonts.roboto(
                 color: ColorConstants.primaryColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 14,
               ),
             ),
           ],
@@ -478,28 +478,90 @@ setState(() {
     );
   }
 
-  Column buildCustomerRating(List<dynamic> reviews,
-      String Function(DateTime date) timeAgo, avgRating) {
-    return Column(
-      children: [
-        if (reviews.isNotEmpty) ...[
-          Builder(
-            builder: (context) {
-              final totalRatings = reviews.length;
+Column buildCustomerRating(
+    List<dynamic> reviews,
+    String Function(DateTime date) timeAgo,
+    avgRating,
+  ) {
+  bool isExpanded = false;
 
-              return ExpansionTile(
-                childrenPadding:
-                    const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-                tilePadding:
-                    const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                title: Column(
+  return Column(
+    children: [
+      if (reviews.isNotEmpty) ...[
+        StatefulBuilder(
+          builder: (context, setState) {
+            final totalRatings = reviews.length;
+
+            return ExpansionTile(
+              onExpansionChanged: (expanded) {
+                setState(() {
+                  isExpanded = expanded;
+                });
+              },
+              childrenPadding:
+                  const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              tilePadding:
+                  const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Ratings & Reviews",
+                    style: GoogleFonts.roboto(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: isExpanded ? 12 : 6, vertical:isExpanded? 6 : 3),
+                          child: Text(
+                            '${avgRating.toStringAsFixed(1)} ★',
+                            style: GoogleFonts.roboto(
+                              color: Colors.white,
+                              fontSize: isExpanded ? 15 : 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    
+                      const SizedBox(width: 8),
+                      Text(
+                        '$totalRatings review',
+                        style: TextStyle(fontSize: isExpanded ? 14 : 11, 
+                                         fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal
+                                         ),
+                      ),
+                    ],
+                  ), 
+                ],
+              ),
+              children: reviews.map<Widget>((r) {
+                final rating = r.rating;
+                final comment = r.comment;
+                final created = r.createdAt;
+                final ago = timeAgo(created);
+
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Ratings & Reviews",
-                        style: GoogleFonts.roboto(
-                            fontSize: 22, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4,),
+                     Text('Customer Reviews($totalRatings)',
+                          style: TextStyle( 
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),),
+                     SizedBox(height: 4,),
                     Row(
                       children: [
                         DecoratedBox(
@@ -508,84 +570,54 @@ setState(() {
                               borderRadius: BorderRadius.circular(10)),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                                horizontal: 6, vertical: 3),
                             child: Text(
-                              '${avgRating.toStringAsFixed(1)} ★',
+                              "${rating.toStringAsFixed(1)} ★",
                               style: GoogleFonts.roboto(
                                   color: Colors.white,
-                                  fontSize: 15,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Text('$totalRatings rating'),
+                        Text(ago,
+                            style: GoogleFonts.roboto(color: Colors.grey)),
                       ],
                     ),
+                    const SizedBox(height: 8),
+                    Text(comment, style: GoogleFonts.roboto(fontSize: 16)),
+                    const SizedBox(height: 16),
                   ],
-                ),
-                children: reviews.map<Widget>((r) {
-                  final rating = r.rating;
-                  final comment = r.comment;
-                  final created = r.createdAt;
-                  final ago = timeAgo(created);
-
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 3),
-                              child: Text("${rating.toStringAsFixed(1)} ★",
-                                  style: GoogleFonts.roboto(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(ago,
-                              style: GoogleFonts.roboto(color: Colors.grey)),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(comment, style: GoogleFonts.roboto(fontSize: 16)),
-                      const SizedBox(height: 16),
-                    ],
-                  );
-                }).toList(),
-              );
-            },
-          ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Text(
-              "View all reviews >",
-              style: GoogleFonts.roboto(
-                color: ColorConstants.primaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+                );
+              }).toList(),
+            );
+          },
+        ),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            "View all reviews >",
+            style: GoogleFonts.roboto(
+              color: ColorConstants.primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
             ),
           ),
-          const SizedBox(height: 8),
-          Divider(
-            thickness: 1,
-            color: ColorConstants.secondaryColor,
-            indent: 6,
-            endIndent: 6,
-          ),
-        ],
+        ),
+        const SizedBox(height: 8),
+        Divider(
+          thickness: 1,
+          color: ColorConstants.secondaryColor1,
+          indent: 4,
+          endIndent: 4,
+        ),
       ],
-    );
-  }
+    ],
+  );
+}
+
+
 
   Padding buildService() {
     return Padding(
@@ -599,7 +631,7 @@ setState(() {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: ColorConstants.secondaryColor.withAlpha(50),
+                  color: ColorConstants.secondaryColor1.withAlpha(50),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Image.network(
@@ -613,7 +645,7 @@ setState(() {
                 Dummydb.items[itemIndex]['text']!,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.roboto(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: ColorConstants.primaryColor,
                   fontWeight: FontWeight.bold,
                 ),
@@ -759,7 +791,7 @@ setState(() {
           Text(
             "More Information",
             style: GoogleFonts.roboto(
-              fontSize: 22,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -881,7 +913,7 @@ SliverAppBar buildHeader({
                 : Text(
                     product.title ?? '',
                     style: GoogleFonts.roboto(
-                      fontSize: 20,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -892,9 +924,9 @@ SliverAppBar buildHeader({
       ),
       actions: [
         IconButton(
-            icon: const Icon(Icons.share_outlined, size: 25), onPressed: () {}),
+            icon: const Icon(Icons.share_outlined, size: 24), onPressed: () {}),
         IconButton(
-            icon: const Icon(Icons.favorite_border_outlined, size: 25),
+            icon: const Icon(Icons.favorite_border_outlined, size: 24),
             onPressed: () {}),
               Consumer<CartProvider>(
           builder: (context, cartProvider, _) {
@@ -903,7 +935,7 @@ SliverAppBar buildHeader({
             return Stack(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.shopping_bag_outlined, size: 25),
+                  icon: const Icon(Icons.shopping_bag_outlined, size: 24),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -927,15 +959,15 @@ SliverAppBar buildHeader({
                         shape: BoxShape.circle,
                       ),
                       constraints: const BoxConstraints(
-                        minWidth: 20,
-                        minHeight: 20,
+                        minWidth: 18,
+                        minHeight: 18,
                       ),
                       child: Center(
                         child: Text(
                           '$cartCount',
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -982,7 +1014,7 @@ SliverAppBar buildHeader({
           bottom: 15,
           right: 18,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
@@ -991,7 +1023,7 @@ SliverAppBar buildHeader({
               children: [
                 Text(
                   avgRating.toStringAsFixed(1),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
                 ),
                 const SizedBox(width: 4),
                 const Icon(Icons.star, color: Colors.green, size: 16),
@@ -1006,13 +1038,13 @@ SliverAppBar buildHeader({
 
 ExpansionTile buildcustomerQuestions() {
   return ExpansionTile(
-    childrenPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
-    tilePadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+    childrenPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+    tilePadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
     title: Text(
       "Customer Questions",
       style: GoogleFonts.roboto(
-        fontSize: 22,
+        fontSize: 14,
         fontWeight: FontWeight.bold,
       ),
     ),
@@ -1028,13 +1060,13 @@ ExpansionTile buildcustomerQuestions() {
                 Text(
                   "Be the first one to ask a question",
                   style: GoogleFonts.roboto(
-                      fontSize: 20, fontWeight: FontWeight.bold),
+                      fontSize: 12, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   "Your questions will be\nanswered by people who\nbought this",
                   style:
-                      GoogleFonts.roboto(fontSize: 14, color: Colors.black54),
+                      GoogleFonts.roboto(fontSize: 12, color: Colors.black54),
                 ),
                 const SizedBox(height: 16),
               ],
@@ -1061,12 +1093,12 @@ ExpansionTile buildcustomerQuestions() {
               ),
               foregroundColor: ColorConstants.textColor,
               backgroundColor: ColorConstants.backgroundColor,
-              side: BorderSide(color: ColorConstants.secondaryColor),
+              side: BorderSide(color: ColorConstants.secondaryColor1),
             ),
             child: Text(
               "Ask a question",
               style: GoogleFonts.roboto(
-                fontSize: 20,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: ColorConstants.textColor,
               ),
@@ -1089,18 +1121,21 @@ ExpansionTile buildProductDetails(product) {
       children: [
         Text(
           "Product details",
-          style: GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.bold),
+          style: GoogleFonts.roboto(fontSize: 14, fontWeight: FontWeight.bold),
         ),
         Text(
           "Explore product’s standout features",
-          style: GoogleFonts.roboto(fontSize: 16),
+          style: GoogleFonts.roboto(fontSize: 12),
         ),
       ],
     ),
     children: [
-      Text(
-        product.description!,
-        style: GoogleFonts.roboto(fontSize: 16, color: Colors.black),
+      Align(
+        alignment: Alignment.bottomLeft,
+        child: Text(
+          product.description!,
+          style: GoogleFonts.roboto(fontSize: 12, color: Colors.black),
+        ),
       ),
     ],
   );
@@ -1124,7 +1159,6 @@ Column buildTitleAndSize(
   Function(int) onImageSelected,
   Function(String) onSizeSelected,
 ) {
-  //final provider = Provider.of<ProductProvider>(context);
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -1133,7 +1167,7 @@ Column buildTitleAndSize(
         maxLines: 4,
         overflow: TextOverflow.ellipsis,
         text: TextSpan(
-          style: GoogleFonts.roboto(fontSize: 22, color: Colors.black),
+          style: GoogleFonts.roboto(fontSize: 14, color: Colors.black),
           children: [
             TextSpan(
               text: '${product.title} ',
@@ -1151,7 +1185,7 @@ Column buildTitleAndSize(
       Text(
         'MRP',
         style: GoogleFonts.roboto(
-          fontSize: 22,
+          fontSize: 14,
           color: Colors.grey,
           fontWeight: FontWeight.w600,
         ),
@@ -1161,7 +1195,7 @@ Column buildTitleAndSize(
       Text(
         '₹${product.variants != null ? product.variants![selectedVariantIndex].price : ''}',
         style: GoogleFonts.roboto(
-          fontSize: 22,
+          fontSize: 14,
           color: Colors.grey,
           decoration: TextDecoration.lineThrough, 
         ),
@@ -1169,11 +1203,11 @@ Column buildTitleAndSize(
       const SizedBox(width: 8),
     ]
     else ...[
-      // If no discount, just show MRP without line-through
+      // If no discount,show MRP without line-through
       Text(
         'MRP',
         style: GoogleFonts.roboto(
-          fontSize: 22,
+          fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -1181,7 +1215,8 @@ Column buildTitleAndSize(
       Text(
         '₹${product.variants != null ? product.variants![selectedVariantIndex].price : ''}',
         style: GoogleFonts.roboto(
-          fontSize: 22,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
         ),
       ),
       const SizedBox(width: 8),
@@ -1192,7 +1227,7 @@ Column buildTitleAndSize(
     Text(
       '₹${offerPrice.toStringAsFixed(0)}',
       style: GoogleFonts.roboto(
-        fontSize: 22,
+        fontSize: 14,
         fontWeight: FontWeight.bold,
       ),
     ),],
@@ -1235,7 +1270,7 @@ Column buildTitleAndSize(
                   text: 'Colour ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 22,
+                    fontSize: 14,
                     color: Colors.black,
                   ),
                 ),
@@ -1245,7 +1280,7 @@ Column buildTitleAndSize(
                       : '',
                   style: const TextStyle(
                     fontWeight: FontWeight.normal,
-                    fontSize: 22,
+                    fontSize: 14,
                     color: Colors.black,
                   ),
                 ),
@@ -1268,7 +1303,7 @@ Column buildTitleAndSize(
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: selectedImageIndex == imageIndex
-                        ? Colors.black
+                        ? Colors.black26
                         : Colors.transparent,
                     width: 2,
                   ),
@@ -1318,14 +1353,14 @@ Column buildTitleAndSize(
                   'SIZE: ${selectedSize ?? ''}',
                   style: GoogleFonts.roboto(
                     fontWeight: FontWeight.bold,
-                    fontSize: 22,
+                    fontSize: 14,
                   ),
                 ),
                 const Spacer(),
                 Text(
                   "Size Chart",
                   style: GoogleFonts.roboto(
-                    fontSize: 20,
+                    fontSize: 14,
                     color: ColorConstants.primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1350,7 +1385,7 @@ Column buildTitleAndSize(
                       onTap: () => onSizeSelected(size),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 25, vertical: 20),
+                            horizontal: 23, vertical: 16),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? ColorConstants.textColor
@@ -1358,7 +1393,7 @@ Column buildTitleAndSize(
                           border: Border.all(
                             color: isSelected
                                 ? ColorConstants.textColor
-                                : ColorConstants.secondaryColor,
+                                : ColorConstants.secondaryColor1,
                           ),
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -1367,7 +1402,7 @@ Column buildTitleAndSize(
                           style: GoogleFonts.roboto(
                             color: isSelected ? Colors.white : Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -1445,14 +1480,14 @@ onPressed: () {
                 'SIZE: ${selectedSize ?? ''}',
                 style: GoogleFonts.roboto(
                   fontWeight: FontWeight.bold,
-                  fontSize: 22,
+                  fontSize: 14,
                 ),
               ),
               const Spacer(),
               Text(
                 "Size Chart",
                 style: GoogleFonts.roboto(
-                  fontSize: 20,
+                  fontSize: 14,
                   color: ColorConstants.primaryColor,
                   fontWeight: FontWeight.bold,
                 ),
@@ -1484,7 +1519,7 @@ onPressed: () {
                         border: Border.all(
                           color: isSelected
                               ? ColorConstants.textColor
-                              : ColorConstants.secondaryColor,
+                              : ColorConstants.secondaryColor1,
                         ),
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -1493,7 +1528,7 @@ onPressed: () {
                         style: GoogleFonts.roboto(
                           color: isSelected ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 14,
                         ),
                       ),
                     ),
@@ -1507,7 +1542,7 @@ onPressed: () {
           Text(
             "Tag past purchases & get right size recommendations",
             style: GoogleFonts.roboto(
-              fontSize: 16,
+              fontSize: 14,
               color: Colors.grey.shade500,
             ),
           ),
@@ -1521,7 +1556,7 @@ onPressed: () {
                 Text(
                   '₹${selectedVariant.price != null ? selectedVariant.price!.toStringAsFixed(0) : ''}',
                   style: GoogleFonts.roboto(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.grey,
                     decoration: TextDecoration.lineThrough,
                   ),
@@ -1531,7 +1566,7 @@ onPressed: () {
               Text(
                 '₹${offerPrice.toStringAsFixed(0)}',
                 style: GoogleFonts.roboto(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1541,7 +1576,7 @@ onPressed: () {
                   '($discountText)',
                   style: GoogleFonts.roboto(
                     color: Colors.orange.shade300,
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1560,7 +1595,7 @@ onPressed: () {
                 style: GoogleFonts.roboto(
                   color: ColorConstants.primaryColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: 14,
                 ),
               ),
             ],
@@ -1575,33 +1610,17 @@ onPressed: () {
                 return;
               }
 
-              // Navigator.push(////////////////////////////////////////////check it
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => PaymentPage(
-              //       userId: userId,
-              //       product: product,
-              //       selectedSize: selectedSize!,
-              //       selectedSku: selectedSku,
-              //       quantity: quantity,
-              //       offerPrice: offerPrice,
-              //       formattedDate: formattedDate,
-              //       pin: pin,
-              //     ),
-              //   ),
-              // );
-
               final selectedVariant = product.variants!.firstWhere(
     (v) => v.sku == selectedSku,
     orElse: () => product.variants!.first,
   );
   final pricing = provider.getPricingInfo(product, selectedSize);
   final offerPrice = pricing['offerPrice'];
-  final discountText = pricing['discountText'];
+ // final discountText = pricing['discountText'];
               Navigator.push(context, MaterialPageRoute(builder:(context) => Revieworder(
                   userIdddd: ApiConstants.userID.toString(),
                     product: product,
-                    selectedSize: selectedSize!,
+                    selectedSize: selectedSize,
                     selectedSku: selectedSku,
                     quantity: quantity,
                     offerPrice: offerPrice,
@@ -1637,7 +1656,7 @@ onPressed: () {
                 children: [
                   Icon(Icons.shopping_bag_outlined, size: 20),
                   const SizedBox(width: 6),
-                  Text("Buy Now", style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 17)),
+                  Text("Buy Now", style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 15)),
                 ],
               ),
             ),
@@ -1680,7 +1699,7 @@ onPressed: () {
                 children: [
                   Icon(Icons.shopping_bag_outlined, size: 20, color: ColorConstants.backgroundColor),
                   const SizedBox(width: 6),
-                  Text("Add To Bag", style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 17)),
+                  Text("Add To Bag", style: GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 15)),
                 ],
               ),
             ),
