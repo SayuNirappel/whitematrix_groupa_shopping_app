@@ -381,10 +381,10 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(
                           image: kIsWeb
-          ? NetworkImage(ImageConstants.fallbackImage)
+          ? AssetImage(ImageConstants.MenSection)
           : NetworkImage(
-              imageList[(index + i) % imageList.length] ?? ImageConstants.fallbackImage,
-            ),
+              imageList[(index + i) % imageList.length]) ?? AssetImage(ImageConstants.WomenSection),
+          
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -1089,16 +1089,16 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
           icon: const Icon(Icons.favorite_border_outlined,
               color: ColorConstants.textColor),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => Shoppingbag2(
-                        userIdddd: ApiConstants.userID.toString(),
-                        BearerToken: ApiConstants.token.toString(),
-                        //token: widget.token
-                        //id: widget.id
-                      )),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //       builder: (_) => Shoppingbag2(
+            //             userIdddd: ApiConstants.userID.toString(),
+            //             BearerToken: ApiConstants.token.toString(),
+            //             //token: widget.token
+            //             //id: widget.id
+            //           )),
+            // );
           },
         ),
         IconButton(

@@ -123,12 +123,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
           icon: const Icon(Icons.favorite_border_outlined,
               color: ColorConstants.textColor),
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => Shoppingbag2(
-                        userIdddd: ApiConstants.userID.toString(),
-                        BearerToken: ApiConstants.token.toString())));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => Shoppingbag2(
+            //             userIdddd: ApiConstants.userID.toString(),
+            //             BearerToken: ApiConstants.token.toString())));
           },
         ),
         IconButton(
