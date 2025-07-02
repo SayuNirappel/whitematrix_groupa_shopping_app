@@ -1996,10 +1996,10 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Image section
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: AspectRatio(
-                      aspectRatio: 1, // Square image
+                  Expanded(
+                    flex: 2,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
                       child: Image.network(
                         Provider.of<HomeProductController>(context,
                                 listen: false)
