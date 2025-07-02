@@ -666,8 +666,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                   border: Border.all(
                                     width: 2,
                                     color: isSelected
-                                        ? Colors.transparent
-                                        : Colors.amber.shade300,
+                                        ? ColorConstants.mynthraPink
+                                        : Colors.transparent,
                                   ),
                                 ),
                                 clipBehavior: Clip.hardEdge, // <-- important
@@ -688,6 +688,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                           Text(
                             item["title"]!,
                             style: TextStyle(
+                              fontSize: FontConstants.ititle,
                               fontWeight: isSelected
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -828,9 +829,9 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     },
                                   ),
                                   Positioned(
-                                    bottom: 4,
-                                    left: 4,
-                                    right: 4,
+                                    bottom: 1,
+                                    left: 1,
+                                    right: 1,
                                     child: Container(
                                       color: Colors.black54,
                                       padding: const EdgeInsets.symmetric(
@@ -843,8 +844,9 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                             child: Text(
                                               item["brand"]!,
                                               style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12,
+                                                //fontWeight: FontWeight.bold,
+                                                fontSize:
+                                                    FontConstants.isubtitle,
                                                 color: Colors.white,
                                               ),
                                               overflow: TextOverflow.ellipsis,
@@ -1099,13 +1101,13 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
 
                                   /// ↓↓↓ Semi-transparent background with content ↓↓↓
                                   Positioned(
-                                    bottom: 10,
-                                    left: 5,
-                                    right: 5,
+                                    bottom: 1,
+                                    left: 1,
+                                    right: 1,
                                     child: Container(
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.6),
+                                        color: Colors.black.withOpacity(0.5),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Column(
@@ -1118,16 +1120,16 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
-                                              fontSize: 16,
+                                              fontSize: FontConstants.isubtitle,
                                               color: Colors.white,
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
                                           Text(
                                             item["category"] ?? "",
                                             style: const TextStyle(
                                               color: Colors.white70,
-                                              fontSize: 12,
+                                              fontSize: FontConstants.isubtitle,
                                             ),
                                           ),
                                           const SizedBox(height: 4),
@@ -1139,7 +1141,9 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                                   decoration: TextDecoration
                                                       .lineThrough,
                                                   color: ColorConstants.homeBG,
-                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize:
+                                                      FontConstants.isubtitle,
                                                 ),
                                               ),
                                               const SizedBox(width: 6),
@@ -1147,8 +1151,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                                 item["nP"] ?? "",
                                                 style: const TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
+                                                  fontSize:
+                                                      FontConstants.isubtitle,
                                                 ),
                                               ),
                                               const SizedBox(width: 6),
@@ -1157,7 +1161,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                                 style: const TextStyle(
                                                   color: Colors.red,
                                                   fontWeight: FontWeight.w700,
-                                                  fontSize: 12,
+                                                  fontSize:
+                                                      FontConstants.isubtitle,
                                                 ),
                                               ),
                                             ],
@@ -1327,14 +1332,17 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                           borderRadius: BorderRadius.circular(15),
                           border:
                               Border.all(color: ColorConstants.mynthraPink)),
-                      child: Text(
-                        "Picks You'll Love",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: FontConstants.subtitle,
-                            fontWeight: FontWeight.bold,
-                            color: ColorConstants.mynthraPink),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(
+                          "Picks You'll Love",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: FontConstants.subtitle,
+                              fontWeight: FontWeight.bold,
+                              color: ColorConstants.mynthraPink),
+                        ),
                       ),
                     ),
                   ],
@@ -1403,7 +1411,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                           color: Colors.red,
                                           fontWeight: FontWeight.bold),
                                     ),
-                                  ])
+                                  ]),
+                                  SizedBox(
+                                    height: 5,
+                                  )
                                 ],
                               ),
                             ),
@@ -1452,16 +1463,17 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+                            fontWeight: FontWeight.bold, fontSize: 18),
                       ),
-                      SizedBox(
-                        height: 4,
-                      ),
+                      // SizedBox(
+                      //   height: 1,
+                      // ),
                       Text(
                         "discover What's Hot in Your Region",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.grey, fontSize: 15),
+                        style: TextStyle(
+                            color: Colors.grey, fontSize: FontConstants.title),
                       ),
                       SizedBox(
                         height: 10,
@@ -1548,13 +1560,13 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Featured Picks",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                 ),
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Iconic styles to steal the spotlight",
                   color: Colors.grey,
-                  fontSize: 15,
+                  fontSize: FontConstants.subtitle,
                 ),
                 SizedBox(height: 10),
 
@@ -1581,7 +1593,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 SizedBox(height: 20),
                 TitleRow(
                   title: "Season's Best Offers",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                   mainAxisAlignment: MainAxisAlignment.start,
                 ),
 
@@ -1608,13 +1620,13 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Featured Picks",
-                  fontSize: 20,
+                  fontSize: FontConstants.title,
                 ),
                 TitleRow(
                   mainAxisAlignment: MainAxisAlignment.start,
                   title: "Iconic styles to steal the spot light",
                   color: Colors.grey,
-                  fontSize: 15,
+                  fontSize: FontConstants.subtitle,
                 ),
                 SizedBox(height: 10),
 
@@ -1939,9 +1951,9 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
       itemCount: allProducts.length + (isLoadingMore ? 1 : 0),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        mainAxisExtent: 290,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 0.65,
       ),
       itemBuilder: (context, index) {
         if (index >= allProducts.length) {
@@ -1967,31 +1979,29 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                  height: 160,
-                  width: double.infinity,
+              Expanded(
+                child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12)),
-                    // image: DecorationImage(
-                    //   image: NetworkImage(
-                    //     item["image"],
-                    //   ),
-                    //   fit: BoxFit.cover,
-                    // ),
+                    border: Border.all(color: Colors.grey, width: 1),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Image.network(
-                    Provider.of<HomeProductController>(context, listen: false)
-                        .getFullImageUrl(product.variants?.first.images?.first),
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.network(
-                        ImageConstants.fallbackImage,
-                        fit: BoxFit.cover,
-                      );
-                    },
-                  )),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      Provider.of<HomeProductController>(context, listen: false)
+                          .getFullImageUrl(
+                              product.variants?.first.images?.first),
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.network(
+                          ImageConstants.fallbackImage,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
               Container(
                 padding: const EdgeInsets.all(4),
                 child: Column(

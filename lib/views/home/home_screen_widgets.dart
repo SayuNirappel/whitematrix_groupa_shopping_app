@@ -71,7 +71,7 @@ class PhotoTypeRow extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: FontConstants.ititle,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w700,
               ),
               textAlign: TextAlign.center,
             ),
@@ -109,10 +109,9 @@ class PhotoTypeRow extends StatelessWidget {
             Text(
               "Best Seller",
               style: const TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
+                  color: Colors.red,
+                  //fontWeight: FontWeight.bold,
+                  fontSize: FontConstants.isubtitle),
               textAlign: TextAlign.center,
             ),
           ],
@@ -184,9 +183,9 @@ class RowWithBorderContainerType1 extends StatelessWidget {
 
                     /// Overlay
                     Positioned(
-                      bottom: 10,
-                      left: 10,
-                      right: 10,
+                      bottom: 1,
+                      left: 1,
+                      right: 1,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 6),
