@@ -446,6 +446,124 @@ class _CarouselSlidersState extends State<CarouselSliders> {
 
 ///
 ///
+///---------------------------------------CS2-------------------------
+///
+///
+class CarouselSliders2 extends StatefulWidget {
+  final List<String> imageUrls;
+  final List<String?>? productIds;
+
+  const CarouselSliders2({
+    super.key,
+    required this.imageUrls,
+    this.productIds,
+  });
+
+  @override
+  State<CarouselSliders2> createState() => _CarouselSliders2State();
+}
+
+class _CarouselSliders2State extends State<CarouselSliders2> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CarouselSlider.builder(
+          itemCount: widget.imageUrls.length,
+          itemBuilder: (context, index, realIndex) {
+            final url = widget.imageUrls[index];
+            final id =
+                widget.productIds != null && index < widget.productIds!.length
+                    ? widget.productIds![index]
+                    : null;
+
+            return GestureDetector(
+              onTap: () {
+                if (id != null && id.isNotEmpty) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductDetailsPage2(productId: id),
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CategoryScreen(),
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.network(
+                        ImageConstants.fallbackImage,
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
+          options: CarouselOptions(
+            height: 210,
+            autoPlay: true,
+            enlargeCenterPage: false,
+            enableInfiniteScroll: true,
+            viewportFraction: 0.33, // Show ~3 items at a time
+            autoPlayAnimationDuration: Duration(seconds: 2),
+            onPageChanged: (index, reason) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          ),
+        ),
+        const SizedBox(height: 10),
+
+        /// Indicator dots
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(widget.imageUrls.length, (index) {
+            return Container(
+              width: 8,
+              height: 8,
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _currentIndex == index ? Colors.black : Colors.grey,
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+}
+
+///
+///
 ///------------------------Row for continuing Category
 ///
 ///

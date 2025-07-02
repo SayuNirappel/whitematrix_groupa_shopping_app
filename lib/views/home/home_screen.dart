@@ -772,7 +772,15 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                     }
                   }
 
-                  return CarouselSliders(
+                  // return CarouselSliders(
+                  //   imageUrls: filteredImages.isNotEmpty
+                  //       ? filteredImages
+                  //       : provider.bannerImages,
+                  //   productIds: filteredImages.isNotEmpty
+                  //       ? filteredIds
+                  //       : null, // Pass null if fallback to banner
+                  // );
+                  return CarouselSliders2(
                     imageUrls: filteredImages.isNotEmpty
                         ? filteredImages
                         : provider.bannerImages,
