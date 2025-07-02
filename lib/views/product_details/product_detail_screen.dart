@@ -1086,9 +1086,9 @@ ExpansionTile buildcustomerQuestions() {
         child: SizedBox(
           width: 350,
           height: 40,
-          child: OutlinedButton(
+          child: ElevatedButton(
             onPressed: null,
-            style: OutlinedButton.styleFrom(
+            style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -1449,7 +1449,7 @@ Column buildTitleAndSize(
           ),
           Expanded(
             child: ElevatedButton(
-              style: OutlinedButton.styleFrom(
+              style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -1635,7 +1635,7 @@ onPressed: () {
               ),));
             },
 
-            style: OutlinedButton.styleFrom(
+            style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
