@@ -479,48 +479,52 @@ class _CarouselSliders2State extends State<CarouselSliders2> {
                     ? widget.productIds![index]
                     : null;
 
-            return GestureDetector(
-              onTap: () {
-                if (id != null && id.isNotEmpty) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductDetailsPage2(productId: id),
+            return Transform.scale(
+              scale: index == _currentIndex ? 1.0 : 0.9, // center is larger
+              child: GestureDetector(
+                onTap: () {
+                  if (id != null && id.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ProductDetailsPage2(productId: id),
+                      ),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CategoryScreen(),
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      url,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.network(
+                          ImageConstants.fallbackImage,
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
-                  );
-                } else {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CategoryScreen(),
-                    ),
-                  );
-                }
-              },
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    url,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.network(
-                        ImageConstants.fallbackImage,
-                        fit: BoxFit.cover,
-                      );
-                    },
                   ),
                 ),
               ),
@@ -529,9 +533,9 @@ class _CarouselSliders2State extends State<CarouselSliders2> {
           options: CarouselOptions(
             height: 210,
             autoPlay: true,
-            enlargeCenterPage: false,
+            enlargeCenterPage: true, // make center item zoomed
             enableInfiniteScroll: true,
-            viewportFraction: 0.33, // Show ~3 items at a time
+            viewportFraction: 0.33, // ~3 items shown at once
             autoPlayAnimationDuration: Duration(seconds: 2),
             onPageChanged: (index, reason) {
               setState(() {
