@@ -381,9 +381,9 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                         borderRadius: BorderRadius.circular(10),
                         image: DecorationImage(
                           image: kIsWeb
-          ? AssetImage(ImageConstants.MenSection)
+          ? AssetImage(ImageConstants.dummyImage)
           : NetworkImage(
-              imageList[(index + i) % imageList.length]) ?? AssetImage(ImageConstants.WomenSection),
+              imageList[(index + i) % imageList.length]) ?? AssetImage(ImageConstants.fallbackImage),
           
                           fit: BoxFit.cover,
                         ),
@@ -425,7 +425,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     );
   }
 
-  Container _build_BigSection(
+  Widget _build_BigSection(
       List<String> imageList, int index, List<String> nameList) {
     final apiList = context.watch<GetAllProductsController>().filteredProducts;
     final productItems = apiList[index];
@@ -436,61 +436,84 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     final discountvalue = variant?.discount?.value;
     final discounttype = variant?.discount?.type;
 
-    return Container(
-      width: 140,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        image: DecorationImage(
-          image: NetworkImage(variant!.images.first),
+    return ClipRRect(
+  borderRadius: BorderRadius.circular(12),
+  child: Container(
+    width: 140,
+    color: Colors.grey[200], // fallback bg if image fails
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        // Main background image with errorBuilder
+        Image.network(
+          variant!.images.first,
           fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Image.asset(
+              ImageConstants.fallbackImage,
+              fit: BoxFit.cover,
+            );
+          },
         ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 10,
-            left: 10,
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 15,
-                  backgroundImage:
-                      NetworkImage(imageList[index % imageList.length]),
+        // Foreground content
+        Positioned(
+          bottom: 10,
+          left: 10,
+          child: Row(
+            children: [
+              ClipOval(
+                child: Image.network(
+                  imageList[index % imageList.length],
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      ImageConstants.fallbackImage,
+                      width: 30,
+                      height: 30,
+                      fit: BoxFit.cover,
+                    );
+                  },
                 ),
-                const SizedBox(width: 6),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      nameList[index % nameList.length],
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12),
-                    ),
-                    const Text(
-                      "5K followers",
-                      style: TextStyle(color: Colors.white70, fontSize: 10),
-                    ),
-                  ],
-                ),
-              ],
+              ),
+              const SizedBox(width: 6),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    nameList[index % nameList.length],
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12),
+                  ),
+                  const Text(
+                    "5K followers",
+                    style: TextStyle(color: Colors.white70, fontSize: 10),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 10,
+          right: 10,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              borderRadius: BorderRadius.circular(5),
             ),
+            child: const Icon(Icons.tv, color: Colors.white),
           ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.black26,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Icon(Icons.tv)),
-          ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ),
+  ),
+);
+
   }
 
   Widget _buildCategorySection(String title) {
@@ -513,7 +536,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   image: const DecorationImage(
-                    image: AssetImage(ImageConstants.WomenSection),
+                    image: AssetImage(ImageConstants.dummyImage),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -793,17 +816,23 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                             Expanded(
                               child: Stack(
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: NetworkImage(widget.title == 'Shoes'
-                                            ? imageList[index]
-                                            : image),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
+                                 ClipRRect(
+  borderRadius: BorderRadius.circular(10),
+  child: Image.network(
+    (widget.title == 'Shoes')
+        ? ImageConstants.dummyImage
+        : image,
+    fit: BoxFit.cover,
+    width: double.infinity,
+    height: double.infinity,
+    errorBuilder: (context, error, stackTrace) {
+      return Image.asset(
+        ImageConstants.fallbackImage,
+        fit: BoxFit.cover,
+      );
+    },
+  ),
+),
                                   Positioned(
                                     top: 10,
                                     right: 10,
