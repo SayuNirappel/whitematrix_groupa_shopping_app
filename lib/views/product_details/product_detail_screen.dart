@@ -234,15 +234,15 @@ setState(() {
                           Divider(
                             thickness: 1,
                             color: ColorConstants.secondaryColor1,
-                            indent: 6,
-                            endIndent: 6,
+                            indent: 2,
+                            endIndent: 4,
                           ),
                           buildcustomerQuestions(),
                           Divider(
                             thickness: 1,
                             color: ColorConstants.secondaryColor1,
-                            indent: 6,
-                            endIndent: 6,
+                            indent: 2,
+                            endIndent: 4,
                           ),
                           buildCustomerRating(
                               reviews ?? [], timeAgo, avgRating),
@@ -478,28 +478,90 @@ setState(() {
     );
   }
 
-  Column buildCustomerRating(List<dynamic> reviews,
-      String Function(DateTime date) timeAgo, avgRating) {
-    return Column(
-      children: [
-        if (reviews.isNotEmpty) ...[
-          Builder(
-            builder: (context) {
-              final totalRatings = reviews.length;
+Column buildCustomerRating(
+    List<dynamic> reviews,
+    String Function(DateTime date) timeAgo,
+    avgRating,
+  ) {
+  bool isExpanded = false;
 
-              return ExpansionTile(
-                childrenPadding:
-                    const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                tilePadding:
-                    const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                title: Column(
+  return Column(
+    children: [
+      if (reviews.isNotEmpty) ...[
+        StatefulBuilder(
+          builder: (context, setState) {
+            final totalRatings = reviews.length;
+
+            return ExpansionTile(
+              onExpansionChanged: (expanded) {
+                setState(() {
+                  isExpanded = expanded;
+                });
+              },
+              childrenPadding:
+                  const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              tilePadding:
+                  const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Ratings & Reviews",
+                    style: GoogleFonts.roboto(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: isExpanded ? 12 : 6, vertical:isExpanded? 6 : 3),
+                          child: Text(
+                            '${avgRating.toStringAsFixed(1)} ★',
+                            style: GoogleFonts.roboto(
+                              color: Colors.white,
+                              fontSize: isExpanded ? 15 : 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    
+                      const SizedBox(width: 8),
+                      Text(
+                        '$totalRatings review',
+                        style: TextStyle(fontSize: isExpanded ? 14 : 11, 
+                                         fontWeight: isExpanded ? FontWeight.bold : FontWeight.normal
+                                         ),
+                      ),
+                    ],
+                  ), 
+                ],
+              ),
+              children: reviews.map<Widget>((r) {
+                final rating = r.rating;
+                final comment = r.comment;
+                final created = r.createdAt;
+                final ago = timeAgo(created);
+
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Ratings & Reviews",
-                        style: GoogleFonts.roboto(
-                            fontSize: 14, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4,),
+                     Text('Customer Reviews($totalRatings)',
+                          style: TextStyle( 
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),),
+                     SizedBox(height: 4,),
                     Row(
                       children: [
                         DecoratedBox(
@@ -508,84 +570,54 @@ setState(() {
                               borderRadius: BorderRadius.circular(10)),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                                horizontal: 6, vertical: 3),
                             child: Text(
-                              '${avgRating.toStringAsFixed(1)} ★',
+                              "${rating.toStringAsFixed(1)} ★",
                               style: GoogleFonts.roboto(
                                   color: Colors.white,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Text('$totalRatings rating'),
+                        Text(ago,
+                            style: GoogleFonts.roboto(color: Colors.grey)),
                       ],
                     ),
+                    const SizedBox(height: 8),
+                    Text(comment, style: GoogleFonts.roboto(fontSize: 16)),
+                    const SizedBox(height: 16),
                   ],
-                ),
-                children: reviews.map<Widget>((r) {
-                  final rating = r.rating;
-                  final comment = r.comment;
-                  final created = r.createdAt;
-                  final ago = timeAgo(created);
-
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 6, vertical: 3),
-                              child: Text("${rating.toStringAsFixed(1)} ★",
-                                  style: GoogleFonts.roboto(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(ago,
-                              style: GoogleFonts.roboto(color: Colors.grey)),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(comment, style: GoogleFonts.roboto(fontSize: 16)),
-                      const SizedBox(height: 16),
-                    ],
-                  );
-                }).toList(),
-              );
-            },
-          ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Text(
-              "View all reviews >",
-              style: GoogleFonts.roboto(
-                color: ColorConstants.primaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
+                );
+              }).toList(),
+            );
+          },
+        ),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            "View all reviews >",
+            style: GoogleFonts.roboto(
+              color: ColorConstants.primaryColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
             ),
           ),
-          const SizedBox(height: 8),
-          Divider(
-            thickness: 1,
-            color: ColorConstants.secondaryColor1,
-            indent: 6,
-            endIndent: 6,
-          ),
-        ],
+        ),
+        const SizedBox(height: 8),
+        Divider(
+          thickness: 1,
+          color: ColorConstants.secondaryColor1,
+          indent: 4,
+          endIndent: 4,
+        ),
       ],
-    );
-  }
+    ],
+  );
+}
+
+
 
   Padding buildService() {
     return Padding(
