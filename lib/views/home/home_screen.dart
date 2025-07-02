@@ -1986,6 +1986,10 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
         mainAxisSpacing: 10,
         childAspectRatio: 0.65,
       ),
+      // ✅ FIXES THE STUCK ISSUE:
+      shrinkWrap: true,
+      primary: false,
+      physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
         if (index >= allProducts.length) {
           return const Center(
