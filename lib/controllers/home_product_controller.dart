@@ -110,18 +110,27 @@ class HomeProductController with ChangeNotifier {
 
   List<Map<String, String>> get featuredPicks {
     final indices = [1, 3, 7, 9, 5];
-    return indices
-        .where((i) => i < allProducts.length)
-        .map((i) => {
-              "image": getImage(i),
-              "name": allProducts[i].brand?.name ?? "Custom",
-              "category": allProducts[i].category ?? "All",
-              "oP": allProducts[i].variants!.first.price.toString(),
-              "nP": allProducts[i].discount?.type.toString() ?? "Flat",
-              "reduction": "${allProducts[i].discount?.value ?? "10"}%off",
-              "id": allProducts[i].id ?? "",
-            })
-        .toList();
+    return indices.where((i) => i < allProducts.length).map((i) {
+      final product = allProducts[i];
+      final variant = product.variants?.first;
+      final discount = variant?.discount;
+
+      return {
+        "image": getImage(i),
+        "name": product.brand?.name ?? "Custom",
+        "category": product.category ?? "All",
+        "oP": variant?.price?.toString() ?? "0",
+        "nP": discount?.type == Type.FLAT
+            ? "₹${(variant?.price ?? 0) - (discount?.value ?? 0)}"
+            : "₹${((variant?.price ?? 0) * (1 - (discount?.value ?? 0) / 100)).round()}",
+        "reduction": discount == null
+            ? "10% OFF"
+            : discount.type == Type.FLAT
+                ? "₹${discount.value} OFF"
+                : "${discount.value}% OFF",
+        "id": product.id ?? "",
+      };
+    }).toList();
   }
 
   List<Map<String, String>> get notificationList {

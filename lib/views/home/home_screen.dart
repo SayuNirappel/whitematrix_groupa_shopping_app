@@ -1138,36 +1138,49 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                             children: [
                                               Text(
                                                 "₹${item["oP"] ?? ""}",
+                                                overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  decoration: TextDecoration
-                                                      .lineThrough,
-                                                  color: ColorConstants.homeBG,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize:
-                                                      FontConstants.isubtitle,
-                                                ),
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                    color: Colors.grey,
+                                                    //fontWeight: FontWeight.w700,
+                                                    fontSize:
+                                                        //FontConstants.isubtitle,
+                                                        10),
                                               ),
                                               const SizedBox(width: 6),
                                               Text(
                                                 item["nP"] ?? "",
+                                                overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize:
-                                                      FontConstants.isubtitle,
-                                                ),
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize:
+                                                        //FontConstants.isubtitle,
+                                                        10),
                                               ),
                                               const SizedBox(width: 6),
                                               Text(
                                                 item["reduction"] ?? "",
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize:
+                                                        //FontConstants.isubtitle,
+                                                        10),
+                                              ),
+                                              Text(
+                                                " off",
+                                                overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
                                                   color: Colors.red,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize:
-                                                      FontConstants.isubtitle,
+                                                  //fontWeight: FontWeight.w700,
+                                                  fontSize: 4,
                                                 ),
                                               ),
                                             ],
-                                          ),
+                                          )
                                         ],
                                       ),
                                     ),
@@ -1399,7 +1412,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                   ),
                                   Row(spacing: 5, children: [
                                     Text(
-                                      "₹${picks[index][" oP"] ?? ""}",
+                                      "₹${picks[index]["oP"] ?? ""}",
                                       style: TextStyle(
                                         decoration: TextDecoration.lineThrough,
                                         color: Colors.blueGrey,
@@ -1415,8 +1428,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     Text(
                                       picks[index]["reduction"] ?? "",
                                       style: TextStyle(
-                                          color: Colors.red,
-                                          fontWeight: FontWeight.bold),
+                                        color: Colors.red,
+                                        fontSize: FontConstants.isubtitle,
+                                        //fontWeight: FontWeight.bold
+                                      ),
                                     ),
                                   ]),
                                   SizedBox(
