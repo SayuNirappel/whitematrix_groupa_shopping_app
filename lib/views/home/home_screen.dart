@@ -122,8 +122,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 decoration: BoxDecoration(
                     color: ColorConstants.textColor,
                     border: Border.all(
-                        width: 1, color: ColorConstants.backgroundColor),
-                    borderRadius: BorderRadius.circular(3)),
+                        width: 2, color: ColorConstants.backgroundColor),
+                    borderRadius: BorderRadius.circular(5)),
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2, crossAxisSpacing: 1),

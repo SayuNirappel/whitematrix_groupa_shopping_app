@@ -629,19 +629,24 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               itemBuilder: (context, index) {
                 return Column(
                   children: [
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        //  color: Colors.yellow,
-                        image: DecorationImage(
-                          image:
-                              NetworkImage(imageList[index % imageList.length]),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
+                    ClipRRect(
+  borderRadius: BorderRadius.circular(30),
+  child: Image.network(
+    imageList[index % imageList.length],
+    width: 60,
+    height: 60,
+    fit: BoxFit.cover,
+    errorBuilder: (context, error, stackTrace) {
+      return Image.asset(
+        ImageConstants.fallbackImage,
+        width: 60,
+        height: 60,
+        fit: BoxFit.cover,
+      );
+    },
+  ),
+),
+
                     SizedBox(height: 10),
                     Text(
                       nameList[index % nameList.length],
