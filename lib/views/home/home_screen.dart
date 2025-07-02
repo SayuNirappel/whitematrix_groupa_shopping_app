@@ -1363,12 +1363,17 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12)),
                               height: 210,
                               width: 150,
-                              child: Image(
-                                image: NetworkImage(picks[index]["image"] ??
-                                    ImageConstants.fallbackImage),
-                                fit: BoxFit.cover,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image(
+                                  image: NetworkImage(picks[index]["image"] ??
+                                      ImageConstants.fallbackImage),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             Container(
@@ -1968,98 +1973,93 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
 
         final product = allProducts[index];
 
-        return InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProductDetailsPage2(
-                    productId:
-                        allProducts[index].id ?? "685cf800728c88a1bc918219"),
-              ),
-            );
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      Provider.of<HomeProductController>(context, listen: false)
-                          .getFullImageUrl(
-                              product.variants?.first.images?.first),
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.network(
-                          ImageConstants.fallbackImage,
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
-                  ),
+        return AspectRatio(
+          aspectRatio: 0.7, // Same as gridDelegate
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetailsPage2(
+                      productId: product.id ?? "685cf800728c88a1bc918219"),
                 ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
               ),
-              Container(
-                padding: const EdgeInsets.all(4),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.title ?? "No Title",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: FontConstants.ititle,
-                        fontWeight: FontWeight.bold,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image section
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: AspectRatio(
+                      aspectRatio: 1, // Square image
+                      child: Image.network(
+                        Provider.of<HomeProductController>(context,
+                                listen: false)
+                            .getFullImageUrl(
+                                product.variants?.first.images?.first),
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.network(
+                            ImageConstants.fallbackImage,
+                            fit: BoxFit.cover,
+                          );
+                        },
                       ),
                     ),
-                    Text(
-                      product.category ?? "Unknown",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: FontConstants.isubtitle,
-                      ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    product.title ?? "No Title",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: FontConstants.ititle,
+                      fontWeight: FontWeight.bold,
                     ),
-                    const SizedBox(height: 4),
-                    const SizedBox(width: 4),
-                    Row(
-                      children: [
-                        Text(
-                          "₹ ${product.variants?.first.price.toString()} " ??
-                              "0 ",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: FontConstants.isubtitle),
+                  ),
+                  Text(
+                    product.category ?? "Unknown",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: FontConstants.isubtitle,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "₹${product.variants?.first.price ?? 0}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: FontConstants.isubtitle,
                         ),
-                        SizedBox(
-                          width: 4,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        getFormattedDiscount(product),
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: FontConstants.isubtitle,
                         ),
-                        Text(
-                          getFormattedDiscount(product),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                            fontSize: FontConstants.isubtitle,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         );
       },
