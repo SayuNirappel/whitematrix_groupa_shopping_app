@@ -507,15 +507,24 @@ class _FilteredTabScreenWidgetState extends State<FilteredTabScreenWidget>
                           animation: tabBar3Controller,
                           builder: (context, _) {
                             final isSelected = tabBar3Controller.index == index;
-                            return Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(
-                                  color: isSelected ? Colors.pink : Colors.grey,
-                                  width: 2,
+                            return ElevatedButton(
+                              onPressed: () {
+                                tabBar3Controller.animateTo(index);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                elevation:
+                                    isSelected ? 2 : 0, // lift only if selected
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                  side: BorderSide(
+                                    color:
+                                        isSelected ? Colors.pink : Colors.grey,
+                                    width: 2,
+                                  ),
                                 ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
                               ),
                               child: Text(
                                 title,
@@ -1150,7 +1159,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                                 style: const TextStyle(
                                                     decoration: TextDecoration
                                                         .lineThrough,
-                                                    color: Colors.grey,
+                                                    color: Colors.white70,
                                                     //fontWeight: FontWeight.w700,
                                                     fontSize:
                                                         //FontConstants.isubtitle,
@@ -1424,6 +1433,7 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                       style: TextStyle(
                                         decoration: TextDecoration.lineThrough,
                                         color: Colors.blueGrey,
+                                        fontSize: FontConstants.isubtitle,
                                       ),
                                     ),
                                     Text(
@@ -1789,31 +1799,30 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                       animation: tabBar3Controller,
                       builder: (context, _) {
                         final isSelected = tabBar3Controller.index == index;
-
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(30), // pill shape
-                            border: Border.all(
-                              color:
-                                  isSelected ? Color(0xFFE91E63) : Colors.grey,
-                              width: 2,
+                        return ElevatedButton(
+                          onPressed: () {
+                            tabBar3Controller.animateTo(index);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            elevation:
+                                isSelected ? 2 : 0, // lift only if selected
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              side: BorderSide(
+                                color: isSelected ? Colors.pink : Colors.grey,
+                                width: 2,
+                              ),
                             ),
-                            color: isSelected
-                                ? Colors.transparent
-                                : Colors.transparent,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
                           ),
                           child: Text(
                             title,
                             style: TextStyle(
-                              color:
-                                  isSelected ? Color(0xFFE91E63) : Colors.black,
+                              color: isSelected ? Colors.pink : Colors.black,
                               fontWeight: FontWeight.w500,
                             ),
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: false,
                           ),
                         );
                       },
@@ -1986,7 +1995,7 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
         mainAxisSpacing: 10,
         childAspectRatio: 0.65,
       ),
-      // ✅ FIXES THE STUCK ISSUE:
+      //  FIXES THE STUCK ISSUE:
       shrinkWrap: true,
       primary: false,
       physics: const ClampingScrollPhysics(),
