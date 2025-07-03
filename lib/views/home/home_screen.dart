@@ -524,7 +524,9 @@ class _FilteredTabScreenWidgetState extends State<FilteredTabScreenWidget>
                                   ),
                                 ),
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
+                                    horizontal: 16, vertical: 3),
+                                visualDensity:
+                                    VisualDensity.compact, // tighter layout
                               ),
                               child: Text(
                                 title,
@@ -1815,7 +1817,9 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               ),
                             ),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
+                                horizontal: 16, vertical: 3),
+                            visualDensity:
+                                VisualDensity.compact, // tighter layout
                           ),
                           child: Text(
                             title,
