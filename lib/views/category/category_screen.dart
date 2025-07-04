@@ -356,7 +356,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               Text(
                 category.name,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 12, overflow: TextOverflow.ellipsis),
               ),
             ],
           ),
