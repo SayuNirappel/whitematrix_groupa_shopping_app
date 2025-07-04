@@ -262,108 +262,110 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           ),
                           SizedBox(height: 10),
                           Consumer<GetAllProductsController>(
-                            builder: (context, controller, child) {
-                              if (controller.isLoading) {
-                                return Center(
-                                    child: CircularProgressIndicator(
-                                  color: ColorConstants.brownText,
-                                ));
-                              }
-                              if (controller.isError) {
-                                return Center(
-                                    child: Text(controller.errorMessage ??
-                                        'Error loading products'));
-                              }
-                              if (controller.isEmpty) {
-                                return Center(
-                                    child: Text('No products available'));
-                              }
+  builder: (context, controller, child) {
+    if (controller.isLoading) {
+      return Center(
+        child: CircularProgressIndicator(
+          color: ColorConstants.brownText,
+        ),
+      );
+    }
 
-                              final categories = controller.uniqueCategories;
-                              return GridView.builder(
-                                shrinkWrap: true,
-                                physics:
-                                    NeverScrollableScrollPhysics(), // Prevent nested scrolling
-                                itemCount: categories.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  childAspectRatio: 0.75,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                ),
-                                itemBuilder: (context, index) {
-                                  // final product = controller.productsList[index];
-                                  final category =
-                                      controller.uniqueCategories[index];
+    if (controller.isError) {
+      return Center(
+        child: Text(controller.errorMessage ?? 'Error loading products'),
+      );
+    }
 
-                                  final image =
-                                      context.watch<Dummydb>().products[index];
+    if (controller.isEmpty) {
+      return Center(
+        child: Text('No products available'),
+      );
+    }
 
-                                  return SizedBox(
-                                    height: 150,
-                                    width: 150,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProductListingScreen(
-                                                    title: category.name,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: ClipOval(
-                                              child: Image.network(
-                                                category.image,
-                                                width: 80,
-                                                height: 80,
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (context, error,
-                                                    stackTrace) {
-                                                  return Image.asset(
-                                                    image["image"],
-                                                    width: 80,
-                                                    height: 80,
-                                                    fit: BoxFit.cover,
-                                                  );
-                                                },
-                                                loadingBuilder: (context, child,
-                                                    loadingProgress) {
-                                                  if (loadingProgress == null)
-                                                    return child;
-                                                  return const SizedBox(
-                                                    width: 80,
-                                                    height: 80,
-                                                    child: Center(
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                                strokeWidth:
-                                                                    2)),
-                                                  );
-                                                },
-                                              ),
-                                            )),
-                                        SizedBox(height: 8),
-                                        Text(
-                                          category.name,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
+    final categories = controller.uniqueCategories;
+
+    String getFullImageUrl(String? relativePath) {
+      const serverUrl = "https://myntacloneappbackend-1.onrender.com/";
+      if (relativePath == null || relativePath.isEmpty) {
+        return ImageConstants.fallbackImage;
+      }
+      return relativePath.startsWith("http")
+          ? relativePath
+          : "$serverUrl$relativePath";
+    }
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: categories.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 0.75,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
+      itemBuilder: (context, index) {
+        final category = categories[index];
+        final imageUrl = getFullImageUrl(category.image);
+
+        return SizedBox(
+          height: 150,
+          width: 150,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ProductListingScreen(title: category.name),
+                    ),
+                  );
+                },
+                child: ClipOval(
+                  child: Image.network(
+                    imageUrl,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        ImageConstants.dummyImage,
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      );
+                    },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                category.name,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  },
+)
+
                         ],
                       )),
             ),

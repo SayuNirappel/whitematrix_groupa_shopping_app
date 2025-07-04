@@ -32,6 +32,9 @@ class GetAllProductsController with ChangeNotifier {
         Uri.parse(_baseUrl),
         headers: {
           "Authorization": "Bearer ${token ?? ApiConstants.token}",
+
+          // "Authorization": (token ?? ApiConstants.token) ??
+          // "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODViNmQ3NTgzNGU1YWE4Y2RhZjE4YjEiLCJpYXQiOjE3NTA4MzUzODUsImV4cCI6MTc1MTQ0MDE4NX0.FSFcXs_RgTC7v17oPWtMseUBfkPxMYsEgK4kLgCSg4E",
           "Content-Type": "application/json",
         },
       );
@@ -39,33 +42,22 @@ class GetAllProductsController with ChangeNotifier {
       if (response.statusCode == 200) {
         final List<dynamic> jsonResponse = json.decode(response.body);
 
-        final DateTime cutoffDate = DateTime(2025, 6, 30);
-
-        // ✅ Filter productsList before 30 June 2025
-        productsList = jsonResponse
-            .map((e) => GetAllProductModel.fromJson(e))
-            .where((product) {
-              final createdAt = _parseDate(product.createdAt);
-              return createdAt != null && createdAt.isBefore(cutoffDate);
-            })
-            .toList();
+        productsList =
+            jsonResponse.map((e) => GetAllProductModel.fromJson(e)).toList();
 
         isEmpty = productsList.isEmpty;
 
-        // ✅ Build uniqueCategories from valid products
+        /// 🟡 Build unique categories with image map
         final Map<String, String> categoryImageMap = {};
         for (var product in productsList) {
-          final createdAt = _parseDate(product.createdAt);
-          if (createdAt == null || createdAt.isAfter(cutoffDate)) continue;
-
           if (product.category.isNotEmpty && product.brand != null) {
             final pimage = product.variants.first.images;
             String? image;
 
             if (pimage is String) {
               image = pimage.toString();
-            } else if (pimage is List && pimage.isNotEmpty) {
-              image = pimage.first.toString();
+            } else if (pimage is List<String> && pimage.isNotEmpty) {
+              image = pimage.first;
             }
 
             if (image != null && image.isNotEmpty) {
@@ -74,18 +66,28 @@ class GetAllProductsController with ChangeNotifier {
           }
         }
 
-        uniqueCategories = categoryImageMap.entries
-            .map((e) => CategoryModel(name: e.key, image: e.value))
-            .toList();
+/// 🔹 Now convert to a list of CategoryModel
+uniqueCategories = categoryImageMap.entries
+    .map((e) => CategoryModel(name: e.key, image: e.value))
+    .toList();
 
-        uniqueCategories.sort((a, b) => a.name.compareTo(b.name));
+/// 🔸 Sort by category name
+uniqueCategories.sort((a, b) => a.name.compareTo(b.name));
 
-        // ✅ Filter products based on selected category
+/// 🟢 Log all unique categories
+log("✅ Unique Categories:");
+for (var cat in uniqueCategories) {
+  log("🟩 Category: ${cat.name}, Image: ${cat.image}");
+}
+
+        // create filteredcategoryList corresponding to the argument
         if (category != null && category.isNotEmpty) {
-          filteredProducts = productsList.where((product) {
-            return (product.category ?? "").toLowerCase() ==
-                category.toLowerCase();
-          }).toList();
+          filteredProducts = productsList
+              .where((product) =>
+                  (product.category ?? "").toLowerCase() ==
+                  category.toLowerCase())
+              .toList();
+          log("📝 Filtered Products JSON:\n${jsonEncode(filteredProducts.map((e) => e.toJson()).toList())}");
         } else {
           filteredProducts = productsList;
         }
@@ -103,12 +105,12 @@ class GetAllProductsController with ChangeNotifier {
 
           log('''
 🔹 Product: ${product.title}
-🔸 Brand: ${product.brand is Map ? product.brand["name"] : product.brand}
-🔸 Category: ${product.category}
-🔸 Price: ₹$price
-🔸 Discount: ${discount != null ? '${discount.value}% (${discount.type})' : "No Discount"}
-🔸 Image: $image
-🔸 Reviews: ${product.reviews.length}
+   🔸 Brand: ${product.brand is Map ? product.brand["name"] : product.brand}
+   🔸 Category: ${product.category}
+   🔸 Price: ₹$price
+   🔸 Discount: ${discount != null ? '${discount.value}% (${discount.type})' : "No Discount"}
+   🔸 Image: $image
+   🔸 Reviews: ${product.reviews.length}
 ''');
         }
       } else {
@@ -125,12 +127,5 @@ class GetAllProductsController with ChangeNotifier {
       isLoading = false;
       notifyListeners();
     }
-  }
-
-  /// 🔹 Helper: Safely parse dynamic `createdAt` to `DateTime?`
-  DateTime? _parseDate(dynamic date) {
-    if (date is DateTime) return date;
-    if (date is String) return DateTime.tryParse(date);
-    return null;
   }
 }

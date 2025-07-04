@@ -8,6 +8,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:whitematrix_groupa_shopping_app/controllers/get_all_products_controller.dart';
 import 'package:whitematrix_groupa_shopping_app/dummydb.dart';
 import 'package:whitematrix_groupa_shopping_app/models/category_model.dart' as app_models;
+import 'package:whitematrix_groupa_shopping_app/models/get_all_products_model.dart';
 import 'package:whitematrix_groupa_shopping_app/services/api/api_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
@@ -237,284 +238,270 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     );
   }
 
-  Widget _buildTrendsView() {
-    final List<app_models.Category> categories = DummyDb().dummyCategories;
+Widget _buildTrendsView() {
+  List<String> imageList = [];
+  List<String> nameList = [];
 
-    List<String> imageList = [];
-    List<String> nameList = [];
-
-    switch (widget.title.toLowerCase()) {
-      case "t-shirts":
-        imageList = DummyDb.tshirtList;
-        nameList = DummyDb.tshirtTypes;
-        break;
-      case "accessories":
-        imageList = DummyDb.shirtList;
-        nameList = DummyDb.shirtTypes;
-        break;
-      case "hoodies":
-        imageList = DummyDb.shirtList;
-        nameList = DummyDb.shirtTypes;
-        break;
-      case "winterwear":
-        imageList = DummyDb.shirtList;
-        nameList = DummyDb.shirtTypes;
-        break;
-      case "shoes":
-        imageList = DummyDb.trousersList;
-        nameList = DummyDb.trousersTypes;
-        break;
-      case "clothing":
-        imageList = DummyDb.shortsList;
-        nameList = DummyDb.shortsTypes;
-        break;
-      case "footwear":
-        imageList = DummyDb.pantsList;
-        nameList = DummyDb.pantsTypes;
-        break;
-      case "bottomwear":
-        imageList = DummyDb.jeansList;
-        nameList = DummyDb.jeansTypes;
-        break;
-
-      default:
-        imageList = DummyDb.shirtList;
-        nameList = DummyDb.shirtTypes;
-        break;
-    }
-
-    List<Color> colorList = [
-      ColorConstants.lightPinkColor,
-      const Color.fromARGB(255, 238, 134, 168),
-      const Color.fromARGB(255, 165, 236, 229),
-      const Color.fromARGB(255, 251, 196, 196),
-      ColorConstants.greyColor,
-    ];
-    log("catory - $categories");
-    final apiList = context.watch<GetAllProductsController>().filteredProducts;
-
-    return ListView.builder(
-      itemCount: apiList.length,
-      padding: const EdgeInsets.all(12),
-      itemBuilder: (context, index) {
-        final category = categories[index];
-
-        return Container(
-          margin: const EdgeInsets.only(bottom: 20),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                colorList[index % colorList.length],
-                ColorConstants.backgroundColor,
-              ],
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(category.title,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
-              Container(
-                height: kIsWeb ? 380 : 235,
-                child: Row(
-                  children: [
-                    _build_BigSection(imageList, index, nameList),
-                    const SizedBox(width: 10),
-                    _build_SmallSection(category, imageList, index),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                height: 40,
-                decoration: BoxDecoration(
-                  color: ColorConstants.lightGreyColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Text(
-                    "VIEW PRODUCTS >",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: ColorConstants.textColor),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+  switch (widget.title.toLowerCase()) {
+    case "t-shirts":
+      imageList = DummyDb.tshirtList;
+      nameList = DummyDb.tshirtTypes;
+      break;
+    case "accessories":
+    case "hoodies":
+    case "winterwear":
+      imageList = DummyDb.shirtList;
+      nameList = DummyDb.shirtTypes;
+      break;
+    case "shoes":
+      imageList = DummyDb.trousersList;
+      nameList = DummyDb.trousersTypes;
+      break;
+    case "clothing":
+      imageList = DummyDb.shortsList;
+      nameList = DummyDb.shortsTypes;
+      break;
+    case "footwear":
+      imageList = DummyDb.pantsList;
+      nameList = DummyDb.pantsTypes;
+      break;
+    case "bottomwear":
+      imageList = DummyDb.jeansList;
+      nameList = DummyDb.jeansTypes;
+      break;
+    default:
+      imageList = DummyDb.shirtList;
+      nameList = DummyDb.shirtTypes;
+      break;
   }
 
-  Expanded _build_SmallSection(
-      app_models.Category category, List<String> imageList, int index) {
-    return Expanded(
-      child: GridView.builder(
-        padding: EdgeInsets.all(.8),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 4,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 0.8,
-        ),
-        itemBuilder: (context, i) {
-          final product = category.products[i % category.products.length];
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    Container(
-                      height: 180,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          image: kIsWeb
-          ? AssetImage(ImageConstants.dummyImage)
-          : NetworkImage(
-              imageList[(index + i) % imageList.length]) ?? AssetImage(ImageConstants.fallbackImage),
-          
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 10,
-                      left: 10,
-                      child: Row(
-                        children: [
-                          Text(
-                            "₹${product.price}",
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: ColorConstants.backgroundColor,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            "₹${product.originalPrice}",
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: ColorConstants.darkGreyColor,
-                              decoration: TextDecoration.lineThrough,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 4),
+  List<Color> colorList = [
+    ColorConstants.lightPinkColor,
+    const Color.fromARGB(255, 238, 134, 168),
+    const Color.fromARGB(255, 165, 236, 229),
+    const Color.fromARGB(255, 251, 196, 196),
+    ColorConstants.greyColor,
+  ];
+
+  final apiList = context.watch<GetAllProductsController>().filteredProducts;
+
+  return ListView.builder(
+    itemCount: apiList.length,
+    padding: const EdgeInsets.all(12),
+    itemBuilder: (context, index) {
+      final productItem = apiList[index];
+      final variant = productItem.variants.isNotEmpty ? productItem.variants.first : null;
+
+      return Container(
+        margin: const EdgeInsets.only(bottom: 20),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              colorList[index % colorList.length],
+              ColorConstants.backgroundColor,
             ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _build_BigSection(
-      List<String> imageList, int index, List<String> nameList) {
-    final apiList = context.watch<GetAllProductsController>().filteredProducts;
-    final productItems = apiList[index];
-    final variant =
-        productItems.variants.isNotEmpty ? productItems.variants.first : null;
-    final productid = productItems.id;
-    final productPrice = variant?.price;
-    final discountvalue = variant?.discount?.value;
-    final discounttype = variant?.discount?.type;
-
-    return ClipRRect(
-  borderRadius: BorderRadius.circular(12),
-  child: Container(
-    width: 140,
-    color: Colors.grey[200], // fallback bg if image fails
-    child: Stack(
-      fit: StackFit.expand,
-      children: [
-        // Main background image with errorBuilder
-        Image.network(
-          variant!.images.first,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Image.asset(
-              ImageConstants.fallbackImage,
-              fit: BoxFit.cover,
-            );
-          },
+          ),
+          borderRadius: BorderRadius.circular(12),
         ),
-        // Foreground content
-        Positioned(
-          bottom: 10,
-          left: 10,
-          child: Row(
-            children: [
-              ClipOval(
-                child: Image.network(
-                  imageList[index % imageList.length],
-                  width: 30,
-                  height: 30,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      ImageConstants.fallbackImage,
-                      width: 30,
-                      height: 30,
-                      fit: BoxFit.cover,
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(width: 6),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(productItem.title ?? 'Product',
+                style: const TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Container(
+              height: kIsWeb ? 380 : 235,
+              child: Row(
                 children: [
-                  Text(
-                    nameList[index % nameList.length],
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12),
+                  _build_BigSection(imageList, nameList, index),
+                  const SizedBox(width: 10),
+                  _build_SmallSectionFromApi(productItem, imageList, index),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              height: 40,
+              decoration: BoxDecoration(
+                color: ColorConstants.lightGreyColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text(
+                  "VIEW PRODUCTS >",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: ColorConstants.textColor),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+Expanded _build_SmallSectionFromApi(
+    GetAllProductModel product, List<String> imageList, int index) {
+  return Expanded(
+    child: GridView.builder(
+      padding: EdgeInsets.all(.8),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 4,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        childAspectRatio: 0.8,
+      ),
+      itemBuilder: (context, i) {
+        final variant = product.variants.isNotEmpty ? product.variants.first : null;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  Container(
+                    height: 180,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          variant?.images.first ?? '',
+                        ),
+                        onError: (error, stackTrace) => AssetImage(ImageConstants.fallbackImage),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  const Text(
-                    "5K followers",
-                    style: TextStyle(color: Colors.white70, fontSize: 10),
+                  Positioned(
+                    bottom: 10,
+                    left: 10,
+                    child: Row(
+                      children: [
+                        Text(
+                          "₹${variant?.price ?? ''}",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: ColorConstants.backgroundColor,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "₹${variant?.price ?? ''}",
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: ColorConstants.darkGreyColor,
+                            decoration: TextDecoration.lineThrough,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
-        Positioned(
-          top: 10,
-          right: 10,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              color: Colors.black26,
-              borderRadius: BorderRadius.circular(5),
             ),
-            child: const Icon(Icons.tv, color: Colors.white),
-          ),
-        ),
-      ],
+            const SizedBox(height: 4),
+          ],
+        );
+      },
     ),
-  ),
-);
+  );
+}
 
-  }
+Widget _build_BigSection(
+    List<String> imageList, List<String> nameList, int index) {
+  final apiList = context.watch<GetAllProductsController>().filteredProducts;
+  final safeIndex = index >= apiList.length ? apiList.length - 1 : index;
+  final productItems = apiList[safeIndex];
+  final variant =
+      productItems.variants.isNotEmpty ? productItems.variants.first : null;
+
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(12),
+    child: Container(
+      width: 140,
+      color: Colors.grey[200],
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.network(
+            variant?.images.first ?? '',
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                ImageConstants.fallbackImage,
+                fit: BoxFit.cover,
+              );
+            },
+          ),
+          Positioned(
+            bottom: 10,
+            left: 10,
+            child: Row(
+              children: [
+                ClipOval(
+                  child: Image.network(
+                    imageList[index % imageList.length],
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        ImageConstants.fallbackImage,
+                        width: 30,
+                        height: 30,
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      nameList[index % nameList.length],
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12),
+                    ),
+                    const Text(
+                      "5K followers",
+                      style: TextStyle(color: Colors.white70, fontSize: 10),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 10,
+            right: 10,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: const Icon(Icons.tv, color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 
   Widget _buildCategorySection(String title) {
     return Column(
@@ -730,286 +717,268 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
               },
             ),
           ),
-          Consumer2<Dummydb, GetAllProductsController>(
-              builder: (context, productProvider, allproduct, child) {
-            final productList = productProvider.products;
-            final apiproductlist = allproduct.productsList;
-            final apifilteredList = allproduct.filteredProducts;
+      Consumer2<Dummydb, GetAllProductsController>(
+  builder: (context, productProvider, allproduct, child) {
+    final productList = productProvider.products;
+    final apiproductlist = allproduct.productsList;
+    final apifilteredList = allproduct.filteredProducts;
 
-            if (isFavoriteList.length != apifilteredList.length) {
-              isFavoriteList = List<bool>.filled(apifilteredList.length, false);
-            }
+    if (isFavoriteList.length != apifilteredList.length) {
+      isFavoriteList = List<bool>.filled(apifilteredList.length, false);
+    }
 
-            return GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(10),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.65,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+    String getFullImageUrl(String? relativePath) {
+      const serverUrl = "https://myntacloneappbackend-1.onrender.com/";
+      if (relativePath == null || relativePath.isEmpty) {
+        return ImageConstants.fallbackImage;
+      }
+      return relativePath.startsWith("http")
+          ? relativePath
+          : "$serverUrl$relativePath";
+    }
+
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(10),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.65,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
+      itemCount: apifilteredList.length,
+      itemBuilder: (context, index) {
+        num? getCutPrice(int price, int discount, String type) {
+          if (type.toLowerCase() == 'type.percentage') {
+            return price / (1 - (discount / 100));
+          } else if (type.toLowerCase() == 'type.flat') {
+            return price + discount;
+          }
+          return null;
+        }
+
+        final product = productList[index];
+        final productItems = apifilteredList[index];
+        final variant =
+            productItems.variants.isNotEmpty ? productItems.variants.first : null;
+        final productid = productItems.id;
+        final productRating = productItems.reviews.isNotEmpty
+            ? productItems.reviews.first.rating
+            : 3;
+        final productPrice = variant?.price;
+        final discountvalue = variant?.discount?.value;
+        final discounttype = variant?.discount?.type;
+        final image = getFullImageUrl(variant?.images.first);
+
+        final cutPrice = (discountvalue != null &&
+                discounttype != null &&
+                productPrice != null)
+            ? getCutPrice(
+                productPrice, discountvalue, discounttype.toString())
+            : null;
+
+        final discountText = (cutPrice != null)
+            ? "₹${(cutPrice - productPrice!).toStringAsFixed(0)} OFF!"
+            : null;
+
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductDetailsPage2(productId: productid),
               ),
-              itemCount: apifilteredList.length,
-              itemBuilder: (context, index) {
-                // calculate cutprice
-                num? getCutPrice(int price, int discount, String type) {
-                  if (price == null || discount == null) {
-                    return null;
-                  }
-
-                  if (type.toLowerCase() == 'type.percentage') {
-                    return price / (1 - (discount / 100));
-                  } else if (type.toLowerCase() == 'type.flat') {
-                    return price + discount;
-                  }
-                  return null;
-                }
-
-                final product = productList[index];
-                final productItems = apifilteredList[index];
-                final variant = productItems.variants.isNotEmpty
-                    ? productItems.variants.first
-                    : null;
-                final productid = productItems.id;
-                final productRating = productItems.reviews.isNotEmpty
-                    ? productItems.reviews.first.rating
-                    : 3;
-                final productPrice = variant?.price;
-                final discountvalue = variant?.discount?.value;
-                final discounttype = variant?.discount?.type;
-                log("reviews ${productRating}");
-                log("filteredList ${apifilteredList}");
-                log("price ${productPrice.toString()}");
-                log("type ${discounttype.toString()}");
-                log("value ${discountvalue.toString()}");
-                final image = variant!.images.first;
-
-                final cutPrice = (discountvalue != null &&
-                        discounttype != null &&
-                        productPrice != null)
-                    ? getCutPrice(
-                        productPrice, discountvalue, discounttype.toString())
-                    : null;
-
-                final discountText = (cutPrice != null)
-                    ? "₹${(cutPrice - productPrice!).toStringAsFixed(0)} OFF!"
-                    : null;
-
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetailsPage2(
-                          productId: productid,
-                          //token: widget.token,
-                          //id: widget.id,
-                          //productid: productid
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          (widget.title == 'Shoes')
+                              ? ImageConstants.dummyImage
+                              : image,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              ImageConstants.fallbackImage,
+                              fit: BoxFit.cover,
+                            );
+                          },
                         ),
                       ),
-                    );
-                  },
-                  child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(31, 0, 0, 0),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Text(
+                            "AD",
+                            style: TextStyle(
+                              color: ColorConstants.backgroundColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      Positioned(
+                        bottom: 10,
+                        left: 10,
+                        child: Container(
+                          height: 20,
+                          width: 90,
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "$productRating",
+                                style: TextStyle(
+                                  color: ColorConstants.textColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
+                              ),
+                              Icon(Icons.star,
+                                  color: ColorConstants.secondaryColor, size: 10),
+                              SizedBox(width: 8),
+                              Text("|",
+                                  style: TextStyle(
+                                      color: ColorConstants.greyColor, fontSize: 12)),
+                              SizedBox(width: 8),
+                              Text(
+                                "${product["review"]}",
+                                style: TextStyle(
+                                  color: ColorConstants.textColor,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${productItems.title}",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            isFavoriteList[index] = !isFavoriteList[index];
+                          });
+                        },
+                        child: Icon(
+                          isFavoriteList[index]
+                              ? Icons.favorite
+                              : Icons.favorite_border_outlined,
+                          color: isFavoriteList[index]
+                              ? Colors.red
+                              : ColorConstants.textColor,
+                          size: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    "${productItems.description}",
+                    style: const TextStyle(fontSize: 11),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  child: discountvalue == null || discounttype == null
+                      ? Text(
+                          "₹${productPrice}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: ColorConstants.textColor,
+                          ),
+                        )
+                      : Row(
                           children: [
-                            Expanded(
-                              child: Stack(
-                                children: [
-                                 ClipRRect(
-  borderRadius: BorderRadius.circular(10),
-  child: Image.network(
-    (widget.title == 'Shoes')
-        ? ImageConstants.dummyImage
-        : image,
-    fit: BoxFit.cover,
-    width: double.infinity,
-    height: double.infinity,
-    errorBuilder: (context, error, stackTrace) {
-      return Image.asset(
-        ImageConstants.fallbackImage,
-        fit: BoxFit.cover,
-      );
-    },
-  ),
-),
-                                  Positioned(
-                                    top: 10,
-                                    right: 10,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4, vertical: 1),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            const Color.fromARGB(31, 0, 0, 0),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: Text("AD",
-                                          style: TextStyle(
-                                              color: ColorConstants
-                                                  .backgroundColor,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold)),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 10,
-                                    left: 10,
-                                    child: Container(
-                                        height: 20,
-                                        width: 90,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 4, vertical: 1),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withOpacity(0.6),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              // productRating == null ? "3" :
-                                              "$productRating",
-                                              style: TextStyle(
-                                                color: ColorConstants.textColor,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 10,
-                                              ),
-                                            ),
-                                            Icon(Icons.star,
-                                                color: ColorConstants
-                                                    .secondaryColor,
-                                                size: 10),
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            Text("|",
-                                                style: TextStyle(
-                                                    color: ColorConstants
-                                                        .greyColor,
-                                                    fontSize: 12)),
-                                            SizedBox(
-                                              width: 8,
-                                            ),
-                                            Text("${product["review"]}",
-                                                style: TextStyle(
-                                                    color: ColorConstants
-                                                        .textColor,
-                                                    fontSize: 10)),
-                                          ],
-                                        )),
-                                  ),
-                                ],
+                            Text(
+                              "₹${cutPrice?.toStringAsFixed(0)}",
+                              style: const TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                fontSize: 12,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${productItems.title}",
-                                    style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        isFavoriteList[index] =
-                                            !isFavoriteList[index];
-                                      });
-                                    },
-                                    child: Icon(
-                                      isFavoriteList[index]
-                                          ? Icons.favorite
-                                          : Icons.favorite_border_outlined,
-                                      color: isFavoriteList[index]
-                                          ? Colors.red
-                                          : ColorConstants.textColor,
-                                      size: 16,
-                                    ),
-                                  ),
-                                ],
+                            const SizedBox(width: 6),
+                            Text(
+                              "₹${productPrice}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                                color: ColorConstants.textColor,
                               ),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.2),
+                              ),
                               child: Text(
-                                "${productItems.description}",
-                                style: const TextStyle(fontSize: 11),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                                discountText ?? '',
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 2),
-                              child: discountvalue == null ||
-                                      discounttype == null
-                                  ? Text(
-                                      "₹${productPrice}",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                        color: ColorConstants.textColor,
-                                      ),
-                                    )
-                                  : Row(
-                                      children: [
-                                        Text(
-                                          "₹${cutPrice?.toStringAsFixed(0)}",
-                                          style: const TextStyle(
-                                            decoration:
-                                                TextDecoration.lineThrough,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          "₹${productPrice}",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                            color: ColorConstants.textColor,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 4, vertical: 1),
-                                          decoration: BoxDecoration(
-                                            color: Colors.red.withOpacity(0.2),
-                                          ),
-                                          child: Text(
-                                            discountText!,
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                            ),
-                          ])),
-                );
-              },
-            );
-          })
+                          ],
+                        ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  },
+)
+
         ],
       ),
     );
