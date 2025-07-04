@@ -400,17 +400,10 @@ class _FilteredTabScreenWidgetState extends State<FilteredTabScreenWidget>
                             ),
                             child: Stack(
                               children: [
-                                Image.network(
-                                  provider.getFullImageUrl(item["image"]),
-                                  fit: BoxFit.cover,
+                                CustomNetworkImage(
+                                  imagePath: item["image"],
                                   height: double.infinity,
                                   width: double.infinity,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.network(
-                                      ImageConstants.fallbackImage,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
                                 ),
                                 Positioned(
                                   bottom: 1,
@@ -683,15 +676,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                   ),
                                 ),
                                 clipBehavior: Clip.hardEdge, // <-- important
-                                child: Image.network(
-                                  item["image"] ?? ImageConstants.fallbackImage,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Image.network(
-                                      ImageConstants.fallbackImage,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
+                                child: CustomNetworkImage(
+                                  imagePath: item["image"],
                                 ),
                               ),
                             ),
@@ -835,18 +821,10 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               clipBehavior: Clip.antiAlias,
                               child: Stack(
                                 children: [
-                                  Image.network(
-                                    item["image"] ??
-                                        ImageConstants.fallbackImage,
-                                    fit: BoxFit.cover,
+                                  CustomNetworkImage(
+                                    imagePath: item["image"],
                                     height: double.infinity,
                                     width: double.infinity,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.network(
-                                        ImageConstants.fallbackImage,
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
                                   ),
                                   Positioned(
                                     bottom: 1,
@@ -1104,19 +1082,11 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               clipBehavior: Clip.antiAlias,
                               child: Stack(
                                 children: [
-                                  Image.network(
-                                    item["image"]?.isNotEmpty == true
-                                        ? item["image"]!
-                                        : ImageConstants.fallbackImage,
-                                    fit: BoxFit.cover,
+                                  CustomNetworkImage(
+                                    imagePath: item["image"],
                                     height: double.infinity,
                                     width: double.infinity,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.network(
-                                        ImageConstants.fallbackImage,
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
+                                    fit: BoxFit.cover,
                                   ),
 
                                   /// ↓↓↓ Semi-transparent background with content ↓↓↓
@@ -1401,11 +1371,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                               width: 150,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                child: Image(
-                                  image: NetworkImage(picks[index]["image"] ??
-                                      ImageConstants.fallbackImage),
-                                  fit: BoxFit.cover,
-                                ),
+                                child: CustomNetworkImage(
+                                    imagePath: picks[index]["image"]),
                               ),
                             ),
                             Container(
@@ -1535,18 +1502,8 @@ class NestedTabScreenWidgetState extends State<NestedTabScreenWidget>
                                     padding: EdgeInsets.all(15),
                                     height: 210,
                                     width: 150,
-                                    child: Image(
-                                      image: NetworkImage(nearby[index]
-                                              ["image"] ??
-                                          ImageConstants.fallbackImage),
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Image.network(
-                                          ImageConstants.fallbackImage,
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
+                                    child: CustomNetworkImage(
+                                      imagePath: nearby[index]["image"],
                                     ),
                                   ),
                                   Positioned(
@@ -2167,21 +2124,34 @@ class TabBar2Delegate extends SliverPersistentHeaderDelegate {
 ///
 class CustomNetworkImage extends StatelessWidget {
   final String? imagePath;
+  final double? height;
+  final double? width;
+  final BoxFit fit;
 
-  const CustomNetworkImage({super.key, required this.imagePath});
+  const CustomNetworkImage({
+    super.key,
+    required this.imagePath,
+    this.height,
+    this.width,
+    this.fit = BoxFit.cover,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final fullUrl = Provider.of<HomeProductController>(context, listen: false)
+    final imageUrl = Provider.of<HomeProductController>(context, listen: false)
         .getFullImageUrl(imagePath);
 
     return Image.network(
-      fullUrl,
-      fit: BoxFit.cover,
+      imageUrl,
+      height: height,
+      width: width,
+      fit: fit,
       errorBuilder: (context, error, stackTrace) {
         return Image.network(
           ImageConstants.fallbackImage,
-          fit: BoxFit.cover,
+          height: height,
+          width: width,
+          fit: fit,
         );
       },
     );

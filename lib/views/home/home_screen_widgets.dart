@@ -6,6 +6,7 @@ import 'package:whitematrix_groupa_shopping_app/models/home_dummy_db.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/font_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/views/category/category_screen.dart';
+import 'package:whitematrix_groupa_shopping_app/views/home/home_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/testing_parameterPassing/parameter_test.dart';
 
@@ -78,32 +79,25 @@ class PhotoTypeRow extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Container(
-                padding: const EdgeInsets.all(5),
-                height: 210,
-                width: 150,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.transparent),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 1,
-                      offset: Offset(0, 1),
-                    )
-                  ],
-                ),
-                child: Image.network(
-                  bslist[index]["image"] ?? ImageConstants.fallbackImage,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.network(
-                      ImageConstants.fallbackImage,
-                      fit: BoxFit.cover,
-                    );
-                  },
-                ),
-              ),
+                  padding: const EdgeInsets.all(5),
+                  height: 210,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.transparent),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 1,
+                        offset: Offset(0, 1),
+                      )
+                    ],
+                  ),
+                  child: CustomNetworkImage(
+                    imagePath: bslist[index]["image"],
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  )),
             ),
             const SizedBox(height: 4),
             Text(
@@ -166,19 +160,11 @@ class RowWithBorderContainerType1 extends StatelessWidget {
                 color: Colors.grey.shade200, // Optional: placeholder background
                 child: Stack(
                   children: [
-                    Image.network(
-                      dBList[index]["image"] ?? ImageConstants.fallbackImage,
+                    CustomNetworkImage(
+                      imagePath: dBList[index]["image"],
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.network(
-                          ImageConstants.fallbackImage,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                        );
-                      },
                     ),
 
                     /// Overlay
@@ -394,15 +380,11 @@ class _CarouselSlidersState extends State<CarouselSliders> {
                 builder: (BuildContext context) {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: Image.network(url,
-                        fit: BoxFit.cover, width: double.infinity,
-                        errorBuilder: (context, error, stackTrace) {
-                      return Image.network(
-                        ImageConstants.bannerImage,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                      );
-                    }),
+                    child: CustomNetworkImage(
+                      imagePath: url,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    ),
                   );
                 },
               );
@@ -513,19 +495,12 @@ class _CarouselSliders2State extends State<CarouselSliders2> {
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      url,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.network(
-                          ImageConstants.fallbackImage,
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
-                  ),
+                      borderRadius: BorderRadius.circular(12),
+                      child: CustomNetworkImage(
+                        imagePath: url,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      )),
                 ),
               ),
             );
@@ -592,20 +567,13 @@ class ContinuingRow extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Container(
-                height: 200,
-                width: MediaQuery.of(context).size.width * 0.45,
-                color: Colors.grey.shade200, // optional placeholder color
-                child: Image.network(
-                  item["image"] ?? "",
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.network(
-                      ImageConstants.fallbackImage,
-                      fit: BoxFit.cover,
-                    );
-                  },
-                ),
-              ),
+                  height: 200,
+                  width: MediaQuery.of(context).size.width * 0.45,
+                  color: Colors.grey.shade200, // optional placeholder color
+                  child: CustomNetworkImage(
+                    imagePath: item["image"],
+                    fit: BoxFit.cover,
+                  )),
             ),
             Text(
               item["title"] ?? "",

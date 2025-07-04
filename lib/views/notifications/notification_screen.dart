@@ -3,6 +3,7 @@ import 'package:whitematrix_groupa_shopping_app/controllers/home_product_control
 import 'package:whitematrix_groupa_shopping_app/utils/constants/color_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/font_constants.dart';
 import 'package:whitematrix_groupa_shopping_app/utils/constants/image_constants.dart';
+import 'package:whitematrix_groupa_shopping_app/views/home/home_screen.dart';
 import 'package:whitematrix_groupa_shopping_app/views/product_details/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -54,20 +55,13 @@ class NotificationScreen extends StatelessWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: AspectRatio(
-                            aspectRatio: 16 /
-                                9, //  replaced fixed height with aspect ratio
-                            child: Image.network(
-                              item["image"] ?? "",
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.network(
-                                  ImageConstants.fallbackImage,
-                                  fit: BoxFit.cover,
-                                );
-                              },
-                            ),
-                          ),
+                              aspectRatio: 16 /
+                                  9, //  replaced fixed height with aspect ratio
+                              child: CustomNetworkImage(
+                                imagePath: item["image"],
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              )),
                         ),
                         const SizedBox(height: 8),
                         Text(
