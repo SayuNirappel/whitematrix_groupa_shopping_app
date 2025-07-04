@@ -2039,21 +2039,9 @@ class _InfiniteScrollGridViewState extends State<InfiniteScrollGridView> {
                   Expanded(
                     flex: 2,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        Provider.of<HomeProductController>(context,
-                                listen: false)
-                            .getFullImageUrl(
-                                product.variants?.first.images?.first),
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Image.network(
-                            ImageConstants.fallbackImage,
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      ),
-                    ),
+                        borderRadius: BorderRadius.circular(10),
+                        child: CustomNetworkImage(
+                            imagePath: product.variants?.first.images?.first)),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -2171,5 +2159,31 @@ class TabBar2Delegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant TabBar2Delegate oldDelegate) {
     return false;
+  }
+}
+
+///
+///-------------------------network image widget--------------------
+///
+class CustomNetworkImage extends StatelessWidget {
+  final String? imagePath;
+
+  const CustomNetworkImage({super.key, required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    final fullUrl = Provider.of<HomeProductController>(context, listen: false)
+        .getFullImageUrl(imagePath);
+
+    return Image.network(
+      fullUrl,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Image.network(
+          ImageConstants.fallbackImage,
+          fit: BoxFit.cover,
+        );
+      },
+    );
   }
 }

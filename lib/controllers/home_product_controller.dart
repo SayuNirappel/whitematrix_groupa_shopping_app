@@ -165,7 +165,7 @@ class HomeProductController with ChangeNotifier {
   }
 
   String getFullImageUrl(String? relativePath) {
-    const serverUrl = "https://myntacloneappbackend-1.onrender.com";
+    const serverUrl = "https://myntacloneappbackend-1.onrender.com/";
 
     if (relativePath == null || relativePath.isEmpty) {
       return ImageConstants.fallbackImage; // fallback
